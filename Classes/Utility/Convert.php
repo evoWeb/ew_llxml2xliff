@@ -44,7 +44,7 @@ class Convert
      * @param string $extension Extension key to get extension path
      * @return string HTML content
      */
-    public function main($xmlFile, $extension)
+    public function writeXlfFilesInPlace($xmlFile, $extension)
     {
         $this->extension = $extension;
         $xmlFile = ExtensionManagementUtility::extPath($extension) . $xmlFile;
@@ -55,7 +55,7 @@ class Convert
                 $languages = $this->getAvailableTranslations($xmlFile);
                 $errors = array();
                 foreach ($languages as $langKey) {
-                    $newFileName = preg_replace('#\.xml$#', '.xlf', $this->localizedFileRef($xmlFile, $langKey));
+                    $newFileName = dirname($xmlFile) . '/' . $this->localizedFileRef($xmlFile, $langKey);
                     if (@is_file($newFileName)) {
                         $errors[] = 'ERROR: Output file "' . $newFileName . '" already exists!';
                     }
@@ -63,7 +63,7 @@ class Convert
                 if (empty($errors)) {
                     $output = '';
                     foreach ($languages as $langKey) {
-                        $newFileName = preg_replace('#\.xml$#', '.xlf', $this->localizedFileRef($xmlFile, $langKey));
+                        $newFileName = dirname($xmlFile) . '/' . $this->localizedFileRef($xmlFile, $langKey);
                         $output .= $this->writeNewXliffFile($xmlFile, $newFileName, $langKey) . '<br />';
                     }
                     return $output;
@@ -78,6 +78,41 @@ class Convert
     }
 
     /**
+     * Main function.
+     *
+     * @param string $xmlFile Absolute path to the uploaded ll-XML file
+     * @return string HTML content
+     */
+    public function convertAndDownload($xmlFile)
+    {
+        $result = '';
+        if (@is_file($xmlFile)) {
+            $fileCheckResult = $this->checkXmlFilename($xmlFile);
+            if (empty($fileCheckResult)) {
+                $languages = $this->getAvailableTranslations($xmlFile);
+                if (!empty($languages)) {
+                    $zip = new \ZipStream\ZipStream('translated_' . basename($xmlFile) . '.zip');
+                    $fileHandle = tmpfile();
+                    foreach ($languages as $langKey) {
+                        ftruncate($fileHandle, 0);
+                        fwrite($fileHandle, $this->generateFileContent($xmlFile, $langKey));
+                        $zip->addFileFromStream($this->localizedFileRef($xmlFile, $langKey), $fileHandle);
+                    }
+                    fclose($fileHandle);
+                    unlink($xmlFile);
+                    $zip->finish();
+                } else {
+                    $result = 'ERROR: no translation files could be created!';
+                }
+            }
+            unlink($xmlFile);
+        } else {
+            $result = 'File ' . $xmlFile . ' does not exists!';
+        }
+        return $result;
+    }
+
+    /**
      * Checking for a valid locallang*.xml filename.
      *
      * @param string $xmlFile Absolute reference to the ll-XML locallang file
@@ -88,7 +123,7 @@ class Convert
         $basename = basename($xmlFile);
 
         $result = '';
-        if (!GeneralUtility::isFirstPartOfStr($basename, 'locallang')) {
+        if (strpos($basename, 'locallang') !== 0) {
             $result = 'ERROR: Filename didn\'t start with "locallang".';
         }
         return $result;
@@ -100,7 +135,7 @@ class Convert
      */
     protected function getAvailableTranslations($xmlFile)
     {
-        $ll = GeneralUtility::xml2array(file_get_contents($xmlFile));
+        $ll = $this->xml2array(file_get_contents($xmlFile));
         if (!isset($ll['data'])) {
             throw new \RuntimeException('data section not found in "' . $xmlFile . '"', 1314187884);
         }
@@ -120,7 +155,7 @@ class Convert
         $path = '';
         if (substr($fileRef, -4) === '.xml') {
             $lang = $lang === 'default' ? '' : $lang . '.';
-            $path = dirname($fileRef) . '/' . $lang . basename($fileRef);
+            $path = $lang . pathinfo($fileRef, PATHINFO_FILENAME) . '.xlf';
         }
         return $path;
     }
@@ -136,8 +171,25 @@ class Convert
      */
     protected function writeNewXliffFile($xmlFile, $newFileName, $langKey)
     {
+        $xml = $this->generateFileContent($xmlFile, $langKey);
+
+        if (!file_exists($newFileName)) {
+            GeneralUtility::writeFile($newFileName, $xml);
+
+            return $newFileName;
+        }
+        return '';
+    }
+
+    /**
+     * @param string $xmlFile
+     * @param string $langKey
+     * @return string
+     */
+    protected function generateFileContent($xmlFile, $langKey)
+    {
         // Initialize variables:
-        $xml = array();
+        $xml = [];
         $LOCAL_LANG = $this->getLLarray($xmlFile);
 
         $xml[] = '<?xml version="1.0" encoding="utf-8" standalone="yes" ?>';
@@ -169,12 +221,7 @@ class Convert
         $xml[] = '	</file>';
         $xml[] = '</xliff>';
 
-        if (!file_exists($newFileName)) {
-            GeneralUtility::writeFile($newFileName, implode(LF, $xml));
-
-            return 'File written to disk: ' . $newFileName;
-        }
-        return '';
+        return implode(LF, $xml);
     }
 
     /**
@@ -201,5 +248,22 @@ class Convert
         }
 
         return $LOCAL_LANG;
+    }
+
+    /**
+     * Converts an XML string to a PHP array.
+     * This is the reverse function of array2xml()
+     * This is a wrapper for xml2arrayProcess that adds a two-level cache
+     *
+     * @param string $string XML content to convert into an array
+     * @param string $NSprefix The tag-prefix resolve, eg. a namespace like "T3:"
+     * @param bool $reportDocTag If set, the document tag will be set in the key "_DOCUMENT_TAG" of the output array
+     * @return mixed If the parsing had errors, a string with the error message is returned.
+     *  Otherwise an array with the content.
+     * @see array2xml(),xml2arrayProcess()
+     */
+    protected function xml2array($string, $NSprefix = '', $reportDocTag = false)
+    {
+        return GeneralUtility::xml2array($string, $NSprefix, $reportDocTag);
     }
 }

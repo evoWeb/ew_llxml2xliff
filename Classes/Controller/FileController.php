@@ -92,7 +92,7 @@ class FileController extends ActionController
             $this->view->assign('wasConvertedPreviously', 1);
         } else {
             $convertUtility = $this->objectManager->get(\Evoweb\EwLlxml2xliff\Utility\Convert::class);
-            $messages = $convertUtility->main($selectedFile, $selectedExtension);
+            $messages = $convertUtility->writeXlfFilesInPlace($selectedFile, $selectedExtension);
             if (strpos($messages, 'ERROR') === false) {
                 $this->view->assign('fileConvertedSuccessfuly', 1);
                 $this->view->assign('messages', $messages);
