@@ -1,0 +1,31 @@
+{
+	"name": "evoweb/ew-llxml2xliff",
+	"type": "typo3-cms-extension",
+	"description": "Converter of TYPO3 language files of type llxml to xliff",
+	"homepage": "https://github.com/evoWeb/ew_llxml2xliff/",
+	"license": ["GPL-2.0+"],
+
+	"support" : {
+		"issues" : "https://github.com/evoWeb/ew_llxml2xliff/issues"
+	},
+	"keywords": [
+		"llxml",
+		"xliff",
+		"converter"
+	],
+
+	"require": {
+		"typo3/cms-core": "*"
+	},
+	"autoload": {
+		"psr-4": {
+			"Evoweb\\EwLlxml2xliff\\": "Classes/"
+		}
+	},
+	"repositories": [
+		{
+			"type": "vcs",
+			"url": "https://github.com/evoWeb/ew_llxml2xliff.git"
+		}
+	]
+}
