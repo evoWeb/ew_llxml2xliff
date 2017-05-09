@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<xliff version="1.0">
+	<file source-language="en" target-language="de" datatype="plaintext" original="messages" date="2017-05-09T05:37:12Z" product-name="sf_books">
+		<header/>
+		<body>
+			<trans-unit id="header.conversion">
+				<source>Convert llxml file to xliff</source>
+			</trans-unit>
+
+			<trans-unit id="extension">
+				<source>Extension</source>
+			</trans-unit>
+
+			<trans-unit id="file">
+				<source>File</source>
+			</trans-unit>
+		</body>
+	</file>
+</xliff>

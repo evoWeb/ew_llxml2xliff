@@ -34,7 +34,9 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class Convert
 {
-    /** @var string */
+    /**
+     * @var string
+     */
     protected $extension;
 
     /**

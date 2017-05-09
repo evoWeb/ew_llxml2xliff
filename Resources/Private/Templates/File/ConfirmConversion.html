@@ -9,12 +9,12 @@
 	</h1>
 
 	<f:form action="showFiles">
-		<f:render partial="SelectExtension" arguments="{_all}"/>
+		<f:translate id="extension"/>: <f:render partial="SelectExtension" arguments="{_all}"/>
 	</f:form>
 
 	<f:form action="confirmConversion">
 		<f:form.hidden name="extension" value="{selectedExtension}"/>
-		<f:render partial="SelectFile" arguments="{_all}"/>
+		<f:translate id="file"/>: <f:render partial="SelectFile" arguments="{_all}"/>
 	</f:form>
 
 	<f:form action="convertFile">

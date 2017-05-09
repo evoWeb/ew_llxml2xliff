@@ -15,7 +15,8 @@
 	],
 
 	"require": {
-		"typo3/cms-core": "*"
+		"typo3/cms-core": "*",
+		"maennchen/zipstream-php": "^0.4.1"
 	},
 	"autoload": {
 		"psr-4": {

@@ -5,11 +5,11 @@
 
 <f:section name="Content">
 	<h1>
-		<f:translate key="header.conversion"/>
+		<f:translate id="header.conversion"/>
 	</h1>
 
 	<f:form action="showFiles">
-		<f:render partial="SelectExtension" arguments="{_all}"/>
+		<f:translate id="extension"/>: <f:render partial="SelectExtension" arguments="{_all}"/>
 	</f:form>
 </f:section>
 
