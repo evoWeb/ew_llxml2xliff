@@ -3,7 +3,7 @@
 $EM_CONF['ew_llxml2xliff'] = [
     'title' => 'Converting llxml to xliff',
     'description' => 'Based on work of Xavier Perseguers for the obsolete extdeveval',
-    'version' => '2.0.0',
+    'version' => '2.0.1',
     'state' => 'stable',
     'category' => 'module',
     'author' => 'Sebastian Fischer',
