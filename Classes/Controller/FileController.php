@@ -3,9 +3,8 @@ namespace Evoweb\EwLlxml2xliff\Controller;
 
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 
-class FileController extends ActionController
+class FileController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
 {
     /**
      * @var \TYPO3\CMS\Extensionmanager\Utility\ListUtility
@@ -90,9 +89,20 @@ class FileController extends ActionController
         $extensionPath = ExtensionManagementUtility::extPath($selectedExtension);
         if ($this->xliffFileAlreadyExists($extensionPath, $selectedFile)) {
             $this->view->assign('wasConvertedPreviously', 1);
-        } else {
+        } elseif (strpos($selectedFile, '.xml') !== false) {
+            /** @var \Evoweb\EwLlxml2xliff\Utility\Convert $convertUtility */
             $convertUtility = $this->objectManager->get(\Evoweb\EwLlxml2xliff\Utility\Convert::class);
-            $messages = $convertUtility->writeXlfFilesInPlace($selectedFile, $selectedExtension);
+            $messages = $convertUtility->writeXmlAsXlfFilesInPlace($selectedFile, $selectedExtension);
+            if (strpos($messages, 'ERROR') === false) {
+                $this->view->assign('fileConvertedSuccessfuly', 1);
+                $this->view->assign('messages', $messages);
+            }
+            $files = $this->getFilesOfExtension($selectedExtension);
+            $selectedFile = '';
+        } else {
+            /** @var \Evoweb\EwLlxml2xliff\Utility\Convert $convertUtility */
+            $convertUtility = $this->objectManager->get(\Evoweb\EwLlxml2xliff\Utility\Convert::class);
+            $messages = $convertUtility->writePhpAsXlfFilesInPlace($selectedFile, $selectedExtension);
             if (strpos($messages, 'ERROR') === false) {
                 $this->view->assign('fileConvertedSuccessfuly', 1);
                 $this->view->assign('messages', $messages);
@@ -125,6 +135,7 @@ class FileController extends ActionController
      * Generates a selector box with file names of the currently selected extension
      *
      * @param string $extensionKey List of file extensions to select
+     *
      * @return array
      */
     protected function getFilesOfExtension($extensionKey)
@@ -135,22 +146,53 @@ class FileController extends ActionController
             GeneralUtility::getAllFilesAndFoldersInPath(array(), $extensionPath, 'xml', 0),
             $extensionPath
         );
+        $phpFiles = GeneralUtility::removePrefixPathFromList(
+            GeneralUtility::getAllFilesAndFoldersInPath(array(), $extensionPath, 'php', 0),
+            $extensionPath
+        );
 
-        $result = [];
-        if (is_array($xmlFiles)) {
-            foreach ($xmlFiles as $xmlFile) {
-                if (!$this->xliffFileAlreadyExists($extensionPath, $xmlFile)) {
-                    $result[$xmlFile] = [
-                        'filename' => $xmlFile,
-                    ];
+        if ((!is_array($xmlFiles) || empty($xmlFiles)) || (!is_array($phpFiles) || empty($phpFiles))) {
+            $result = ['filename' =>  'No files to convert found in extension: "' . $extensionKey . '"'];
+        } else {
+            $result = [];
+
+            if (is_array($xmlFiles)) {
+                foreach ($xmlFiles as $file) {
+                    if ($this->isLanguageFile($file)
+                        && !$this->xliffFileAlreadyExists($extensionPath, $file)
+                    ) {
+                        $result[$file] = ['filename' => $file];
+                    }
                 }
             }
-            ksort($result);
-            array_unshift($result, ['filename' => 'Please select']);
-        } else {
-            return ['filename' =>  'No files to convert found in extension: "' . $extensionKey . '"'];
+
+            if (is_array($phpFiles)) {
+                foreach ($phpFiles as $file) {
+                    if ($this->isLanguageFile($file)
+                        && !$this->xliffFileAlreadyExists($extensionPath, $file)
+                    ) {
+                        $result[$file] = ['filename' => $file];
+                    }
+                }
+            }
+
+            if (!empty($result)) {
+                ksort($result);
+                array_unshift($result, ['filename' => 'Please select']);
+            }
         }
+
         return $result;
+    }
+
+    /**
+     * @param string $filePath
+     *
+     * @return bool
+     */
+    protected function isLanguageFile($filePath)
+    {
+        return strpos($filePath, 'locallang') !== false;
     }
 
     /**
@@ -161,7 +203,7 @@ class FileController extends ActionController
      */
     protected function xliffFileAlreadyExists($extensionPath, $filePath)
     {
-        $xliffFileName = preg_replace('#\.xml$#', '.xlf', $extensionPath . $filePath);
+        $xliffFileName = preg_replace('#\.(xml|php)$#', '.xlf', $extensionPath . $filePath);
 
         return (bool) file_exists($xliffFileName);
     }

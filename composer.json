@@ -3,11 +3,15 @@
 	"type": "typo3-cms-extension",
 	"description": "Converter of TYPO3 language files of type llxml to xliff",
 	"homepage": "https://github.com/evoWeb/ew_llxml2xliff/",
-	"license": ["GPL-2.0+"],
+
+	"license": [
+		"GPL-2.0-or-later"
+	],
 
 	"support" : {
 		"issues" : "https://github.com/evoWeb/ew_llxml2xliff/issues"
 	},
+
 	"keywords": [
 		"llxml",
 		"xliff",
