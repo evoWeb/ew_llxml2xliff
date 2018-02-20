@@ -151,7 +151,7 @@ class FileController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
             $extensionPath
         );
 
-        if ((!is_array($xmlFiles) || empty($xmlFiles)) || (!is_array($phpFiles) || empty($phpFiles))) {
+        if ((!is_array($xmlFiles) || empty($xmlFiles)) && (!is_array($phpFiles) || empty($phpFiles))) {
             $result = ['filename' =>  'No files to convert found in extension: "' . $extensionKey . '"'];
         } else {
             $result = [];
