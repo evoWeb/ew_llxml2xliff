@@ -3,30 +3,56 @@
 <f:layout name="Default"/>
 
 <f:section name="Content">
-	<h1><f:translate key="header.languages"/></h1>
+	<h1><f:translate id="header.conversion"/></h1>
 
 	<f:form action="showFiles">
-		<f:translate id="extension"/>: <f:render partial="SelectExtension" arguments="{_all}"/>
+		<div class="form-group">
+			<div class="form-section">
+				<div class="form-group">
+					<label for="extension"><f:translate id="extension"/></label>
+					<div class="form-control-wrap">
+						<div class="input-group">
+							<f:render partial="SelectExtension" arguments="{_all}"/>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
 	</f:form>
 
 	<f:form action="confirmConversion">
 		<f:form.hidden name="extension" value="{selectedExtension}"/>
-		<f:translate id="file"/>: <f:render partial="SelectFile" arguments="{_all}"/>
+		<div class="form-group">
+			<div class="form-section">
+				<div class="form-group">
+					<label for="file"><f:translate id="file"/></label>
+					<div class="form-control-wrap">
+						<div class="input-group">
+							<f:render partial="SelectFile" arguments="{_all}"/>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
 	</f:form>
 
-	<div>
-		<f:if condition="{wasConvertedPreviously}">
-			<f:then>File {selectedFile} in extension {selectedExtension} was converted previously</f:then>
-			<f:else>
-				<f:if condition="{fileConvertedSuccessfuly}">
-					<f:then>File {selectedFile} in extension {selectedExtension} was converted successfuly</f:then>
-					<f:else>File {selectedFile} in extension {selectedExtension} could be converted automaticaly</f:else>
-				</f:if>
+	<div class="form-group">
+		<div class="form-section">
+			<div class="form-group">
+				<f:if condition="{wasConvertedPreviously}">
+					<f:then>File {selectedFile} in extension {selectedExtension} was converted previously</f:then>
+					<f:else>
+						<f:if condition="{fileConvertedSuccessfully}">
+							<f:then>File {selectedFile} in extension {selectedExtension} was converted successfully</f:then>
+							<f:else>File {selectedFile} in extension {selectedExtension} could be converted automatically</f:else>
+						</f:if>
 
-				<br />
-				<f:format.raw>{messages}</f:format.raw>
-			</f:else>
-		</f:if>
+						<br />
+						<f:format.raw>{messages}</f:format.raw>
+					</f:else>
+				</f:if>
+			</div>
+		</div>
 	</div>
 </f:section>
 

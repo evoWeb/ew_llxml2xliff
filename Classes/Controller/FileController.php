@@ -88,7 +88,7 @@ class FileController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
             }
 
             if (strpos($messages, 'ERROR') === false) {
-                $this->view->assign('fileConvertedSuccessfuly', 1);
+                $this->view->assign('fileConvertedSuccessfully', 1);
                 $this->view->assign('messages', $messages);
             }
             $files = $this->getFilesOfExtension($selectedExtension);
