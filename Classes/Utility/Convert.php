@@ -2,33 +2,33 @@
 namespace Evoweb\EwLlxml2xliff\Utility;
 
 /***************************************************************
-*  Copyright notice
-*
-*  (c) 2011 Xavier Perseguers <xavier@typo3.org>
-*  All rights reserved
-*
-*  This script is part of the TYPO3 project. The TYPO3 project is
-*  free software; you can redistribute it and/or modify
-*  it under the terms of the GNU General Public License as published by
-*  the Free Software Foundation; either version 2 of the License, or
-*  (at your option) any later version.
-*
-*  The GNU General Public License can be found at
-*  http://www.gnu.org/copyleft/gpl.html.
-*
-*  This script is distributed in the hope that it will be useful,
-*  but WITHOUT ANY WARRANTY; without even the implied warranty of
-*  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-*  GNU General Public License for more details.
-*
-*  This copyright notice MUST APPEAR in all copies of the script!
-***************************************************************/
+ *  Copyright notice
+ *
+ *  (c) 2011 Xavier Perseguers <xavier@typo3.org>
+ *  All rights reserved
+ *
+ *  This script is part of the TYPO3 project. The TYPO3 project is
+ *  free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2 of the License, or
+ *  (at your option) any later version.
+ *
+ *  The GNU General Public License can be found at
+ *  http://www.gnu.org/copyleft/gpl.html.
+ *
+ *  This script is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  This copyright notice MUST APPEAR in all copies of the script!
+ ***************************************************************/
 
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
- * Conversion of locallang.xml files to locallang.xlf.
+ * Conversion of locallang*.[xml|php] files to locallang.xlf.
  *
  * @author Xavier Perseguers <xavier@typo3.org>
  */
@@ -44,18 +44,19 @@ class Convert
      *
      * @param string $xmlFile Absolute path to the selected ll-XML file
      * @param string $extension Extension key to get extension path
+     *
      * @return string HTML content
      */
-    public function writeXlfFilesInPlace($xmlFile, $extension)
+    public function writeXmlAsXlfFilesInPlace($xmlFile, $extension)
     {
         $this->extension = $extension;
         $xmlFile = ExtensionManagementUtility::extPath($extension) . $xmlFile;
 
         if (@is_file($xmlFile)) {
-            $fileCheckResult = $this->checkXmlFilename($xmlFile);
+            $fileCheckResult = $this->checkLanguageFilename($xmlFile);
             if (empty($fileCheckResult)) {
                 $languages = $this->getAvailableTranslations($xmlFile);
-                $errors = array();
+                $errors = [];
                 foreach ($languages as $langKey) {
                     $newFileName = dirname($xmlFile) . '/' . $this->localizedFileRef($xmlFile, $langKey);
                     if (@is_file($newFileName)) {
@@ -82,45 +83,52 @@ class Convert
     /**
      * Main function.
      *
-     * @param string $xmlFile Absolute path to the uploaded ll-XML file
+     * @param string $xmlFile Absolute path to the selected ll-XML file
+     * @param string $extension Extension key to get extension path
+     *
      * @return string HTML content
      */
-    public function convertAndDownload($xmlFile)
+    public function writePhpAsXlfFilesInPlace($xmlFile, $extension)
     {
-        $result = '';
+        $this->extension = $extension;
+        $xmlFile = ExtensionManagementUtility::extPath($extension) . $xmlFile;
+
         if (@is_file($xmlFile)) {
-            $fileCheckResult = $this->checkXmlFilename($xmlFile);
+            $fileCheckResult = $this->checkLanguageFilename($xmlFile);
             if (empty($fileCheckResult)) {
                 $languages = $this->getAvailableTranslations($xmlFile);
-                if (!empty($languages)) {
-                    $zip = new \ZipStream\ZipStream('translated_' . basename($xmlFile) . '.zip');
-                    $fileHandle = tmpfile();
-                    foreach ($languages as $langKey) {
-                        ftruncate($fileHandle, 0);
-                        fwrite($fileHandle, $this->generateFileContent($xmlFile, $langKey));
-                        $zip->addFileFromStream($this->localizedFileRef($xmlFile, $langKey), $fileHandle);
+                $errors = [];
+                foreach ($languages as $langKey) {
+                    $newFileName = dirname($xmlFile) . '/' . $this->localizedFileRef($xmlFile, $langKey);
+                    if (@is_file($newFileName)) {
+                        $errors[] = 'ERROR: Output file "' . $newFileName . '" already exists!';
                     }
-                    fclose($fileHandle);
-                    unlink($xmlFile);
-                    $zip->finish();
-                } else {
-                    $result = 'ERROR: no translation files could be created!';
                 }
+                if (empty($errors)) {
+                    $output = '';
+                    foreach ($languages as $langKey) {
+                        $newFileName = dirname($xmlFile) . '/' . $this->localizedFileRef($xmlFile, $langKey);
+                        $output .= $this->writeNewXliffFile($xmlFile, $newFileName, $langKey) . '<br />';
+                    }
+                    return $output;
+                } else {
+                    return implode('<br />', $errors);
+                }
+            } else {
+                return $fileCheckResult;
             }
-            unlink($xmlFile);
-        } else {
-            $result = 'File ' . $xmlFile . ' does not exists!';
         }
-        return $result;
+        return 'File ' . $xmlFile . ' does not exists!';
     }
 
     /**
      * Checking for a valid locallang*.xml filename.
      *
      * @param string $xmlFile Absolute reference to the ll-XML locallang file
+     *
      * @return string Empty (false) return value means "OK" while otherwise is an error string
      */
-    protected function checkXmlFilename($xmlFile)
+    protected function checkLanguageFilename($xmlFile)
     {
         $basename = basename($xmlFile);
 
@@ -132,17 +140,26 @@ class Convert
     }
 
     /**
-     * @param string $xmlFile Absolute reference to the ll-XML base locallang file
+     * @param string $languageFile Absolute reference to the base locallang file
+     *
      * @return array
      */
-    protected function getAvailableTranslations($xmlFile)
+    protected function getAvailableTranslations($languageFile)
     {
-        $ll = $this->xml2array(file_get_contents($xmlFile));
-        if (!isset($ll['data'])) {
-            throw new \RuntimeException('data section not found in "' . $xmlFile . '"', 1314187884);
+        if (strpos($languageFile, '.xml')) {
+            $ll = $this->xml2array(file_get_contents($languageFile));
+            $languages = isset($ll['data']) ? array_keys($ll['data']) : [];
+        } else {
+            /** @noinspection PhpIncludeInspection */
+            require($languageFile);
+            $languages = isset($LOCAL_LANG) ? array_keys($LOCAL_LANG) : [];
         }
 
-        return array_keys($ll['data']);
+        if (empty($languages)) {
+            throw new \RuntimeException('data section not found in "' . $languageFile . '"', 1314187884);
+        }
+
+        return $languages;
     }
 
     /**
@@ -150,12 +167,13 @@ class Convert
      *
      * @param string $fileRef Filename/path of a 'locallang*.xml' file
      * @param string $lang Language key
+     *
      * @return string Input filename with a '[lang-key].locallang*.xml' name if $this->lang is not 'default'
      */
     protected function localizedFileRef($fileRef, $lang)
     {
         $path = '';
-        if (substr($fileRef, -4) === '.xml') {
+        if (substr($fileRef, -4) === '.xml' || substr($fileRef, -4) === '.php') {
             $lang = $lang === 'default' ? '' : $lang . '.';
             $path = $lang . pathinfo($fileRef, PATHINFO_FILENAME) . '.xlf';
         }
@@ -169,6 +187,7 @@ class Convert
      * @param string $xmlFile Absolute path to the locallang.xml file to convert
      * @param string $newFileName The new file name to write to (absolute path, .xlf ending)
      * @param string $langKey The language key
+     *
      * @return string HTML text string message
      */
     protected function writeNewXliffFile($xmlFile, $newFileName, $langKey)
@@ -186,6 +205,7 @@ class Convert
     /**
      * @param string $xmlFile
      * @param string $langKey
+     *
      * @return string
      */
     protected function generateFileContent($xmlFile, $langKey)
@@ -204,8 +224,13 @@ class Convert
         $xml[] = '		<body>';
 
         foreach ($LOCAL_LANG[$langKey] as $key => $data) {
-            $source = $data[0]['source'];
-            $target = $data[0]['target'];
+            if (is_array($data)) {
+                $source = $data[0]['source'];
+                $target = $data[0]['target'];
+            } else {
+                $source = $LOCAL_LANG['default'][$key];
+                $target = $data;
+            }
 
             if ($langKey === 'default') {
                 $xml[] = '			<trans-unit id="' . $key . '" xml:space="preserve">';
@@ -229,26 +254,35 @@ class Convert
     /**
      * Includes locallang files and returns raw $LOCAL_LANG array
      *
-     * @param string $xmlFile Absolute reference to the ll-XML locallang file.
+     * @param string $languageFile Absolute reference to the ll-XML locallang file.
+     *
      * @return array LOCAL_LANG array from ll-XML file (with all possible sub-files for languages included)
      */
-    protected function getLLarray($xmlFile)
+    protected function getLLarray($languageFile)
     {
-        $ll = GeneralUtility::xml2array(file_get_contents($xmlFile));
-        if (!isset($ll['data'])) {
-            throw new \RuntimeException('data section not found in "' . $xmlFile . '"', 1314187884);
-        }
-        $includedLanguages = array_keys($ll['data']);
-        $LOCAL_LANG = array();
+        if (strpos($languageFile, '.xml')) {
+            $ll = GeneralUtility::xml2array(file_get_contents($languageFile));
+            $includedLanguages = array_keys($ll['data']);
 
-        foreach ($includedLanguages as $langKey) {
-            /** @var $parser \TYPO3\CMS\Core\Localization\Parser\LocallangXmlParser */
-            $parser = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Localization\Parser\LocallangXmlParser::class);
-            $llang = $parser->getParsedData($xmlFile, $langKey, $GLOBALS['LANG']->charSet);
-            unset($parser);
-            $LOCAL_LANG[$langKey] = $llang[$langKey];
+            $LOCAL_LANG = [];
+            foreach ($includedLanguages as $langKey) {
+                /** @var $parser \TYPO3\CMS\Core\Localization\Parser\LocallangXmlParser */
+                $parser = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Localization\Parser\LocallangXmlParser::class);
+                $llang = $parser->getParsedData($languageFile, $langKey);
+                unset($parser);
+                $LOCAL_LANG[$langKey] = $llang[$langKey];
+            }
+        } else {
+            /** @noinspection PhpIncludeInspection */
+            require($languageFile);
+            $includedLanguages = isset($LOCAL_LANG) ? array_keys($LOCAL_LANG) : [];
         }
 
+        if (empty($includedLanguages)) {
+            throw new \RuntimeException('data section not found in "' . $languageFile . '"', 1314187884);
+        }
+
+        /** @noinspection PhpUndefinedVariableInspection */
         return $LOCAL_LANG;
     }
 
@@ -260,8 +294,10 @@ class Convert
      * @param string $string XML content to convert into an array
      * @param string $NSprefix The tag-prefix resolve, eg. a namespace like "T3:"
      * @param bool $reportDocTag If set, the document tag will be set in the key "_DOCUMENT_TAG" of the output array
+     *
      * @return mixed If the parsing had errors, a string with the error message is returned.
      *  Otherwise an array with the content.
+     *
      * @see array2xml(),xml2arrayProcess()
      */
     protected function xml2array($string, $NSprefix = '', $reportDocTag = false)
