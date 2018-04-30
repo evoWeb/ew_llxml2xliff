@@ -39,12 +39,13 @@
 	<div class="form-group">
 		<div class="form-section">
 			<div class="form-group">
+				File {selectedFile} in extension {selectedExtension}
 				<f:if condition="{wasConvertedPreviously}">
-					<f:then>File {selectedFile} in extension {selectedExtension} was converted previously</f:then>
+					<f:then> was converted previously</f:then>
 					<f:else>
 						<f:if condition="{fileConvertedSuccessfully}">
-							<f:then>File {selectedFile} in extension {selectedExtension} was converted successfully</f:then>
-							<f:else>File {selectedFile} in extension {selectedExtension} could be converted automatically</f:else>
+							<f:then>was converted successfully</f:then>
+							<f:else>could be converted automatically</f:else>
 						</f:if>
 
 						<br />
