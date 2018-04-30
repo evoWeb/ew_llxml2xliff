@@ -20,17 +20,11 @@ class FileController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
     }
 
 
-    /**
-     * @return void
-     */
     public function indexAction()
     {
         $this->view->assign('extensions', $this->getLocalExtensions());
     }
 
-    /**
-     * @return void
-     */
     public function showFilesAction()
     {
         $extensions = $this->getLocalExtensions();
@@ -46,9 +40,6 @@ class FileController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
         $this->view->assign('files', $files);
     }
 
-    /**
-     * @return void
-     */
     public function confirmConversionAction()
     {
         $extensions = $this->getLocalExtensions();
@@ -69,9 +60,6 @@ class FileController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
         $this->view->assign('selectedFile', $selectedFile);
     }
 
-    /**
-     * @return void
-     */
     public function convertFileAction()
     {
         $extensions = $this->getLocalExtensions();
@@ -89,20 +77,16 @@ class FileController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
         $extensionPath = ExtensionManagementUtility::extPath($selectedExtension);
         if ($this->xliffFileAlreadyExists($extensionPath, $selectedFile)) {
             $this->view->assign('wasConvertedPreviously', 1);
-        } elseif (strpos($selectedFile, '.xml') !== false) {
-            /** @var \Evoweb\EwLlxml2xliff\Utility\Convert $convertUtility */
-            $convertUtility = $this->objectManager->get(\Evoweb\EwLlxml2xliff\Utility\Convert::class);
-            $messages = $convertUtility->writeXmlAsXlfFilesInPlace($selectedFile, $selectedExtension);
-            if (strpos($messages, 'ERROR') === false) {
-                $this->view->assign('fileConvertedSuccessfuly', 1);
-                $this->view->assign('messages', $messages);
-            }
-            $files = $this->getFilesOfExtension($selectedExtension);
-            $selectedFile = '';
         } else {
             /** @var \Evoweb\EwLlxml2xliff\Utility\Convert $convertUtility */
             $convertUtility = $this->objectManager->get(\Evoweb\EwLlxml2xliff\Utility\Convert::class);
-            $messages = $convertUtility->writePhpAsXlfFilesInPlace($selectedFile, $selectedExtension);
+
+            if (strpos($selectedFile, '.xml') !== false) {
+                $messages = $convertUtility->writeXmlAsXlfFilesInPlace($selectedFile, $selectedExtension);
+            } else {
+                $messages = $convertUtility->writePhpAsXlfFilesInPlace($selectedFile, $selectedExtension);
+            }
+
             if (strpos($messages, 'ERROR') === false) {
                 $this->view->assign('fileConvertedSuccessfuly', 1);
                 $this->view->assign('messages', $messages);

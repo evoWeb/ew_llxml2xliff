@@ -34,8 +34,7 @@ script:
 jobs:
   fast_finish: true
   allow_failures:
-    - env: TYPO3_VERSION="^9.1.0"
-    - env: TYPO3_VERSION="dev-master as 9.2.0"
+    - env: TYPO3_VERSION="dev-master as 9.3.0"
 
 
   include:
@@ -54,20 +53,20 @@ jobs:
       php: 7.0
 
     - stage: test
-      php: 7.2
+      php: 7.0
       env: TYPO3_VERSION=^8.7
     - stage: test
       php: 7.1
       env: TYPO3_VERSION=^8.7
     - stage: test
-      php: 7.0
+      php: 7.2
       env: TYPO3_VERSION=^8.7
     - stage: test
       php: 7.2
-      env: TYPO3_VERSION="^9.1.0"
+      env: TYPO3_VERSION="^9.2.0"
     - stage: test
       php: 7.2
-      env: TYPO3_VERSION="dev-master as 9.2.0"
+      env: TYPO3_VERSION="dev-master as 9.3.0"
 
     - stage: publish in ter
       if: tag IS present

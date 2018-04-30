@@ -1,5 +1,4 @@
 <?php
-
 namespace Evoweb\EwLlxml2xliff\Utility;
 
 /***************************************************************
@@ -151,6 +150,7 @@ class Convert
             $ll = $this->xml2array(file_get_contents($languageFile));
             $languages = isset($ll['data']) ? array_keys($ll['data']) : [];
         } else {
+            /** @noinspection PhpIncludeInspection */
             require($languageFile);
             $languages = isset($LOCAL_LANG) ? array_keys($LOCAL_LANG) : [];
         }
@@ -268,11 +268,12 @@ class Convert
             foreach ($includedLanguages as $langKey) {
                 /** @var $parser \TYPO3\CMS\Core\Localization\Parser\LocallangXmlParser */
                 $parser = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Localization\Parser\LocallangXmlParser::class);
-                $llang = $parser->getParsedData($languageFile, $langKey, $GLOBALS['LANG']->charSet);
+                $llang = $parser->getParsedData($languageFile, $langKey);
                 unset($parser);
                 $LOCAL_LANG[$langKey] = $llang[$langKey];
             }
         } else {
+            /** @noinspection PhpIncludeInspection */
             require($languageFile);
             $includedLanguages = isset($LOCAL_LANG) ? array_keys($LOCAL_LANG) : [];
         }
@@ -281,6 +282,7 @@ class Convert
             throw new \RuntimeException('data section not found in "' . $languageFile . '"', 1314187884);
         }
 
+        /** @noinspection PhpUndefinedVariableInspection */
         return $LOCAL_LANG;
     }
 
