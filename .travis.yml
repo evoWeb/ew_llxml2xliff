@@ -66,7 +66,7 @@ jobs:
       env: TYPO3_VERSION="^9.2.0"
     - stage: test
       php: 7.2
-      env: TYPO3_VERSION="dev-master as 9.2.0"
+      env: TYPO3_VERSION="dev-master as 9.3.0"
 
     - stage: publish in ter
       if: tag IS present
