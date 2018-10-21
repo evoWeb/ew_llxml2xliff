@@ -11,7 +11,7 @@ defined('TYPO3_MODE') || die();
     ],
     [
         'access' => 'user,group',
-        'icon' => 'EXT:lang/Resources/Public/Icons/module-lang.svg',
+        'icon' => 'EXT:ew_llxml2xliff/Resources/Public/Icons/Extension.svg',
         'labels' => 'LLL:EXT:ew_llxml2xliff/Resources/Private/Language/locallang_mod.xlf',
     ]
 );

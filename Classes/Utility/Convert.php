@@ -40,85 +40,88 @@ class Convert
     protected $extension;
 
     /**
-     * Main function.
+     * Function to convert llxml files
      *
      * @param string $xmlFile Absolute path to the selected ll-XML file
      * @param string $extension Extension key to get extension path
      *
      * @return string HTML content
      */
-    public function writeXmlAsXlfFilesInPlace($xmlFile, $extension)
+    public function writeXmlAsXlfFilesInPlace(string $xmlFile, string $extension): string
     {
         $this->extension = $extension;
         $xmlFile = ExtensionManagementUtility::extPath($extension) . $xmlFile;
 
-        if (@is_file($xmlFile)) {
-            $fileCheckResult = $this->checkLanguageFilename($xmlFile);
-            if (empty($fileCheckResult)) {
-                $languages = $this->getAvailableTranslations($xmlFile);
-                $errors = [];
-                foreach ($languages as $langKey) {
-                    $newFileName = dirname($xmlFile) . '/' . $this->localizedFileRef($xmlFile, $langKey);
-                    if (@is_file($newFileName)) {
-                        $errors[] = 'ERROR: Output file "' . $newFileName . '" already exists!';
-                    }
-                }
-                if (empty($errors)) {
-                    $output = '';
-                    foreach ($languages as $langKey) {
-                        $newFileName = dirname($xmlFile) . '/' . $this->localizedFileRef($xmlFile, $langKey);
-                        $output .= $this->writeNewXliffFile($xmlFile, $newFileName, $langKey) . '<br />';
-                    }
-                    return $output;
-                } else {
-                    return implode('<br />', $errors);
-                }
-            } else {
-                return $fileCheckResult;
+        if (!@is_file($xmlFile)) {
+            return 'File ' . $xmlFile . ' does not exists!';
+        }
+
+        $fileCheckResult = $this->checkLanguageFilename($xmlFile);
+        if (!empty($fileCheckResult)) {
+            return $fileCheckResult;
+        }
+
+        $languages = $this->getAvailableTranslations($xmlFile);
+        $errors = [];
+        foreach ($languages as $langKey) {
+            $newFileName = dirname($xmlFile) . '/' . $this->localizedFileRef($xmlFile, $langKey);
+            if (@is_file($newFileName)) {
+                $errors[] = 'ERROR: Output file "' . $newFileName . '" already exists!';
             }
         }
-        return 'File ' . $xmlFile . ' does not exists!';
+
+        if (!empty($errors)) {
+            return implode('<br />', $errors);
+        }
+
+        $output = '';
+        foreach ($languages as $langKey) {
+            $newFileName = dirname($xmlFile) . '/' . $this->localizedFileRef($xmlFile, $langKey);
+            $output .= $this->writeNewXliffFile($xmlFile, $newFileName, $langKey) . '<br />';
+        }
+        return $output;
     }
 
     /**
-     * Main function.
+     * Function to convert php language files
      *
-     * @param string $xmlFile Absolute path to the selected ll-XML file
+     * @param string $phpFile Absolute path to the selected ll-XML file
      * @param string $extension Extension key to get extension path
      *
      * @return string HTML content
      */
-    public function writePhpAsXlfFilesInPlace($xmlFile, $extension)
+    public function writePhpAsXlfFilesInPlace(string $phpFile, string $extension): string
     {
         $this->extension = $extension;
-        $xmlFile = ExtensionManagementUtility::extPath($extension) . $xmlFile;
+        $phpFile = ExtensionManagementUtility::extPath($extension) . $phpFile;
 
-        if (@is_file($xmlFile)) {
-            $fileCheckResult = $this->checkLanguageFilename($xmlFile);
-            if (empty($fileCheckResult)) {
-                $languages = $this->getAvailableTranslations($xmlFile);
-                $errors = [];
-                foreach ($languages as $langKey) {
-                    $newFileName = dirname($xmlFile) . '/' . $this->localizedFileRef($xmlFile, $langKey);
-                    if (@is_file($newFileName)) {
-                        $errors[] = 'ERROR: Output file "' . $newFileName . '" already exists!';
-                    }
-                }
-                if (empty($errors)) {
-                    $output = '';
-                    foreach ($languages as $langKey) {
-                        $newFileName = dirname($xmlFile) . '/' . $this->localizedFileRef($xmlFile, $langKey);
-                        $output .= $this->writeNewXliffFile($xmlFile, $newFileName, $langKey) . '<br />';
-                    }
-                    return $output;
-                } else {
-                    return implode('<br />', $errors);
-                }
-            } else {
-                return $fileCheckResult;
+        if (!@is_file($phpFile)) {
+            return 'File ' . $phpFile . ' does not exists!';
+        }
+
+        $fileCheckResult = $this->checkLanguageFilename($phpFile);
+        if (!empty($fileCheckResult)) {
+            return $fileCheckResult;
+        }
+
+        $languages = $this->getAvailableTranslations($phpFile);
+        $errors = [];
+        foreach ($languages as $langKey) {
+            $newFileName = dirname($phpFile) . '/' . $this->localizedFileRef($phpFile, $langKey);
+            if (@is_file($newFileName)) {
+                $errors[] = 'ERROR: Output file "' . $newFileName . '" already exists!';
             }
         }
-        return 'File ' . $xmlFile . ' does not exists!';
+        if (!empty($errors)) {
+            return implode('<br />', $errors);
+        }
+
+        $output = '';
+        foreach ($languages as $langKey) {
+            $newFileName = dirname($phpFile) . '/' . $this->localizedFileRef($phpFile, $langKey);
+            $output .= $this->writeNewXliffFile($phpFile, $newFileName, $langKey) . '<br />';
+        }
+        return $output;
     }
 
     /**
@@ -128,7 +131,7 @@ class Convert
      *
      * @return string Empty (false) return value means "OK" while otherwise is an error string
      */
-    protected function checkLanguageFilename($xmlFile)
+    protected function checkLanguageFilename(string $xmlFile): string
     {
         $basename = basename($xmlFile);
 
@@ -144,7 +147,7 @@ class Convert
      *
      * @return array
      */
-    protected function getAvailableTranslations($languageFile)
+    protected function getAvailableTranslations(string $languageFile): array
     {
         if (strpos($languageFile, '.xml')) {
             $ll = $this->xml2array(file_get_contents($languageFile));
@@ -170,7 +173,7 @@ class Convert
      *
      * @return string Input filename with a '[lang-key].locallang*.xml' name if $this->lang is not 'default'
      */
-    protected function localizedFileRef($fileRef, $lang)
+    protected function localizedFileRef(string $fileRef, string $lang): string
     {
         $path = '';
         if (substr($fileRef, -4) === '.xml' || substr($fileRef, -4) === '.php') {
@@ -190,7 +193,7 @@ class Convert
      *
      * @return string HTML text string message
      */
-    protected function writeNewXliffFile($xmlFile, $newFileName, $langKey)
+    protected function writeNewXliffFile(string $xmlFile, string $newFileName, string $langKey): string
     {
         $xml = $this->generateFileContent($xmlFile, $langKey);
 
@@ -208,7 +211,7 @@ class Convert
      *
      * @return string
      */
-    protected function generateFileContent($xmlFile, $langKey)
+    protected function generateFileContent(string $xmlFile, string $langKey): string
     {
         // Initialize variables:
         $xml = [];
@@ -258,7 +261,7 @@ class Convert
      *
      * @return array LOCAL_LANG array from ll-XML file (with all possible sub-files for languages included)
      */
-    protected function getLLarray($languageFile)
+    protected function getLLarray(string $languageFile): array
     {
         if (strpos($languageFile, '.xml')) {
             $ll = GeneralUtility::xml2array(file_get_contents($languageFile));
@@ -300,7 +303,7 @@ class Convert
      *
      * @see array2xml(),xml2arrayProcess()
      */
-    protected function xml2array($string, $NSprefix = '', $reportDocTag = false)
+    protected function xml2array(string $string, string $NSprefix = '', bool $reportDocTag = false)
     {
         return GeneralUtility::xml2array($string, $NSprefix, $reportDocTag);
     }
