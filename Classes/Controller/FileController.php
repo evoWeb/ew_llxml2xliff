@@ -102,36 +102,34 @@ class FileController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
     }
 
 
-    /**
-     * @return array
-     */
-    protected function getLocalExtensions()
+    protected function getLocalExtensions(): array
     {
-        $extensions = array_filter($this->listUtility->getAvailableExtensions(), function ($extension) {
-            return $extension['type'] == 'Local';
-        });
+        $availableExtensions = $this->listUtility->getAvailableExtensions();
+        $extensions = array_filter($availableExtensions, function ($extension, $key) {
+            return $extension['type'] == 'Local' && ExtensionManagementUtility::isLoaded($key);
+        }, ARRAY_FILTER_USE_BOTH);
         ksort($extensions);
         array_unshift($extensions, ['key' => 'Please select']);
         return $extensions;
     }
 
     /**
-     * Generates a selector box with file names of the currently selected extension
+     * Gather files that need to be converted
      *
      * @param string $extensionKey List of file extensions to select
      *
      * @return array
      */
-    protected function getFilesOfExtension($extensionKey)
+    protected function getFilesOfExtension(string $extensionKey): array
     {
         $extensionPath = ExtensionManagementUtility::extPath($extensionKey);
 
         $xmlFiles = GeneralUtility::removePrefixPathFromList(
-            GeneralUtility::getAllFilesAndFoldersInPath(array(), $extensionPath, 'xml', 0),
+            GeneralUtility::getAllFilesAndFoldersInPath([], $extensionPath, 'xml', 0),
             $extensionPath
         );
         $phpFiles = GeneralUtility::removePrefixPathFromList(
-            GeneralUtility::getAllFilesAndFoldersInPath(array(), $extensionPath, 'php', 0),
+            GeneralUtility::getAllFilesAndFoldersInPath([], $extensionPath, 'php', 0),
             $extensionPath
         );
 
@@ -169,23 +167,12 @@ class FileController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
         return $result;
     }
 
-    /**
-     * @param string $filePath
-     *
-     * @return bool
-     */
-    protected function isLanguageFile($filePath)
+    protected function isLanguageFile(string $filePath): bool
     {
         return strpos($filePath, 'locallang') !== false;
     }
 
-    /**
-     * @param string $extensionPath
-     * @param string $filePath
-     *
-     * @return bool
-     */
-    protected function xliffFileAlreadyExists($extensionPath, $filePath)
+    protected function xliffFileAlreadyExists(string $extensionPath, string $filePath): bool
     {
         $xliffFileName = preg_replace('#\.(xml|php)$#', '.xlf', $extensionPath . $filePath);
 

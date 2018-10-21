@@ -1,6 +1,11 @@
 language: php
 
-sudo: required
+sudo: false
+
+addons:
+  apt:
+    packages:
+    - libxml2-utils
 
 branches:
   only:
@@ -16,31 +21,34 @@ notifications:
   email:
     - typo3@evoweb.de
 
+install:
+  - >
+    export TYPO3_PATH_WEB=$PWD/.Build/Web;
+    composer require typo3/minimal="$TYPO3_VERSION" $PREFER_LOWEST;
+    composer require --dev typo3/testing-framework="$TESTING_FRAMEWORK";
+    git checkout composer.json;
+
 before_script:
   - phpenv config-rm xdebug.ini
 
-install:
-  - export TYPO3_PATH_WEB=$PWD/.Build/Web
-  - export COMPOSER_ROOT_VERSION=5.0.3
-  - |
-    composer require \
-      typo3/minimal="$TYPO3_VERSION" \
-      $PREFER_LOWEST
-  - git checkout composer.json
-
 script:
-  - echo "no phpunit testing for now"
+  - >
+    echo "Running functional tests -- not implemented jet";
+    #export typo3DatabaseName="typo3";
+    #export typo3DatabaseHost="localhost";
+    #export typo3DatabaseUsername="root";
+    #export typo3DatabasePassword="";
+    #php .Build/bin/phpunit --colors -c .Build/Web/vendor/typo3/testing-framework/Resources/Core/Build/FunctionalTests.xml Tests/Functional/;
 
 jobs:
   fast_finish: true
   allow_failures:
-    - env: TYPO3_VERSION="dev-master as 9.3.0"
-
+    - env: TYPO3_VERSION="dev-master as 9.5.98"
 
   include:
     - &lint
       stage: test
-      php: 7.2
+      php: 7.3
       env: PHP Lint
       before_install: skip
       install: skip
@@ -48,6 +56,8 @@ jobs:
       script:
         - errors=$(find . -name \*.php ! -path "./.Build/*" -exec php -d display_errors=stderr -l {} 2>&1 >/dev/null \;) && echo "$errors" && test -z "$errors"
     - <<: *lint
+      php: 7.2
+    - <<: *lint
       php: 7.1
     - <<: *lint
       php: 7.0
@@ -63,10 +73,14 @@ jobs:
       env: TYPO3_VERSION=^8.7
     - stage: test
       php: 7.2
-      env: TYPO3_VERSION="^9.2.0"
+      env: TYPO3_VERSION=^9.5
+    - stage: test
+      php: 7.3
+      env: TYPO3_VERSION=^9.5
+      before_script: skip
     - stage: test
       php: 7.2
-      env: TYPO3_VERSION="dev-master as 9.3.0"
+      env: TYPO3_VERSION="dev-master as 9.5.98"
 
     - stage: publish in ter
       if: tag IS present

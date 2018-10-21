@@ -20,21 +20,28 @@
 		</div>
 	</f:form>
 
-	<f:form action="confirmConversion">
-		<f:form.hidden name="extension" value="{selectedExtension}"/>
-		<div class="form-group">
-			<div class="form-section">
-				<div class="form-group">
-					<label for="file"><f:translate id="file"/></label>
-					<div class="form-control-wrap">
-						<div class="input-group">
-							<f:render partial="SelectFile" arguments="{_all}"/>
+	<div class="form-group">
+		<f:form action="confirmConversion">
+			<f:form.hidden name="extension" value="{selectedExtension}"/>
+				<div class="form-section">
+					<div class="form-group">
+						<label for="file"><f:translate id="file"/></label>
+						<div class="form-control-wrap">
+							<f:if condition="{files}">
+								<f:then>
+									<div class="input-group">
+										<f:render partial="SelectFile" arguments="{_all}"/>
+									</div>
+								</f:then>
+								<f:else>
+									<f:translate id="noFilesToConvert"/>
+								</f:else>
+							</f:if>
 						</div>
 					</div>
-				</div>
 			</div>
-		</div>
-	</f:form>
+		</f:form>
+	</div>
 
 </f:section>
 
