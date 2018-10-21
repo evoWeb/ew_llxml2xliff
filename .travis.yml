@@ -77,6 +77,7 @@ jobs:
     - stage: test
       php: 7.3
       env: TYPO3_VERSION=^9.5
+      before_script: skip
     - stage: test
       php: 7.2
       env: TYPO3_VERSION="dev-master as 9.5.98"
