@@ -25,7 +25,7 @@ install:
   - >
     export TYPO3_PATH_WEB=$PWD/.Build/Web;
     composer require typo3/minimal="$TYPO3_VERSION" $PREFER_LOWEST;
-    composer require --dev typo3/testing-framework="$TESTING_FRAMEWORK";
+    # composer require --dev typo3/testing-framework="$TESTING_FRAMEWORK";
     git checkout composer.json;
 
 before_script:
@@ -43,18 +43,20 @@ script:
 jobs:
   fast_finish: true
   allow_failures:
-    - env: TYPO3_VERSION="dev-master as 9.5.98"
+    - env:
+        - TYPO3_VERSION="dev-master as 10.0.0"
 
   include:
     - &lint
       stage: test
       php: 7.3
-      env: PHP Lint
+      env: TASK="PHP Lint"
       before_install: skip
       install: skip
       before_script: skip
       script:
-        - errors=$(find . -name \*.php ! -path "./.Build/*" -exec php -d display_errors=stderr -l {} 2>&1 >/dev/null \;) && echo "$errors" && test -z "$errors"
+        - echo "Running php lint";
+          errors=$(find . -name \*.php ! -path "./.Build/*" -exec php -d display_errors=stderr -l {} 2>&1 >/dev/null \;) && echo "$errors" && test -z "$errors"
     - <<: *lint
       php: 7.2
     - <<: *lint
@@ -64,27 +66,32 @@ jobs:
 
     - stage: test
       php: 7.0
-      env: TYPO3_VERSION=^8.7
+      env:
+        - TYPO3_VERSION=^8.7
     - stage: test
       php: 7.1
-      env: TYPO3_VERSION=^8.7
+      env:
+        - TYPO3_VERSION=^8.7
     - stage: test
       php: 7.2
-      env: TYPO3_VERSION=^8.7
+      env:
+        - TYPO3_VERSION=^8.7
     - stage: test
       php: 7.2
-      env: TYPO3_VERSION=^9.5
+      env:
+        - TYPO3_VERSION=^9.5
     - stage: test
       php: 7.3
-      env: TYPO3_VERSION=^9.5
-      before_script: skip
+      env:
+        - TYPO3_VERSION=^9.5
     - stage: test
       php: 7.2
-      env: TYPO3_VERSION="dev-master as 9.5.98"
+      env:
+        - TYPO3_VERSION="dev-master as 10.0.0"
 
     - stage: publish in ter
       if: tag IS present
-      php: 7.0
+      php: 7.1
       before_install: skip
       install: skip
       before_script: skip
