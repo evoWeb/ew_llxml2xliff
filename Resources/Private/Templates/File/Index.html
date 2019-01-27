@@ -6,20 +6,15 @@
 	<h1><f:translate id="header.conversion"/></h1>
 
 	<f:form action="showFiles">
-		<div class="form-group">
-			<div class="form-section">
-				<div class="form-group">
-					<label for="extension"><f:translate id="extension"/></label>
-					<div class="form-control-wrap">
-						<div class="input-group">
-							<f:render partial="SelectExtension" arguments="{_all}"/>
-						</div>
-					</div>
+		<div class="form-section form-group">
+			<label for="extension"><f:translate id="extension"/></label>
+			<div class="form-control-wrap">
+				<div class="input-group">
+					<f:render partial="SelectExtension" arguments="{_all}"/>
 				</div>
 			</div>
 		</div>
 	</f:form>
-
 </f:section>
 
 </html>

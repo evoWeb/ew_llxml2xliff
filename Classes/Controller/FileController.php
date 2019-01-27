@@ -22,16 +22,20 @@ class FileController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
 
     public function indexAction()
     {
-        $this->view->assign('extensions', $this->getLocalExtensions());
+        $extensions = $this->getLocalExtensions();
+        $extensionsWithFileToConvert = [];
+        foreach ($extensions as $extension) {
+            if (isset($extension['type']) && $this->getFilesOfExtension($extension['key'])) {
+                $extensionsWithFileToConvert[] = $extension;
+            }
+        }
+        $this->view->assign('extensions', $extensionsWithFileToConvert);
     }
 
     public function showFilesAction()
     {
         $extensions = $this->getLocalExtensions();
-        $selectedExtension = $this->request->hasArgument('extension') ? $this->request->getArgument('extension') : '';
-        if (empty($selectedExtension) || !isset($extensions[$selectedExtension])) {
-            $this->forward('index');
-        }
+        $selectedExtension = $this->isArgumentSetAndAvailable($extensions, 'extension', 'index');
 
         $files = $this->getFilesOfExtension($selectedExtension);
 
@@ -43,16 +47,10 @@ class FileController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
     public function confirmConversionAction()
     {
         $extensions = $this->getLocalExtensions();
-        $selectedExtension = $this->request->hasArgument('extension') ? $this->request->getArgument('extension') : '';
-        if (empty($selectedExtension) || !isset($extensions[$selectedExtension])) {
-            $this->forward('index');
-        }
+        $selectedExtension = $this->isArgumentSetAndAvailable($extensions, 'extension', 'index');
 
         $files = $this->getFilesOfExtension($selectedExtension);
-        $selectedFile = $this->request->hasArgument('file') ? $this->request->getArgument('file') : '';
-        if (empty($selectedFile) || !isset($files[$selectedFile])) {
-            $this->forward('showFiles');
-        }
+        $selectedFile = $this->isArgumentSetAndAvailable($files, 'file', 'showFiles');
 
         $this->view->assign('extensions', $extensions);
         $this->view->assign('selectedExtension', $selectedExtension);
@@ -63,16 +61,10 @@ class FileController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
     public function convertFileAction()
     {
         $extensions = $this->getLocalExtensions();
-        $selectedExtension = $this->request->hasArgument('extension') ? $this->request->getArgument('extension') : '';
-        if (empty($selectedExtension) || !isset($extensions[$selectedExtension])) {
-            $this->forward('index');
-        }
+        $selectedExtension = $this->isArgumentSetAndAvailable($extensions, 'extension', 'index');
 
         $files = $this->getFilesOfExtension($selectedExtension);
-        $selectedFile = $this->request->hasArgument('file') ? $this->request->getArgument('file') : '';
-        if (empty($selectedFile) || !isset($files[$selectedFile])) {
-            $this->forward('showFiles');
-        }
+        $selectedFile = $this->isArgumentSetAndAvailable($files, 'file', 'showFiles');
 
         $extensionPath = ExtensionManagementUtility::extPath($selectedExtension);
         if ($this->xliffFileAlreadyExists($extensionPath, $selectedFile)) {
@@ -91,14 +83,14 @@ class FileController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
                 $this->view->assign('fileConvertedSuccessfully', 1);
                 $this->view->assign('messages', $messages);
             }
-            $files = $this->getFilesOfExtension($selectedExtension);
-            $selectedFile = '';
+            unset($files[$selectedFile]);
         }
 
         $this->view->assign('extensions', $extensions);
         $this->view->assign('selectedExtension', $selectedExtension);
         $this->view->assign('files', $files);
-        $this->view->assign('selectedFile', $selectedFile);
+        $this->view->assign('selectedFile', '');
+        $this->view->assign('convertedFile', $selectedFile);
     }
 
 
@@ -109,7 +101,6 @@ class FileController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
             return $extension['type'] == 'Local' && ExtensionManagementUtility::isLoaded($key);
         }, ARRAY_FILTER_USE_BOTH);
         ksort($extensions);
-        array_unshift($extensions, ['key' => 'Please select']);
         return $extensions;
     }
 
@@ -133,35 +124,26 @@ class FileController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
             $extensionPath
         );
 
-        if ((!is_array($xmlFiles) || empty($xmlFiles)) && (!is_array($phpFiles) || empty($phpFiles))) {
-            $result = ['filename' =>  'No files to convert found in extension: "' . $extensionKey . '"'];
-        } else {
-            $result = [];
+        $result = [];
 
-            if (is_array($xmlFiles)) {
-                foreach ($xmlFiles as $file) {
-                    if ($this->isLanguageFile($file)
-                        && !$this->xliffFileAlreadyExists($extensionPath, $file)
-                    ) {
-                        $result[$file] = ['filename' => $file];
-                    }
+        if (is_array($xmlFiles)) {
+            foreach ($xmlFiles as $file) {
+                if ($this->isLanguageFile($file) && !$this->xliffFileAlreadyExists($extensionPath, $file)) {
+                    $result[$file] = ['filename' => $file];
                 }
             }
+        }
 
-            if (is_array($phpFiles)) {
-                foreach ($phpFiles as $file) {
-                    if ($this->isLanguageFile($file)
-                        && !$this->xliffFileAlreadyExists($extensionPath, $file)
-                    ) {
-                        $result[$file] = ['filename' => $file];
-                    }
+        if (is_array($phpFiles)) {
+            foreach ($phpFiles as $file) {
+                if ($this->isLanguageFile($file) && !$this->xliffFileAlreadyExists($extensionPath, $file)) {
+                    $result[$file] = ['filename' => $file];
                 }
             }
+        }
 
-            if (!empty($result)) {
-                ksort($result);
-                array_unshift($result, ['filename' => 'Please select']);
-            }
+        if (!empty($result)) {
+            ksort($result);
         }
 
         return $result;
@@ -177,5 +159,14 @@ class FileController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
         $xliffFileName = preg_replace('#\.(xml|php)$#', '.xlf', $extensionPath . $filePath);
 
         return (bool) file_exists($xliffFileName);
+    }
+
+    protected function isArgumentSetAndAvailable(array $values, string $key, string $action): string
+    {
+        $value = $this->request->hasArgument($key) ? $this->request->getArgument($key) : '';
+        if (empty($values) || !isset($values[$value])) {
+            $this->forward($action);
+        }
+        return $value;
     }
 }

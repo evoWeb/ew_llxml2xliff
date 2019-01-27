@@ -5,7 +5,7 @@ defined('TYPO3_MODE') || die();
     'Evoweb.EwLlxml2xliff',
     'tools',
     'llxmlconverter',
-    'after:lang',
+    'after:extensionmanager',
     [
         'File' => 'index, showFiles, convertFile, confirmConversion',
     ],

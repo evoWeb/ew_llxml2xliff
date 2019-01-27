@@ -6,15 +6,11 @@
 	<h1><f:translate id="header.conversion"/></h1>
 
 	<f:form action="showFiles">
-		<div class="form-group">
-			<div class="form-section">
-				<div class="form-group">
-					<label for="extension"><f:translate id="extension"/></label>
-					<div class="form-control-wrap">
-						<div class="input-group">
-							<f:render partial="SelectExtension" arguments="{_all}"/>
-						</div>
-					</div>
+		<div class="form-section form-group">
+			<label for="extension"><f:translate id="extension"/></label>
+			<div class="form-control-wrap">
+				<div class="input-group">
+					<f:render partial="SelectExtension" arguments="{_all}"/>
 				</div>
 			</div>
 		</div>
@@ -22,37 +18,31 @@
 
 	<f:form action="confirmConversion">
 		<f:form.hidden name="extension" value="{selectedExtension}"/>
-		<div class="form-group">
-			<div class="form-section">
-				<div class="form-group">
-					<label for="file"><f:translate id="file"/></label>
-					<div class="form-control-wrap">
-						<div class="input-group">
-							<f:render partial="SelectFile" arguments="{_all}"/>
-						</div>
-					</div>
+		<div class="form-section form-group">
+			<label for="file"><f:translate id="file"/></label>
+			<div class="form-control-wrap">
+				<div class="input-group">
+					<f:render partial="SelectFile" arguments="{_all}"/>
 				</div>
 			</div>
 		</div>
 	</f:form>
 
-	<div class="form-group">
-		<div class="form-section">
-			<div class="form-group">
-				File {selectedFile} in extension {selectedExtension}
-				<f:if condition="{wasConvertedPreviously}">
-					<f:then> was converted previously</f:then>
-					<f:else>
-						<f:if condition="{fileConvertedSuccessfully}">
-							<f:then>was converted successfully</f:then>
-							<f:else>could be converted automatically</f:else>
-						</f:if>
-
-						<br />
-						<f:format.raw>{messages}</f:format.raw>
-					</f:else>
-				</f:if>
-			</div>
+	<div class="form-section form-group">
+		<div class="form-control-wrap" style="margin-top: 0;">
+			<f:translate id="processedFile" arguments="{0: convertedFile, 1: selectedExtension}"/>
+			<f:if condition="{wasConvertedPreviously}">
+				<f:then><f:translate id="wasConvertedPreviously"/></f:then>
+				<f:else>
+					<f:if condition="{fileConvertedSuccessfully}">
+						<f:then><f:translate id="fileConvertedSuccessfully.yes"/></f:then>
+						<f:else><f:translate id="fileConvertedSuccessfully.no"/></f:else>
+					</f:if>
+					<br />
+					<br />
+					<f:format.raw>{messages}</f:format.raw>
+				</f:else>
+			</f:if>
 		</div>
 	</div>
 </f:section>

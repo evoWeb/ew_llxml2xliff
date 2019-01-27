@@ -6,15 +6,11 @@
 	<h1><f:translate id="header.conversion"/></h1>
 
 	<f:form action="showFiles">
-		<div class="form-group">
-			<div class="form-section">
-				<div class="form-group">
-					<label for="extension"><f:translate id="extension"/></label>
-					<div class="form-control-wrap">
-						<div class="input-group">
-							<f:render partial="SelectExtension" arguments="{_all}"/>
-						</div>
-					</div>
+		<div class="form-section form-group">
+			<label for="extension"><f:translate id="extension"/></label>
+			<div class="form-control-wrap">
+				<div class="input-group">
+					<f:render partial="SelectExtension" arguments="{_all}"/>
 				</div>
 			</div>
 		</div>
@@ -22,15 +18,11 @@
 
 	<f:form action="confirmConversion">
 		<f:form.hidden name="extension" value="{selectedExtension}"/>
-		<div class="form-group">
-			<div class="form-section">
-				<div class="form-group">
-					<label for="file"><f:translate id="file"/></label>
-					<div class="form-control-wrap">
-						<div class="input-group">
-							<f:render partial="SelectFile" arguments="{_all}"/>
-						</div>
-					</div>
+		<div class="form-section form-group">
+			<label for="file"><f:translate id="file"/></label>
+			<div class="form-control-wrap">
+				<div class="input-group">
+					<f:render partial="SelectFile" arguments="{_all}"/>
 				</div>
 			</div>
 		</div>
@@ -39,17 +31,14 @@
 	<f:form action="convertFile">
 		<f:form.hidden name="extension" value="{selectedExtension}"/>
 		<f:form.hidden name="file" value="{selectedFile}"/>
-		<div class="form-group">
-			<div class="form-section">
-				<div class="form-group">
-					<span class="input-group-btn">
-						<f:form.submit class="btn btn-default" value="Convert selected File"/>
-					</span>
-				</div>
+		<div class="form-section form-group">
+			<div class="form-control-wrap" style="margin-top: 0;">
+				<span class="input-group-btn">
+					<f:form.submit class="btn btn-default" value="Convert selected File"/>
+				</span>
 			</div>
 		</div>
 	</f:form>
-
 </f:section>
 
 </html>

@@ -37,7 +37,7 @@ class Convert
     /**
      * @var string
      */
-    protected $extension;
+    protected $extension = '';
 
     /**
      * Function to convert llxml files
@@ -197,12 +197,13 @@ class Convert
     {
         $xml = $this->generateFileContent($xmlFile, $langKey);
 
+        $result = '';
         if (!file_exists($newFileName)) {
             GeneralUtility::writeFile($newFileName, $xml);
 
-            return $newFileName;
+            $result = $newFileName;
         }
-        return '';
+        return $result;
     }
 
     /**
@@ -215,10 +216,10 @@ class Convert
     {
         // Initialize variables:
         $xml = [];
-        $LOCAL_LANG = $this->getLLarray($xmlFile);
+        $LOCAL_LANG = $this->getCombinedTranslationFileContent($xmlFile);
 
         $xml[] = '<?xml version="1.0" encoding="utf-8" standalone="yes" ?>';
-        $xml[] = '<xliff version="1.0">';
+        $xml[] = '<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">';
         $xml[] = '	<file source-language="en"'
             . ($langKey !== 'default' ? ' target-language="' . $langKey . '"' : '')
             . ' datatype="plaintext" original="messages" date="'
@@ -255,13 +256,13 @@ class Convert
     }
 
     /**
-     * Includes locallang files and returns raw $LOCAL_LANG array
+     * Reads/Requires locallang files and returns raw $LOCAL_LANG array
      *
      * @param string $languageFile Absolute reference to the ll-XML locallang file.
      *
      * @return array LOCAL_LANG array from ll-XML file (with all possible sub-files for languages included)
      */
-    protected function getLLarray(string $languageFile): array
+    protected function getCombinedTranslationFileContent(string $languageFile): array
     {
         if (strpos($languageFile, '.xml')) {
             $ll = GeneralUtility::xml2array(file_get_contents($languageFile));

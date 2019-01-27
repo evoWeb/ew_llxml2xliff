@@ -1,10 +1,14 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<xliff version="1.0" xmlns:t3="http://typo3.org/schemas/xliff">
-	<file t3:id="1415815009" source-language="en" datatype="plaintext" original="messages" date="2018-10-21T21:13:12Z" product-name="ew_llxml2xliff">
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+	<file source-language="en" datatype="plaintext" original="messages" date="2018-10-21T21:13:12Z" product-name="ew_llxml2xliff">
 		<header/>
 		<body>
 			<trans-unit id="header.conversion">
 				<source>Convert llxml file to xliff</source>
+			</trans-unit>
+
+			<trans-unit id="please.select">
+				<source>Please select</source>
 			</trans-unit>
 
 			<trans-unit id="extension">
@@ -16,7 +20,23 @@
 			</trans-unit>
 
 			<trans-unit id="noFilesToConvert">
-				<source>No files to convert</source>
+				<source>No files to convert found in extension: "%1$s"</source>
+			</trans-unit>
+
+			<trans-unit id="processedFile">
+				<source>File "%1$s" in extension "%2$s"</source>
+			</trans-unit>
+
+			<trans-unit id="wasConvertedPreviously">
+				<source>was converted previously</source>
+			</trans-unit>
+
+			<trans-unit id="fileConvertedSuccessfully.yes">
+				<source>was converted successfully</source>
+			</trans-unit>
+
+			<trans-unit id="fileConvertedSuccessfully.no">
+				<source>couldn't be converted automatically</source>
 			</trans-unit>
 		</body>
 	</file>
