@@ -2,12 +2,12 @@
 defined('TYPO3_MODE') || die();
 
 \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerModule(
-    'Evoweb.EwLlxml2xliff',
+    'EwLlxml2xliff',
     'tools',
     'llxmlconverter',
     'after:extensionmanager',
     [
-        'File' => 'index, showFiles, convertFile, confirmConversion',
+        \Evoweb\EwLlxml2xliff\Controller\FileController::class => 'index, showFiles, convertFile, confirmConversion',
     ],
     [
         'access' => 'user,group',

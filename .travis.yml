@@ -59,31 +59,15 @@ jobs:
           errors=$(find . -name \*.php ! -path "./.Build/*" -exec php -d display_errors=stderr -l {} 2>&1 >/dev/null \;) && echo "$errors" && test -z "$errors"
     - <<: *lint
       php: 7.2
-    - <<: *lint
-      php: 7.1
-    - <<: *lint
-      php: 7.0
 
-    - stage: test
-      php: 7.0
-      env:
-        - TYPO3_VERSION=^8.7
-    - stage: test
-      php: 7.1
-      env:
-        - TYPO3_VERSION=^8.7
-    - stage: test
-      php: 7.2
-      env:
-        - TYPO3_VERSION=^8.7
-    - stage: test
-      php: 7.2
-      env:
-        - TYPO3_VERSION=^9.5
     - stage: test
       php: 7.3
       env:
-        - TYPO3_VERSION=^9.5
+        - TYPO3_VERSION=^10.0
+    - stage: test
+      php: 7.2
+      env:
+        - TYPO3_VERSION=^10.0
     - stage: test
       php: 7.2
       env:
@@ -101,7 +85,7 @@ jobs:
             echo -e "Preparing upload of release ${TRAVIS_TAG} to TER\n";
 
             # Install requirements
-            composer require --dev helhum/ter-client dev-master
+            composer global require helhum/ter-client dev-master
 
             # Cleanup before we upload
             git reset --hard HEAD && git clean -fx
@@ -112,5 +96,5 @@ jobs:
             # Upload
             TAG_MESSAGE=`git tag -n10 -l $TRAVIS_TAG | sed 's/^[0-9.]*[ ]*//g'`
             echo "Uploading release ${TRAVIS_TAG} to TER"
-            .Build/bin/ter-client upload ew_llxml2xliff . -u "$TYPO3_ORG_USERNAME" -p "$TYPO3_ORG_PASSWORD" -m "$TAG_MESSAGE"
+            $HOME/.composer/vendor/bin/ter-client upload ew_llxml2xliff . -u "$TYPO3_ORG_USERNAME" -p "$TYPO3_ORG_PASSWORD" -m "$TAG_MESSAGE"
           fi;
