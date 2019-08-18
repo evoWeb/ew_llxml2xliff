@@ -59,31 +59,15 @@ jobs:
           errors=$(find . -name \*.php ! -path "./.Build/*" -exec php -d display_errors=stderr -l {} 2>&1 >/dev/null \;) && echo "$errors" && test -z "$errors"
     - <<: *lint
       php: 7.2
-    - <<: *lint
-      php: 7.1
-    - <<: *lint
-      php: 7.0
 
-    - stage: test
-      php: 7.0
-      env:
-        - TYPO3_VERSION=^8.7
-    - stage: test
-      php: 7.1
-      env:
-        - TYPO3_VERSION=^8.7
-    - stage: test
-      php: 7.2
-      env:
-        - TYPO3_VERSION=^8.7
-    - stage: test
-      php: 7.2
-      env:
-        - TYPO3_VERSION=^9.5
     - stage: test
       php: 7.3
       env:
-        - TYPO3_VERSION=^9.5
+        - TYPO3_VERSION=^10.0
+    - stage: test
+      php: 7.2
+      env:
+        - TYPO3_VERSION=^10.0
     - stage: test
       php: 7.2
       env:
