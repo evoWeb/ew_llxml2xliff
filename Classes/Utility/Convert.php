@@ -1,7 +1,8 @@
 <?php
+
 namespace Evoweb\EwLlxml2xliff\Utility;
 
-/***************************************************************
+/*
  *  Copyright notice
  *
  *  (c) 2011 Xavier Perseguers <xavier@typo3.org>
@@ -22,7 +23,7 @@ namespace Evoweb\EwLlxml2xliff\Utility;
  *  GNU General Public License for more details.
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
- ***************************************************************/
+ */
 
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -270,11 +271,13 @@ class Convert
 
             $LOCAL_LANG = [];
             foreach ($includedLanguages as $langKey) {
-                /** @var $parser \TYPO3\CMS\Core\Localization\Parser\LocallangXmlParser */
-                $parser = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Localization\Parser\LocallangXmlParser::class);
-                $llang = $parser->getParsedData($languageFile, $langKey);
+                /** @var $parser \Evoweb\EwLlxml2xliff\Localization\Parser\LocallangXmlParser */
+                $parser = GeneralUtility::makeInstance(
+                    \Evoweb\EwLlxml2xliff\Localization\Parser\LocallangXmlParser::class
+                );
+                $localLangContent = $parser->getParsedData($languageFile, $langKey);
                 unset($parser);
-                $LOCAL_LANG[$langKey] = $llang[$langKey];
+                $LOCAL_LANG[$langKey] = $localLangContent[$langKey];
             }
         } else {
             /** @noinspection PhpIncludeInspection */

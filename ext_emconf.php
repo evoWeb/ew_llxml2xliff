@@ -9,11 +9,11 @@ $EM_CONF['ew_llxml2xliff'] = [
     'author_email' => 'typo3@evoweb.de',
     'author_company' => 'evoWeb',
     'state' => 'stable',
-    'version' => '3.0.1',
+    'version' => '3.0.2',
     'constraints' => [
         'depends' => [
-            'php' => '5.5.0-0.0.0',
-            'typo3' => '10.0.0-10.99.99',
+            'php' => '7.2.0-0.0.0',
+            'typo3' => '10.0.0-10.4.99',
         ],
         'conflicts' => [],
         'suggests' => [],

@@ -1,24 +1,31 @@
 <?php
+
 namespace Evoweb\EwLlxml2xliff\Controller;
 
+use Evoweb\EwLlxml2xliff\Utility\Convert as Convert;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extensionmanager\Utility\ListUtility as ListUtility;
 
 class FileController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
 {
     /**
-     * @var \TYPO3\CMS\Extensionmanager\Utility\ListUtility
+     * @var ListUtility
      */
     protected $listUtility;
 
     /**
-     * @param \TYPO3\CMS\Extensionmanager\Utility\ListUtility $listUtility
+     * @var Convert
      */
-    public function injectListUtility(\TYPO3\CMS\Extensionmanager\Utility\ListUtility $listUtility)
-    {
-        $this->listUtility = $listUtility;
-    }
+    protected $convertUtility;
 
+    public function __construct(
+        ListUtility $listUtility,
+        Convert $convertUtility
+    ) {
+        $this->listUtility = $listUtility;
+        $this->convertUtility = $convertUtility;
+    }
 
     public function indexAction()
     {
@@ -70,13 +77,10 @@ class FileController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
         if ($this->xliffFileAlreadyExists($extensionPath, $selectedFile)) {
             $this->view->assign('wasConvertedPreviously', 1);
         } else {
-            /** @var \Evoweb\EwLlxml2xliff\Utility\Convert $convertUtility */
-            $convertUtility = $this->objectManager->get(\Evoweb\EwLlxml2xliff\Utility\Convert::class);
-
             if (strpos($selectedFile, '.xml') !== false) {
-                $messages = $convertUtility->writeXmlAsXlfFilesInPlace($selectedFile, $selectedExtension);
+                $messages = $this->convertUtility->writeXmlAsXlfFilesInPlace($selectedFile, $selectedExtension);
             } else {
-                $messages = $convertUtility->writePhpAsXlfFilesInPlace($selectedFile, $selectedExtension);
+                $messages = $this->convertUtility->writePhpAsXlfFilesInPlace($selectedFile, $selectedExtension);
             }
 
             if (strpos($messages, 'ERROR') === false) {
@@ -93,11 +97,12 @@ class FileController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
         $this->view->assign('convertedFile', $selectedFile);
     }
 
-
     protected function getLocalExtensions(): array
     {
         $availableExtensions = $this->listUtility->getAvailableExtensions();
         $extensions = array_filter($availableExtensions, function ($extension, $key) {
+            /** @var array $extension */
+            /** @var string $key */
             return $extension['type'] == 'Local' && ExtensionManagementUtility::isLoaded($key);
         }, ARRAY_FILTER_USE_BOTH);
         ksort($extensions);
@@ -107,7 +112,7 @@ class FileController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
     /**
      * Gather files that need to be converted
      *
-     * @param string $extensionKey List of file extensions to select
+     * @param string $extensionKey Extension for which to get list of files of
      *
      * @return array
      */
