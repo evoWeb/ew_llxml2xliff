@@ -2,7 +2,7 @@
 	"name": "evoweb/ew-llxml2xliff",
 	"type": "typo3-cms-extension",
 	"description": "Provides a backend module to convert locallang.xml and locallang.php files to xliff. For every language, contained in the source file, an extra file gets created.",
-	"homepage": "https://github.com/evoWeb/ew_llxml2xliff/",
+	"homepage": "http://www.evoweb.de/",
 
 	"license": "GPL-2.0-or-later",
 
