@@ -7,7 +7,8 @@
 	"license": "GPL-2.0-or-later",
 
 	"support" : {
-		"issues" : "https://github.com/evoWeb/ew_llxml2xliff/issues"
+		"docs": "https://docs.typo3.org/p/evoweb/ew-llxml2xliff/master/en-us/",
+		"issues": "https://github.com/evoWeb/ew_llxml2xliff/issues"
 	},
 
 	"keywords": [
@@ -17,7 +18,13 @@
 	],
 
 	"require": {
+		"ext-simplexml": "*",
+		"ext-libxml": "*",
+
 		"typo3/cms-core": "^10.0",
+		"typo3/cms-extbase": "^10.0",
+		"typo3/cms-extensionmanager": "^10.0",
+
 		"maennchen/zipstream-php": "^0.4.1"
 	},
 
@@ -28,13 +35,13 @@
 	},
 
 	"config": {
-		"vendor-dir": ".Build/Web/vendor",
-		"bin-dir": ".Build/bin"
+		"vendor-dir": ".Build/Web/vendor"
 	},
 	"extra": {
 		"typo3/cms": {
 			"cms-package-dir": "{$vendor-dir}/typo3/cms",
 			"web-dir": ".Build/Web"
-		}
+		},
+		"extension-key": "ew_llxml2xliff"
 	}
 }
