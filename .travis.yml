@@ -54,7 +54,7 @@ jobs:
       before_script: skip
       script:
         - echo "Running xmllint (Xliff)";
-          find Resources/Private/Language/ -name '*.xlf' -type f | xargs xmllint --noout --schema Tests/Fixtures/xliff-core-1.2-strict.xsd
+          find Resources/Private/Language/ -name '*.xlf' -type f | xargs xmllint --noout --schema .Build/xliff-core-1.2-strict.xsd
 
     - &lint
       stage: test
