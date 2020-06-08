@@ -7,7 +7,7 @@
 
 ### via Composer
 
-The recommended way to install TYPO3 Console is by using [Composer](https://getcomposer.org):
+The recommended way to install the extension is by using [Composer](https://getcomposer.org):
 
     composer require evoweb/ew-llxml2xliff
 
