@@ -35,37 +35,37 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class Convert
 {
-    /**
-     * @var string
-     */
-    protected $extension = '';
+    protected string $extension = '';
+
+    public function setExtension(string $extension)
+    {
+        $this->extension = $extension;
+    }
 
     /**
      * Function to convert llxml files
      *
-     * @param string $xmlFile Absolute path to the selected ll-XML file
-     * @param string $extension Extension key to get extension path
+     * @param string $sourceFile Absolute path to the selected ll-XML file
      *
      * @return string HTML content
      */
-    public function writeXmlAsXlfFilesInPlace(string $xmlFile, string $extension): string
+    public function writeXmlAsXlfFilesInPlace(string $sourceFile): string
     {
-        $this->extension = $extension;
-        $xmlFile = ExtensionManagementUtility::extPath($extension) . $xmlFile;
+        $sourceFile = ExtensionManagementUtility::extPath($this->extension) . $sourceFile;
 
-        if (!@is_file($xmlFile)) {
-            return 'File ' . $xmlFile . ' does not exists!';
+        if (!@is_file($sourceFile)) {
+            return 'File ' . $sourceFile . ' does not exists!';
         }
 
-        $fileCheckResult = $this->checkLanguageFilename($xmlFile);
+        $fileCheckResult = $this->checkLanguageFilename($sourceFile);
         if (!empty($fileCheckResult)) {
             return $fileCheckResult;
         }
 
-        $languages = $this->getAvailableTranslations($xmlFile);
+        $languages = $this->getAvailableTranslations($sourceFile);
         $errors = [];
         foreach ($languages as $langKey) {
-            $newFileName = dirname($xmlFile) . '/' . $this->localizedFileRef($xmlFile, $langKey);
+            $newFileName = dirname($sourceFile) . '/' . $this->localizedFileRef($sourceFile, $langKey);
             if (@is_file($newFileName)) {
                 $errors[] = 'ERROR: Output file "' . $newFileName . '" already exists!';
             }
@@ -77,8 +77,8 @@ class Convert
 
         $output = '';
         foreach ($languages as $langKey) {
-            $newFileName = dirname($xmlFile) . '/' . $this->localizedFileRef($xmlFile, $langKey);
-            $output .= $this->writeNewXliffFile($xmlFile, $newFileName, $langKey) . '<br />';
+            $newFileName = dirname($sourceFile) . '/' . $this->localizedFileRef($sourceFile, $langKey);
+            $output .= $this->writeNewXliffFile($sourceFile, $newFileName, $langKey) . '<br />';
         }
         return $output;
     }
@@ -86,43 +86,13 @@ class Convert
     /**
      * Function to convert php language files
      *
-     * @param string $phpFile Absolute path to the selected ll-XML file
-     * @param string $extension Extension key to get extension path
+     * @param string $sourceFile Absolute path to the selected ll-XML file
      *
      * @return string HTML content
      */
-    public function writePhpAsXlfFilesInPlace(string $phpFile, string $extension): string
+    public function writePhpAsXlfFilesInPlace(string $sourceFile): string
     {
-        $this->extension = $extension;
-        $phpFile = ExtensionManagementUtility::extPath($extension) . $phpFile;
-
-        if (!@is_file($phpFile)) {
-            return 'File ' . $phpFile . ' does not exists!';
-        }
-
-        $fileCheckResult = $this->checkLanguageFilename($phpFile);
-        if (!empty($fileCheckResult)) {
-            return $fileCheckResult;
-        }
-
-        $languages = $this->getAvailableTranslations($phpFile);
-        $errors = [];
-        foreach ($languages as $langKey) {
-            $newFileName = dirname($phpFile) . '/' . $this->localizedFileRef($phpFile, $langKey);
-            if (@is_file($newFileName)) {
-                $errors[] = 'ERROR: Output file "' . $newFileName . '" already exists!';
-            }
-        }
-        if (!empty($errors)) {
-            return implode('<br />', $errors);
-        }
-
-        $output = '';
-        foreach ($languages as $langKey) {
-            $newFileName = dirname($phpFile) . '/' . $this->localizedFileRef($phpFile, $langKey);
-            $output .= $this->writeNewXliffFile($phpFile, $newFileName, $langKey) . '<br />';
-        }
-        return $output;
+        return $this->writeXmlAsXlfFilesInPlace($sourceFile);
     }
 
     /**
@@ -219,9 +189,9 @@ class Convert
         $xml = [];
         $LOCAL_LANG = $this->getCombinedTranslationFileContent($xmlFile);
 
-        $xml[] = '<?xml version="1.0" encoding="utf-8" standalone="yes" ?>';
-        $xml[] = '<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">';
-        $xml[] = '	<file source-language="en"'
+        $xml[] = '<?xml version="1.0" encoding="UTF-8"?>';
+        $xml[] = '<xliff version="1.0" xmlns:t3="http://typo3.org/schemas/xliff">';
+        $xml[] = '	<file t3:id="' . time() . '" source-language="en"'
             . ($langKey !== 'default' ? ' target-language="' . $langKey . '"' : '')
             . ' datatype="plaintext" original="messages" date="'
             . gmdate('Y-m-d\TH:i:s\Z') . '"' . ' product-name="' . $this->extension . '">';
@@ -237,16 +207,34 @@ class Convert
                 $target = $data;
             }
 
-            if ($langKey === 'default') {
-                $xml[] = '			<trans-unit id="' . $key . '" xml:space="preserve">';
-                $xml[] = '				<source>' . htmlspecialchars($source) . '</source>';
-                $xml[] = '			</trans-unit>';
+            if (strpos($source, chr(10)) !== false || strpos($source, chr(10)) !== false) {
+                $preserve = 'xml:space="preserve"';
             } else {
-                $xml[] = '			<trans-unit id="' . $key . '" xml:space="preserve" approved="yes">';
-                $xml[] = '				<source>' . htmlspecialchars($source) . '</source>';
-                $xml[] = '				<target>' . htmlspecialchars($target) . '</target>';
-                $xml[] = '			</trans-unit>';
+                $preserve = '';
             }
+
+            if (empty($source)) {
+                $source = '<source/>';
+            } else {
+                $source = '<source>' . htmlspecialchars($source) . '</source>';
+            }
+
+            if (empty($target)) {
+                $target = '<target/>';
+            } else {
+                $target = '<target>' . htmlspecialchars($target) . '</target>';
+            }
+
+            if ($langKey === 'default') {
+                $xml[] = '			<trans-unit id="' . $key . '" resname="' . $key . '" ' . $preserve . '>';
+                $xml[] = '				' . $source;
+            } else {
+                $xml[] = '			<trans-unit id="' . $key . '" resname="' . $key . '" ' . $preserve
+                    . ' approved="yes">';
+                $xml[] = '				' . $source;
+                $xml[] = '				' . $target;
+            }
+            $xml[] = '			</trans-unit>';
         }
 
         $xml[] = '		</body>';
