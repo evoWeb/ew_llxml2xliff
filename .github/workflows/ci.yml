@@ -52,8 +52,8 @@ jobs:
       fail-fast: false
       matrix:
         env:
-          - { php: 7.4, TYPO3_VERSION: ^11.4, TESTING_FRAMEWORK: ^6.6.2 }
-          - { php: 7.4, TYPO3_VERSION: ^11.4, TESTING_FRAMEWORK: ^6.6.2, PREFER_LOWEST: "--prefer-lowest" }
+          - { php: 7.4, TYPO3_VERSION: ^11.0, TESTING_FRAMEWORK: ^6.6.2 }
+          - { php: 7.4, TYPO3_VERSION: ^11.0, TESTING_FRAMEWORK: ^6.6.2, PREFER_LOWEST: "--prefer-lowest" }
           - { php: 7.4, TYPO3_VERSION: "dev-master", TESTING_FRAMEWORK: ^6.6.2, experimental: true }
 
     env: ${{ matrix.env }}
