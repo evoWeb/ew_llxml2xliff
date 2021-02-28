@@ -156,7 +156,8 @@ class Convert
         } else {
             /** @noinspection PhpIncludeInspection */
             require($languageFile);
-            $languages = isset($LOCAL_LANG) ? array_keys($LOCAL_LANG) : [];
+            $LOCAL_LANG = $LOCAL_LANG ?? [];
+            $languages = array_keys($LOCAL_LANG);
         }
 
         if (empty($languages)) {
@@ -271,7 +272,7 @@ class Convert
 
             $LOCAL_LANG = [];
             foreach ($includedLanguages as $langKey) {
-                /** @var $parser \Evoweb\EwLlxml2xliff\Localization\Parser\LocallangXmlParser */
+                /** @var \Evoweb\EwLlxml2xliff\Localization\Parser\LocallangXmlParser $parser */
                 $parser = GeneralUtility::makeInstance(
                     \Evoweb\EwLlxml2xliff\Localization\Parser\LocallangXmlParser::class
                 );
@@ -282,14 +283,14 @@ class Convert
         } else {
             /** @noinspection PhpIncludeInspection */
             require($languageFile);
-            $includedLanguages = isset($LOCAL_LANG) ? array_keys($LOCAL_LANG) : [];
+            $LOCAL_LANG = $LOCAL_LANG ?? [];
+            $includedLanguages = array_keys($LOCAL_LANG);
         }
 
         if (empty($includedLanguages)) {
             throw new \RuntimeException('data section not found in "' . $languageFile . '"', 1314187884);
         }
 
-        /** @noinspection PhpUndefinedVariableInspection */
         return $LOCAL_LANG;
     }
 
