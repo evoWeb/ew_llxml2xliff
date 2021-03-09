@@ -29,7 +29,7 @@ class LocallangXmlParser extends AbstractXmlParser
     /**
      * Associative array of "filename => parsed data" pairs.
      */
-    protected array $parsedTargetFiles;
+    protected array $parsedTargetFiles = [];
 
     /**
      * Returns parsed representation of XML file.
