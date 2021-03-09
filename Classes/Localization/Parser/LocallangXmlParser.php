@@ -16,6 +16,7 @@ namespace Evoweb\EwLlxml2xliff\Localization\Parser;
  */
 
 use TYPO3\CMS\Core\Localization\Exception\InvalidXmlFileException;
+use TYPO3\CMS\Core\Localization\Parser\AbstractXmlParser;
 use TYPO3\CMS\Core\Utility\ArrayUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\PathUtility;
@@ -23,7 +24,7 @@ use TYPO3\CMS\Core\Utility\PathUtility;
 /**
  * Parser for XML locallang file.
  */
-class LocallangXmlParser extends \TYPO3\CMS\Core\Localization\Parser\AbstractXmlParser
+class LocallangXmlParser extends AbstractXmlParser
 {
     /**
      * Associative array of "filename => parsed data" pairs.
@@ -35,6 +36,7 @@ class LocallangXmlParser extends \TYPO3\CMS\Core\Localization\Parser\AbstractXml
      *
      * @param string $sourcePath Source file path
      * @param string $languageKey Language key
+     *
      * @return array
      */
     public function getParsedData($sourcePath, $languageKey)

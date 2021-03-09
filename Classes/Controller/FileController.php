@@ -19,9 +19,10 @@ use TYPO3\CMS\Core\Http\HtmlResponse;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Http\ForwardResponse;
+use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 use TYPO3\CMS\Extensionmanager\Utility\ListUtility;
 
-class FileController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
+class FileController extends ActionController
 {
     protected ListUtility $listUtility;
 
