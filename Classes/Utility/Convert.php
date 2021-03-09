@@ -154,7 +154,6 @@ class Convert
         return $path;
     }
 
-
     /**
      * Processing of the submitted form; Will create and write the XLIFF file and tell the new file name.
      *
@@ -190,7 +189,7 @@ class Convert
         $LOCAL_LANG = $this->getCombinedTranslationFileContent($xmlFile);
 
         $xml[] = '<?xml version="1.0" encoding="UTF-8"?>';
-        $xml[] = '<xliff version="1.0" xmlns:t3="http://typo3.org/schemas/xliff">';
+        $xml[] = '<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">';
         $xml[] = '	<file t3:id="' . time() . '" source-language="en"'
             . ($langKey !== 'default' ? ' target-language="' . $langKey . '"' : '')
             . ' datatype="plaintext" original="messages" date="'

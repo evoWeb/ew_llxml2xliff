@@ -203,7 +203,7 @@ class FileController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
     {
         $xliffFileName = preg_replace('#\.(xml|php)$#', '.xlf', $extensionPath . $filePath);
 
-        return (bool) file_exists($xliffFileName);
+        return (bool)file_exists($xliffFileName);
     }
 
     protected function isArgumentSetAndAvailable(array $values, string $key): ?string
