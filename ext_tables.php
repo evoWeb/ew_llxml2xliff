@@ -1,6 +1,6 @@
 <?php
 
-defined('TYPO3_MODE') || die();
+defined('TYPO3') or die();
 
 \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerModule(
     'EwLlxml2xliff',
