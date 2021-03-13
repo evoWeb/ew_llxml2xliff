@@ -1,14 +1,17 @@
 # ew_llxml2xliff
-[![Build Status](https://travis-ci.org/evoWeb/ew_llxml2xliff.svg?branch=develop)](https://travis-ci.org/evoWeb/ew_llxml2xliff)
+
+![build](https://github.com/evoWeb/ew_llxml2xliff/workflows/build/badge.svg?branch=develop)
+[![Latest Stable Version](https://poser.pugx.org/evoweb/ew-llxml2xliff/v/stable)](https://packagist.org/packages/evoweb/ew-llxml2xliff)
+[![Monthly Downloads](https://poser.pugx.org/evoweb/ew-llxml2xliff/d/monthly)](https://packagist.org/packages/evoweb/ew-llxml2xliff)
+[![Total Downloads](https://poser.pugx.org/evoweb/ew-llxml2xliff/downloads)](https://packagist.org/packages/evoweb/ew-llxml2xliff)
 
 ## Installation
 
 ### via Composer
 
-Its recommended to install the extension via composer. Either add it to your composer.json
-in the TYPO3 project root or in the project root just enter 
+The recommended way to install the extension is by using [Composer](https://getcomposer.org):
 
-composer require evoweb/ew-llxml2xliff
+    composer require evoweb/ew-llxml2xliff
 
 ### via TYPO3 Extension Repository
 

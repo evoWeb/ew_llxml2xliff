@@ -2,7 +2,7 @@
 	"name": "evoweb/ew-llxml2xliff",
 	"type": "typo3-cms-extension",
 	"description": "Provides a backend module to convert locallang.xml and locallang.php files to xliff. For every language, contained in the source file, an extra file gets created.",
-	"homepage": "https://github.com/evoWeb/ew_llxml2xliff/",
+	"homepage": "http://www.evoweb.de/",
 
 	"license": "GPL-2.0-or-later",
 
@@ -21,9 +21,10 @@
 		"ext-simplexml": "*",
 		"ext-libxml": "*",
 
-		"typo3/cms-core": "^10.0",
-		"typo3/cms-extbase": "^10.0",
-		"typo3/cms-extensionmanager": "^10.0",
+		"typo3/cms-core": "^11.0",
+		"typo3/cms-extbase": "*",
+		"typo3/cms-fluid": "*",
+		"typo3/cms-extensionmanager": "*",
 
 		"maennchen/zipstream-php": "^0.4.1"
 	},
@@ -39,9 +40,18 @@
 	},
 	"extra": {
 		"typo3/cms": {
+			"extension-key": "ew_llxml2xliff",
 			"cms-package-dir": "{$vendor-dir}/typo3/cms",
 			"web-dir": ".Build/Web"
-		},
-		"extension-key": "ew_llxml2xliff"
+		}
+	},
+
+	"scripts": {
+		"post-autoload-dump": "mkdir -p .Build/Web/typo3conf/ext/ && ln -snf ../../../.. .Build/Web/typo3conf/ext/ew_llxml2xliff",
+		"prepare-release": [
+			"rm -rf .Build",
+			"rm -rf .github",
+			"sed -i \"s/version' => '.*'/version' => '$(echo ${GITHUB_REF} | cut -d / -f 3)'/\" ext_emconf.php\n"
+		]
 	}
 }

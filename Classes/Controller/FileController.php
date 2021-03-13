@@ -2,22 +2,31 @@
 
 namespace Evoweb\EwLlxml2xliff\Controller;
 
-use Evoweb\EwLlxml2xliff\Utility\Convert as Convert;
+/*
+ * This file is developed by evoWeb.
+ *
+ * It is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License, either version 2
+ * of the License, or any later version.
+ *
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
+ */
+
+use Evoweb\EwLlxml2xliff\Utility\Convert;
+use Psr\Http\Message\ResponseInterface;
+use TYPO3\CMS\Core\Http\HtmlResponse;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extensionmanager\Utility\ListUtility as ListUtility;
+use TYPO3\CMS\Extbase\Http\ForwardResponse;
+use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
+use TYPO3\CMS\Extensionmanager\Utility\ListUtility;
 
-class FileController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
+class FileController extends ActionController
 {
-    /**
-     * @var ListUtility
-     */
-    protected $listUtility;
+    protected ListUtility $listUtility;
 
-    /**
-     * @var Convert
-     */
-    protected $convertUtility;
+    protected Convert $convertUtility;
 
     public function __construct(
         ListUtility $listUtility,
@@ -27,7 +36,7 @@ class FileController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
         $this->convertUtility = $convertUtility;
     }
 
-    public function indexAction()
+    public function indexAction(): ResponseInterface
     {
         $extensions = $this->getLocalExtensions();
         $extensionsWithFileToConvert = [];
@@ -37,64 +46,96 @@ class FileController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
             }
         }
         $this->view->assign('extensions', $extensionsWithFileToConvert);
+
+        return new HtmlResponse($this->view->render());
     }
 
-    public function showFilesAction()
+    public function showFilesAction(): ResponseInterface
     {
         $extensions = $this->getLocalExtensions();
-        $selectedExtension = $this->isArgumentSetAndAvailable($extensions, 'extension', 'index');
+        $selectedExtension = $this->isArgumentSetAndAvailable($extensions, 'extension');
 
-        $files = $this->getFilesOfExtension($selectedExtension);
+        if ($selectedExtension) {
+            $files = $this->getFilesOfExtension($selectedExtension);
 
-        $this->view->assign('extensions', $extensions);
-        $this->view->assign('selectedExtension', $selectedExtension);
-        $this->view->assign('files', $files);
-    }
-
-    public function confirmConversionAction()
-    {
-        $extensions = $this->getLocalExtensions();
-        $selectedExtension = $this->isArgumentSetAndAvailable($extensions, 'extension', 'index');
-
-        $files = $this->getFilesOfExtension($selectedExtension);
-        $selectedFile = $this->isArgumentSetAndAvailable($files, 'file', 'showFiles');
-
-        $this->view->assign('extensions', $extensions);
-        $this->view->assign('selectedExtension', $selectedExtension);
-        $this->view->assign('files', $files);
-        $this->view->assign('selectedFile', $selectedFile);
-    }
-
-    public function convertFileAction()
-    {
-        $extensions = $this->getLocalExtensions();
-        $selectedExtension = $this->isArgumentSetAndAvailable($extensions, 'extension', 'index');
-
-        $files = $this->getFilesOfExtension($selectedExtension);
-        $selectedFile = $this->isArgumentSetAndAvailable($files, 'file', 'showFiles');
-
-        $extensionPath = ExtensionManagementUtility::extPath($selectedExtension);
-        if ($this->xliffFileAlreadyExists($extensionPath, $selectedFile)) {
-            $this->view->assign('wasConvertedPreviously', 1);
+            $this->view->assign('extensions', $extensions);
+            $this->view->assign('selectedExtension', $selectedExtension);
+            $this->view->assign('files', $files);
+            $response = new HtmlResponse($this->view->render());
         } else {
-            if (strpos($selectedFile, '.xml') !== false) {
-                $messages = $this->convertUtility->writeXmlAsXlfFilesInPlace($selectedFile, $selectedExtension);
-            } else {
-                $messages = $this->convertUtility->writePhpAsXlfFilesInPlace($selectedFile, $selectedExtension);
-            }
-
-            if (strpos($messages, 'ERROR') === false) {
-                $this->view->assign('fileConvertedSuccessfully', 1);
-                $this->view->assign('messages', $messages);
-            }
-            unset($files[$selectedFile]);
+            $response = new ForwardResponse('index');
         }
 
-        $this->view->assign('extensions', $extensions);
-        $this->view->assign('selectedExtension', $selectedExtension);
-        $this->view->assign('files', $files);
-        $this->view->assign('selectedFile', '');
-        $this->view->assign('convertedFile', $selectedFile);
+        return $response;
+    }
+
+    public function confirmConversionAction(): ResponseInterface
+    {
+        $extensions = $this->getLocalExtensions();
+        $selectedExtension = $this->isArgumentSetAndAvailable($extensions, 'extension');
+
+        if ($selectedExtension) {
+            $files = $this->getFilesOfExtension($selectedExtension);
+            $selectedFile = $this->isArgumentSetAndAvailable($files, 'file');
+
+            if ($selectedFile) {
+                $this->view->assign('extensions', $extensions);
+                $this->view->assign('selectedExtension', $selectedExtension);
+                $this->view->assign('files', $files);
+                $this->view->assign('selectedFile', $selectedFile);
+                $response = new HtmlResponse($this->view->render());
+            } else {
+                $response = new ForwardResponse('showFiles');
+            }
+        } else {
+            $response = new ForwardResponse('index');
+        }
+
+        return $response;
+    }
+
+    public function convertFileAction(): ResponseInterface
+    {
+        $extensions = $this->getLocalExtensions();
+        $selectedExtension = $this->isArgumentSetAndAvailable($extensions, 'extension');
+
+        if ($selectedExtension) {
+            $files = $this->getFilesOfExtension($selectedExtension);
+            $selectedFile = $this->isArgumentSetAndAvailable($files, 'file');
+
+            if ($selectedFile) {
+                $extensionPath = ExtensionManagementUtility::extPath($selectedExtension);
+                if ($this->xliffFileAlreadyExists($extensionPath, $selectedFile)) {
+                    $this->view->assign('wasConvertedPreviously', 1);
+                } else {
+                    $this->convertUtility->setExtension($selectedExtension);
+                    if (strpos($selectedFile, '.xml') !== false) {
+                        $messages = $this->convertUtility->writeXmlAsXlfFilesInPlace($selectedFile);
+                    } else {
+                        $messages = $this->convertUtility->writePhpAsXlfFilesInPlace($selectedFile);
+                    }
+
+                    if (strpos($messages, 'ERROR') === false) {
+                        $this->view->assign('fileConvertedSuccessfully', 1);
+                        $this->view->assign('messages', $messages);
+                    }
+                    unset($files[$selectedFile]);
+                }
+
+                $this->view->assign('extensions', $extensions);
+                $this->view->assign('selectedExtension', $selectedExtension);
+                $this->view->assign('files', $files);
+                $this->view->assign('selectedFile', '');
+                $this->view->assign('convertedFile', $selectedFile);
+                $response = new HtmlResponse($this->view->render());
+            } else {
+                $response = new ForwardResponse('showFiles');
+            }
+        } else {
+            $response = new ForwardResponse('index');
+        }
+
+        return $response;
     }
 
     protected function getLocalExtensions(): array
@@ -163,15 +204,12 @@ class FileController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
     {
         $xliffFileName = preg_replace('#\.(xml|php)$#', '.xlf', $extensionPath . $filePath);
 
-        return (bool) file_exists($xliffFileName);
+        return (bool)file_exists($xliffFileName);
     }
 
-    protected function isArgumentSetAndAvailable(array $values, string $key, string $action): string
+    protected function isArgumentSetAndAvailable(array $values, string $key): ?string
     {
         $value = $this->request->hasArgument($key) ? $this->request->getArgument($key) : '';
-        if (empty($values) || !isset($values[$value])) {
-            $this->forward($action);
-        }
-        return $value;
+        return empty($values) || empty($value) || !isset($values[$value]) ? false : $value;
     }
 }

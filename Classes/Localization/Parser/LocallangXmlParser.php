@@ -1,5 +1,7 @@
 <?php
 
+namespace Evoweb\EwLlxml2xliff\Localization\Parser;
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -13,9 +15,8 @@
  * The TYPO3 project - inspiring people to share!
  */
 
-namespace Evoweb\EwLlxml2xliff\Localization\Parser;
-
 use TYPO3\CMS\Core\Localization\Exception\InvalidXmlFileException;
+use TYPO3\CMS\Core\Localization\Parser\AbstractXmlParser;
 use TYPO3\CMS\Core\Utility\ArrayUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\PathUtility;
@@ -23,20 +24,19 @@ use TYPO3\CMS\Core\Utility\PathUtility;
 /**
  * Parser for XML locallang file.
  */
-class LocallangXmlParser extends \TYPO3\CMS\Core\Localization\Parser\AbstractXmlParser
+class LocallangXmlParser extends AbstractXmlParser
 {
     /**
      * Associative array of "filename => parsed data" pairs.
-     *
-     * @var array
      */
-    protected $parsedTargetFiles;
+    protected array $parsedTargetFiles = [];
 
     /**
      * Returns parsed representation of XML file.
      *
      * @param string $sourcePath Source file path
      * @param string $languageKey Language key
+     *
      * @return array
      */
     public function getParsedData($sourcePath, $languageKey)
@@ -68,7 +68,7 @@ class LocallangXmlParser extends \TYPO3\CMS\Core\Localization\Parser\AbstractXml
      * @return array
      * @throws InvalidXmlFileException
      */
-    protected function doParsingFromRootForElement(\SimpleXMLElement $root, $element)
+    protected function doParsingFromRootForElement(\SimpleXMLElement $root, string $element): array
     {
         $bodyOfFileTag = $root->data->languageKey;
         if ($bodyOfFileTag === null) {
@@ -106,7 +106,7 @@ class LocallangXmlParser extends \TYPO3\CMS\Core\Localization\Parser\AbstractXml
      * @param string $element
      * @return array
      */
-    protected function getParsedDataForElement(\SimpleXMLElement $bodyOfFileTag, $element)
+    protected function getParsedDataForElement(\SimpleXMLElement $bodyOfFileTag, string $element): array
     {
         $parsedData = [];
         $children = $bodyOfFileTag->children();
@@ -135,7 +135,7 @@ class LocallangXmlParser extends \TYPO3\CMS\Core\Localization\Parser\AbstractXml
      * @param \SimpleXMLElement $root A root node
      * @return array An array representing parsed XLIFF
      */
-    protected function doParsingFromRoot(\SimpleXMLElement $root)
+    protected function doParsingFromRoot(\SimpleXMLElement $root): array
     {
         return $this->doParsingFromRootForElement($root, 'source');
     }
@@ -146,7 +146,7 @@ class LocallangXmlParser extends \TYPO3\CMS\Core\Localization\Parser\AbstractXml
      * @param \SimpleXMLElement $root A root node
      * @return array An array representing parsed XLIFF
      */
-    protected function doParsingTargetFromRoot(\SimpleXMLElement $root)
+    protected function doParsingTargetFromRoot(\SimpleXMLElement $root): array
     {
         return $this->doParsingFromRootForElement($root, 'target');
     }
@@ -159,7 +159,7 @@ class LocallangXmlParser extends \TYPO3\CMS\Core\Localization\Parser\AbstractXml
      * @param string $path An absolute path to XML file
      * @return array Parsed XML file
      */
-    public function getParsedTargetData($path)
+    public function getParsedTargetData(string $path): array
     {
         if (!isset($this->parsedTargetFiles[$path])) {
             $this->parsedTargetFiles[$path] = $this->parseXmlTargetFile($path);
@@ -174,7 +174,7 @@ class LocallangXmlParser extends \TYPO3\CMS\Core\Localization\Parser\AbstractXml
      * @return array
      * @throws \TYPO3\CMS\Core\Localization\Exception\InvalidXmlFileException
      */
-    protected function parseXmlTargetFile($targetPath)
+    protected function parseXmlTargetFile(string $targetPath): array
     {
         $rootXmlNode = false;
         if (file_exists($targetPath)) {
