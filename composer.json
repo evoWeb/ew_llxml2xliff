@@ -24,9 +24,7 @@
 		"typo3/cms-core": "^11.0",
 		"typo3/cms-extbase": "*",
 		"typo3/cms-fluid": "*",
-		"typo3/cms-extensionmanager": "*",
-
-		"maennchen/zipstream-php": "^0.4.1"
+		"typo3/cms-extensionmanager": "*"
 	},
 
 	"autoload": {
@@ -41,7 +39,6 @@
 	"extra": {
 		"typo3/cms": {
 			"extension-key": "ew_llxml2xliff",
-			"cms-package-dir": "{$vendor-dir}/typo3/cms",
 			"web-dir": ".Build/Web"
 		}
 	},
