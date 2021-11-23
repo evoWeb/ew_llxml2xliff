@@ -117,8 +117,8 @@ class FileController extends ActionController
 
                     if (strpos($messages, 'ERROR') === false) {
                         $this->view->assign('fileConvertedSuccessfully', 1);
-                        $this->view->assign('messages', $messages);
                     }
+                    $this->view->assign('messages', $messages);
                     unset($files[$selectedFile]);
                 }
 
