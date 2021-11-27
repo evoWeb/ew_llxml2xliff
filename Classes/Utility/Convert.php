@@ -111,11 +111,9 @@ class Convert
      */
     protected function checkLanguageFilename(string $xmlFile): string
     {
-        $basename = basename($xmlFile);
-
         $result = '';
-        if (strpos($basename, 'locallang') !== 0) {
-            $result = 'ERROR: Filename didn\'t start with "locallang".';
+        if (strpos($xmlFile, 'locallang') === false) {
+            $result = 'ERROR: Filename didn\'t contain "locallang".';
         }
         return $result;
     }
