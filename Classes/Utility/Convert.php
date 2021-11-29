@@ -63,10 +63,16 @@ class Convert
             return $fileCheckResult;
         }
 
+        $sourceFileOriginal = $sourceFile;
+        $basename = basename($sourceFile);
+        $dirname = dirname($sourceFile);
+        if (($position = strpos($basename, '.')) == 2) {
+            $sourceFileOriginal = $dirname . '/' . substr($basename, $position + 1);
+        }
         $languages = $this->getAvailableTranslations($sourceFile);
         $errors = [];
         foreach ($languages as $langKey) {
-            $newFileName = dirname($sourceFile) . '/' . $this->localizedFileRef($sourceFile, $langKey);
+            $newFileName = $dirname . '/' . $this->localizedFileRef($sourceFileOriginal, $langKey);
             if (@is_file($newFileName)) {
                 $errors[] = 'ERROR: Output file "' . $newFileName . '" already exists!';
             }
@@ -78,7 +84,7 @@ class Convert
 
         $output = '';
         foreach ($languages as $langKey) {
-            $newFileName = dirname($sourceFile) . '/' . $this->localizedFileRef($sourceFile, $langKey);
+            $newFileName = $dirname . '/' . $this->localizedFileRef($sourceFileOriginal, $langKey);
             $output .= $this->writeNewXliffFile($sourceFile, $newFileName, $langKey) . '<br />';
         }
         return $output;
@@ -105,11 +111,9 @@ class Convert
      */
     protected function checkLanguageFilename(string $xmlFile): string
     {
-        $basename = basename($xmlFile);
-
         $result = '';
-        if (strpos($basename, 'locallang') !== 0) {
-            $result = 'ERROR: Filename didn\'t start with "locallang".';
+        if (strpos($xmlFile, 'locallang') === false) {
+            $result = 'ERROR: Filename didn\'t contain "locallang".';
         }
         return $result;
     }
