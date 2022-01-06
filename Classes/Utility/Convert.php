@@ -203,9 +203,13 @@ class Convert
         $xml[] = '		<body>';
 
         foreach ($LOCAL_LANG[$langKey] as $key => $data) {
-            if (is_array($data) && isset($data[0]['target'])) {
+            if (is_array($data)) {
                 $source = $data[0]['source'];
-                $target = $data[0]['target'];
+                if (isset($data[0]['target'])) {
+                    $target = $data[0]['target'];
+                } else {
+                    $target = '';
+                }
             } else {
                 $source = $LOCAL_LANG['default'][$key];
                 $target = $data;
