@@ -27,9 +27,10 @@ jobs:
 
     strategy:
       matrix:
-        php-versions: ['7.4']
+        env:
+          - { PHP: 7.4 }
 
-    name: Lint PHP ${{ matrix.php-versions }}
+    name: Lint PHP ${{ matrix.env.PHP }}
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -37,9 +38,9 @@ jobs:
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: ${{ matrix.php-versions }}
+          php-version: ${{ matrix.env.PHP }}
 
-      - name: Running php lint with ${{ matrix.php-versions }}
+      - name: Running php lint with ${{ matrix.env.PHP }}
         run: errors=$(find . -name \*.php ! -path "./.Build/*" -exec php -d display_errors=stderr -l "{}" 2>&1 >/dev/null \;) && echo "${errors}" && test -z "${errors}"
 
   phpunit:
@@ -52,9 +53,9 @@ jobs:
       fail-fast: false
       matrix:
         env:
-          - { php: 7.4, TYPO3_VERSION: ^11.0, TESTING_FRAMEWORK: ^6.6.2 }
-          - { php: 7.4, TYPO3_VERSION: ^11.0, TESTING_FRAMEWORK: ^6.6.2, PREFER_LOWEST: "--prefer-lowest" }
-          - { php: 7.4, TYPO3_VERSION: "dev-master", TESTING_FRAMEWORK: ^6.6.2, experimental: true }
+          - { php: 7.4, TYPO3_VERSION: "^11.0", TESTING_FRAMEWORK: "^6.6.2" }
+          - { php: 7.4, TYPO3_VERSION: "^11.0", TESTING_FRAMEWORK: "^6.6.2", PREFER_LOWEST: "--prefer-lowest" }
+          - { php: 7.4, TYPO3_VERSION: "dev-main", TESTING_FRAMEWORK: "dev-main", experimental: true }
 
     env: ${{ matrix.env }}
 
@@ -66,7 +67,7 @@ jobs:
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: ${{ matrix.env.php }}
+          php-version: ${{ matrix.env.PHP }}
           tools: composer
           extensions: pdo, sqlite3
 
@@ -80,7 +81,7 @@ jobs:
           key: dependencies-composer-${{ hashFiles('composer.json') }}
 
       - name: Ensure stability dev
-        if: ${{ matrix.env.TYPO3_VERSION == 'dev-master' }}
+        if: ${{ matrix.env.TYPO3_VERSION == 'dev-main' }}
         run: |
           composer config minimum-stability dev
           composer config prefer-stable true
