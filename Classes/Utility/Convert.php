@@ -195,7 +195,7 @@ class Convert
 
         $xml[] = '<?xml version="1.0" encoding="UTF-8"?>';
         $xml[] = '<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">';
-        $xml[] = '	<file t3:id="' . time() . '" source-language="en"'
+        $xml[] = '	<file source-language="en"'
             . ($langKey !== 'default' ? ' target-language="' . $langKey . '"' : '')
             . ' datatype="plaintext" original="messages" date="'
             . gmdate('Y-m-d\TH:i:s\Z') . '"' . ' product-name="' . $this->extension . '">';
