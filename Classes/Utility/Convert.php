@@ -204,6 +204,9 @@ class Convert
 
         foreach ($LOCAL_LANG[$langKey] as $key => $data) {
             if (is_array($data)) {
+                if (!isset($data[0]['source'])) {
+                    throw new \RuntimeException('Index "source" not found for key "' . $key . '" and value "' . (isset($data[0]['target']) ? htmlspecialchars($data[0]['target']) : '') . '"', 1642768584);
+                }
                 $source = $data[0]['source'];
                 if (isset($data[0]['target'])) {
                     $target = $data[0]['target'];
@@ -248,7 +251,6 @@ class Convert
         $xml[] = '		</body>';
         $xml[] = '	</file>';
         $xml[] = '</xliff>';
-
         return implode(LF, $xml);
     }
 
