@@ -12,7 +12,8 @@ defined('TYPO3') or die();
     ],
     [
         'access' => 'user,group',
-        'icon' => 'EXT:ew_llxml2xliff/Resources/Public/Icons/Extension.svg',
+        'name' => 'tools_llxmlconverter',
+        'iconIdentifier' => 'llxml2xlifficon',
         'labels' => 'LLL:EXT:ew_llxml2xliff/Resources/Private/Language/locallang_mod.xlf',
     ]
 );
