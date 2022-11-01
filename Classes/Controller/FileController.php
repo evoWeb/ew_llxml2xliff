@@ -41,7 +41,7 @@ class FileController extends ActionController
         $extensions = $this->getLocalExtensions();
         $extensionsWithFileToConvert = [];
         foreach ($extensions as $extension) {
-            if (isset($extension['type']) && $this->getFilesOfExtension($extension['key'])) {
+            if (isset($extension['type'])) {
                 $extensionsWithFileToConvert[] = $extension;
             }
         }
