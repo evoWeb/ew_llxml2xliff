@@ -204,12 +204,12 @@ class Convert
 
         foreach ($LOCAL_LANG[$langKey] as $key => $data) {
             if (is_array($data)) {
-                $source = $data[0]['source'];
                 if (isset($data[0]['target'])) {
                     $target = $data[0]['target'];
                 } else {
                     $target = '';
                 }
+                $source = isset($data[0]['source']) ? $data[0]['source'] : $target;
             } else {
                 $source = $LOCAL_LANG['default'][$key];
                 $target = $data;
