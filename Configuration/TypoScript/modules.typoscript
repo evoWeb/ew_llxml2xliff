@@ -1,0 +1,11 @@
+module.tx_ewllxml2xliff {
+  view {
+    templateRootPaths.100 = EXT:ew_llxml2xliff/Resources/Private/Templates
+
+    partialRootPaths.90 = EXT:backend/Resources/Private/Partials
+    partialRootPaths.100 = EXT:ew_llxml2xliff/Resources/Private/Partials
+
+    layoutRootPaths.90 = EXT:backend/Resources/Private/Layouts
+    layoutRootPaths.100 = EXT:ew_llxml2xliff/Resources/Private/Layouts
+  }
+}

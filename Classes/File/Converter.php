@@ -1,6 +1,6 @@
 <?php
 
-namespace Evoweb\EwLlxml2xliff\Utility;
+declare(strict_types=1);
 
 /*
  *  Copyright notice
@@ -25,6 +25,8 @@ namespace Evoweb\EwLlxml2xliff\Utility;
  *  This copyright notice MUST APPEAR in all copies of the script!
  */
 
+namespace Evoweb\EwLlxml2xliff\File;
+
 use Evoweb\EwLlxml2xliff\Localization\Parser\LocallangXmlParser;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -34,11 +36,11 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  *
  * @author Xavier Perseguers <xavier@typo3.org>
  */
-class Convert
+class Converter
 {
     protected string $extension = '';
 
-    public function setExtension(string $extension)
+    public function setExtension(string $extension): void
     {
         $this->extension = $extension;
     }
@@ -63,10 +65,16 @@ class Convert
             return $fileCheckResult;
         }
 
+        $sourceFileOriginal = $sourceFile;
+        $basename = basename($sourceFile);
+        $dirname = dirname($sourceFile);
+        if (($position = strpos($basename, '.')) == 2) {
+            $sourceFileOriginal = $dirname . '/' . substr($basename, $position + 1);
+        }
         $languages = $this->getAvailableTranslations($sourceFile);
         $errors = [];
         foreach ($languages as $langKey) {
-            $newFileName = dirname($sourceFile) . '/' . $this->localizedFileRef($sourceFile, $langKey);
+            $newFileName = $dirname . '/' . $this->localizedFileRef($sourceFileOriginal, $langKey);
             if (@is_file($newFileName)) {
                 $errors[] = 'ERROR: Output file "' . $newFileName . '" already exists!';
             }
@@ -78,7 +86,7 @@ class Convert
 
         $output = '';
         foreach ($languages as $langKey) {
-            $newFileName = dirname($sourceFile) . '/' . $this->localizedFileRef($sourceFile, $langKey);
+            $newFileName = $dirname . '/' . $this->localizedFileRef($sourceFileOriginal, $langKey);
             $output .= $this->writeNewXliffFile($sourceFile, $newFileName, $langKey) . '<br />';
         }
         return $output;
@@ -105,11 +113,9 @@ class Convert
      */
     protected function checkLanguageFilename(string $xmlFile): string
     {
-        $basename = basename($xmlFile);
-
         $result = '';
-        if (strpos($basename, 'locallang') !== 0) {
-            $result = 'ERROR: Filename didn\'t start with "locallang".';
+        if (!str_contains($xmlFile, 'locallang')) {
+            $result = 'ERROR: Filename didn\'t contain "locallang".';
         }
         return $result;
     }
@@ -125,7 +131,6 @@ class Convert
             $ll = $this->xml2array(file_get_contents($languageFile));
             $languages = isset($ll['data']) ? array_keys($ll['data']) : [];
         } else {
-            /** @noinspection PhpIncludeInspection */
             require($languageFile);
             $languages = isset($LOCAL_LANG) ? array_keys($LOCAL_LANG) : [];
         }
@@ -148,7 +153,7 @@ class Convert
     protected function localizedFileRef(string $fileRef, string $lang): string
     {
         $path = '';
-        if (substr($fileRef, -4) === '.xml' || substr($fileRef, -4) === '.php') {
+        if (str_ends_with($fileRef, '.xml') || str_ends_with($fileRef, '.php')) {
             $lang = $lang === 'default' ? '' : $lang . '.';
             $path = $lang . pathinfo($fileRef, PATHINFO_FILENAME) . '.xlf';
         }
@@ -177,12 +182,6 @@ class Convert
         return $result;
     }
 
-    /**
-     * @param string $xmlFile
-     * @param string $langKey
-     *
-     * @return string
-     */
     protected function generateFileContent(string $xmlFile, string $langKey): string
     {
         // Initialize variables:
@@ -191,23 +190,25 @@ class Convert
 
         $xml[] = '<?xml version="1.0" encoding="UTF-8"?>';
         $xml[] = '<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">';
-        $xml[] = '	<file t3:id="' . time() . '" source-language="en"'
+        $xml[] = '	<file source-language="en"'
             . ($langKey !== 'default' ? ' target-language="' . $langKey . '"' : '')
-            . ' datatype="plaintext" original="messages" date="'
-            . gmdate('Y-m-d\TH:i:s\Z') . '"' . ' product-name="' . $this->extension . '">';
+            . ' datatype="plaintext" original="EXT:' . $this->extension
+            . '/Resources/Private/Language/locallang.xlf" date="'
+            . gmdate('Y-m-d\TH:i:s\Z')
+            . '" product-name="' . $this->extension . '">';
         $xml[] = '		<header/>';
         $xml[] = '		<body>';
 
         foreach ($LOCAL_LANG[$langKey] as $key => $data) {
             if (is_array($data)) {
-                $source = $data[0]['source'];
-                $target = $data[0]['target'];
+                $target = $data[0]['target'] ?? '';
+                $source = $data[0]['source'] ?? $target;
             } else {
                 $source = $LOCAL_LANG['default'][$key];
                 $target = $data;
             }
 
-            if (strpos($source, chr(10)) !== false || strpos($source, chr(10)) !== false) {
+            if (str_contains($source, chr(10))) {
                 $preserve = 'xml:space="preserve"';
             } else {
                 $preserve = '';
@@ -266,7 +267,6 @@ class Convert
                 $LOCAL_LANG[$langKey] = $localLangContent[$langKey];
             }
         } else {
-            /** @noinspection PhpIncludeInspection */
             require($languageFile);
             $includedLanguages = isset($LOCAL_LANG) ? array_keys($LOCAL_LANG) : [];
         }
@@ -285,16 +285,19 @@ class Convert
      * This is a wrapper for xml2arrayProcess that adds a two-level cache
      *
      * @param string $string XML content to convert into an array
-     * @param string $NSprefix The tag-prefix resolve, eg. a namespace like "T3:"
+     * @param string $NSprefix The tag-prefix resolve, e.g. a namespace like "T3:"
      * @param bool $reportDocTag If set, the document tag will be set in the key "_DOCUMENT_TAG" of the output array
      *
-     * @return mixed If the parsing had errors, a string with the error message is returned.
-     *  Otherwise an array with the content.
+     * @return array|string If the parsing had errors, a string with the error message is returned.
+     *         Otherwise, an array with the content.
      *
      * @see array2xml(),xml2arrayProcess()
      */
-    protected function xml2array(string $string, string $NSprefix = '', bool $reportDocTag = false)
-    {
+    protected function xml2array(
+        string $string,
+        string $NSprefix = '',
+        bool $reportDocTag = false
+    ): array|string {
         return GeneralUtility::xml2array($string, $NSprefix, $reportDocTag);
     }
 }

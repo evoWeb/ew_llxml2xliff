@@ -19,6 +19,10 @@
 				<source>File</source>
 			</trans-unit>
 
+			<trans-unit id="convert">
+				<source>Convert selected File</source>
+			</trans-unit>
+
 			<trans-unit id="noFilesToConvert">
 				<source>No files to convert found in extension: "%1$s"</source>
 			</trans-unit>

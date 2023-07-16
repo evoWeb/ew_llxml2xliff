@@ -1,6 +1,6 @@
 <?php
 
-namespace Evoweb\EwLlxml2xliff\Controller;
+declare(strict_types=1);
 
 /*
  * This file is developed by evoWeb.
@@ -13,203 +13,168 @@ namespace Evoweb\EwLlxml2xliff\Controller;
  * LICENSE.txt file that was distributed with this source code.
  */
 
-use Evoweb\EwLlxml2xliff\Utility\Convert;
+namespace Evoweb\EwLlxml2xliff\Controller;
+
+use Evoweb\EwLlxml2xliff\File\Converter;
+use Evoweb\EwLlxml2xliff\Service\ExtensionService;
+use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\ResponseInterface;
-use TYPO3\CMS\Core\Http\HtmlResponse;
+use Psr\Http\Message\ServerRequestInterface;
+use TYPO3\CMS\Backend\Attribute\Controller;
+use TYPO3\CMS\Backend\Routing\UriBuilder;
+use TYPO3\CMS\Backend\Template\ModuleTemplateFactory;
+use TYPO3\CMS\Core\Imaging\IconFactory;
+use TYPO3\CMS\Core\Localization\LanguageService;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Http\ForwardResponse;
-use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
-use TYPO3\CMS\Extensionmanager\Utility\ListUtility;
 
-class FileController extends ActionController
+#[Controller]
+class FileController
 {
-    protected ListUtility $listUtility;
-
-    protected Convert $convertUtility;
-
     public function __construct(
-        ListUtility $listUtility,
-        Convert $convertUtility
+        protected IconFactory $iconFactory,
+        protected UriBuilder $uriBuilder,
+        protected ModuleTemplateFactory $moduleTemplateFactory,
+        protected ResponseFactoryInterface $responseFactory,
+        protected Converter $fileConverter,
+        protected ExtensionService $extensionService
     ) {
-        $this->listUtility = $listUtility;
-        $this->convertUtility = $convertUtility;
     }
 
-    public function indexAction(): ResponseInterface
+    public function indexAction(ServerRequestInterface $request): ResponseInterface
     {
-        $extensions = $this->getLocalExtensions();
-        $extensionsWithFileToConvert = [];
-        foreach ($extensions as $extension) {
-            if (isset($extension['type']) && $this->getFilesOfExtension($extension['key'])) {
-                $extensionsWithFileToConvert[] = $extension;
-            }
-        }
-        $this->view->assign('extensions', $extensionsWithFileToConvert);
+        $view = $this->moduleTemplateFactory->create($request);
+        $view->setTitle(
+            $this->getLanguageService()->sL(
+                'LLL:EXT:ew_llxml2xliff/Resources/Private/Language/locallang_mod.xlf:mlang_tabs_tab'
+            )
+        );
 
-        return new HtmlResponse($this->view->render());
+        $extensions = $this->extensionService->getLocalExtensions();
+        $view->assign('extensions', $extensions);
+
+        return $view->renderResponse('File/Index');
     }
 
-    public function showFilesAction(): ResponseInterface
+    public function showFilesAction(ServerRequestInterface $request): ResponseInterface
     {
-        $extensions = $this->getLocalExtensions();
-        $selectedExtension = $this->isArgumentSetAndAvailable($extensions, 'extension');
+        $extensions = $this->extensionService->getLocalExtensions();
+        $selectedExtension = $this->isArgumentSetAndAvailable($request, $extensions, 'extension');
 
-        if ($selectedExtension) {
-            $files = $this->getFilesOfExtension($selectedExtension);
-
-            $this->view->assign('extensions', $extensions);
-            $this->view->assign('selectedExtension', $selectedExtension);
-            $this->view->assign('files', $files);
-            $response = new HtmlResponse($this->view->render());
-        } else {
+        if (!$selectedExtension) {
             $response = new ForwardResponse('index');
+        } else {
+            $view = $this->moduleTemplateFactory->create($request);
+            $view->setTitle(
+                $this->getLanguageService()->sL(
+                    'LLL:EXT:ew_llxml2xliff/Resources/Private/Language/locallang_mod.xlf:mlang_tabs_tab'
+                )
+            );
+
+            $files = $this->extensionService->getFilesOfExtension($selectedExtension);
+
+            $view->assign('extensions', $extensions);
+            $view->assign('selectedExtension', $selectedExtension);
+            $view->assign('files', $files);
+
+            $response = $view->renderResponse('File/ShowFiles');
         }
 
         return $response;
     }
 
-    public function confirmConversionAction(): ResponseInterface
+    public function confirmConversionAction(ServerRequestInterface $request): ResponseInterface
     {
-        $extensions = $this->getLocalExtensions();
-        $selectedExtension = $this->isArgumentSetAndAvailable($extensions, 'extension');
+        $extensions = $this->extensionService->getLocalExtensions();
+        $selectedExtension = $this->isArgumentSetAndAvailable($request, $extensions, 'extension');
 
-        if ($selectedExtension) {
-            $files = $this->getFilesOfExtension($selectedExtension);
-            $selectedFile = $this->isArgumentSetAndAvailable($files, 'file');
+        if (!$selectedExtension) {
+            $response = new ForwardResponse('index');
+        } else {
+            $files = $this->extensionService->getFilesOfExtension($selectedExtension);
+            $selectedFile = $this->isArgumentSetAndAvailable($request, $files, 'file');
 
-            if ($selectedFile) {
-                $this->view->assign('extensions', $extensions);
-                $this->view->assign('selectedExtension', $selectedExtension);
-                $this->view->assign('files', $files);
-                $this->view->assign('selectedFile', $selectedFile);
-                $response = new HtmlResponse($this->view->render());
-            } else {
+            if (!$selectedFile) {
                 $response = new ForwardResponse('showFiles');
+            } else {
+                $view = $this->moduleTemplateFactory->create($request);
+                $view->setTitle(
+                    $this->getLanguageService()->sL(
+                        'LLL:EXT:ew_llxml2xliff/Resources/Private/Language/locallang_mod.xlf:mlang_tabs_tab'
+                    )
+                );
+
+                $view->assign('extensions', $extensions);
+                $view->assign('selectedExtension', $selectedExtension);
+                $view->assign('files', $files);
+                $view->assign('selectedFile', $selectedFile);
+                $response = $view->renderResponse('File/ConfirmConversion');
             }
-        } else {
-            $response = new ForwardResponse('index');
         }
 
         return $response;
     }
 
-    public function convertFileAction(): ResponseInterface
+    public function convertFileAction(ServerRequestInterface $request): ResponseInterface
     {
-        $extensions = $this->getLocalExtensions();
-        $selectedExtension = $this->isArgumentSetAndAvailable($extensions, 'extension');
+        $extensions = $this->extensionService->getLocalExtensions();
+        $selectedExtension = $this->isArgumentSetAndAvailable($request, $extensions, 'extension');
 
-        if ($selectedExtension) {
-            $files = $this->getFilesOfExtension($selectedExtension);
-            $selectedFile = $this->isArgumentSetAndAvailable($files, 'file');
+        if (!$selectedExtension) {
+            $response = new ForwardResponse('index');
+        } else {
+            $files = $this->extensionService->getFilesOfExtension($selectedExtension);
+            $selectedFile = $this->isArgumentSetAndAvailable($request, $files, 'file');
 
-            if ($selectedFile) {
+            if (!$selectedFile) {
+                $response = new ForwardResponse('showFiles');
+            } else {
+                $view = $this->moduleTemplateFactory->create($request);
+                $view->setTitle(
+                    $this->getLanguageService()->sL(
+                        'LLL:EXT:ew_llxml2xliff/Resources/Private/Language/locallang_mod.xlf:mlang_tabs_tab'
+                    )
+                );
+
                 $extensionPath = ExtensionManagementUtility::extPath($selectedExtension);
-                if ($this->xliffFileAlreadyExists($extensionPath, $selectedFile)) {
-                    $this->view->assign('wasConvertedPreviously', 1);
+                if ($this->extensionService->xliffFileAlreadyExists($extensionPath, $selectedFile)) {
+                    $view->assign('wasConvertedPreviously', 1);
                 } else {
-                    $this->convertUtility->setExtension($selectedExtension);
-                    if (strpos($selectedFile, '.xml') !== false) {
-                        $messages = $this->convertUtility->writeXmlAsXlfFilesInPlace($selectedFile);
+                    $this->fileConverter->setExtension($selectedExtension);
+                    if (str_contains($selectedFile, '.xml')) {
+                        $messages = $this->fileConverter->writeXmlAsXlfFilesInPlace($selectedFile);
                     } else {
-                        $messages = $this->convertUtility->writePhpAsXlfFilesInPlace($selectedFile);
+                        $messages = $this->fileConverter->writePhpAsXlfFilesInPlace($selectedFile);
                     }
 
-                    if (strpos($messages, 'ERROR') === false) {
-                        $this->view->assign('fileConvertedSuccessfully', 1);
-                        $this->view->assign('messages', $messages);
+                    if (!str_contains($messages, 'ERROR')) {
+                        $view->assign('fileConvertedSuccessfully', 1);
                     }
+                    $view->assign('messages', $messages);
                     unset($files[$selectedFile]);
                 }
 
-                $this->view->assign('extensions', $extensions);
-                $this->view->assign('selectedExtension', $selectedExtension);
-                $this->view->assign('files', $files);
-                $this->view->assign('selectedFile', '');
-                $this->view->assign('convertedFile', $selectedFile);
-                $response = new HtmlResponse($this->view->render());
-            } else {
-                $response = new ForwardResponse('showFiles');
+                $view->assign('extensions', $extensions);
+                $view->assign('selectedExtension', $selectedExtension);
+                $view->assign('files', $files);
+                $view->assign('selectedFile', '');
+                $view->assign('convertedFile', $selectedFile);
+                $response = $view->renderResponse('File/ConvertFile');
             }
-        } else {
-            $response = new ForwardResponse('index');
         }
 
         return $response;
     }
 
-    protected function getLocalExtensions(): array
+    protected function isArgumentSetAndAvailable(ServerRequestInterface $request, array $values, string $key): ?string
     {
-        $availableExtensions = $this->listUtility->getAvailableExtensions();
-        $extensions = array_filter($availableExtensions, function ($extension, $key) {
-            /** @var array $extension */
-            /** @var string $key */
-            return $extension['type'] == 'Local' && ExtensionManagementUtility::isLoaded($key);
-        }, ARRAY_FILTER_USE_BOTH);
-        ksort($extensions);
-        return $extensions;
+        $formFieldValues = $request->getParsedBody() ?? [];
+        $formFieldValue = $formFieldValues[$key] ?? '';
+        return empty($values) || empty($formFieldValue) || !isset($values[$formFieldValue]) ? null : $formFieldValue;
     }
 
-    /**
-     * Gather files that need to be converted
-     *
-     * @param string $extensionKey Extension for which to get list of files of
-     *
-     * @return array
-     */
-    protected function getFilesOfExtension(string $extensionKey): array
+    protected function getLanguageService(): LanguageService
     {
-        $extensionPath = ExtensionManagementUtility::extPath($extensionKey);
-
-        $xmlFiles = GeneralUtility::removePrefixPathFromList(
-            GeneralUtility::getAllFilesAndFoldersInPath([], $extensionPath, 'xml', 0),
-            $extensionPath
-        );
-        $phpFiles = GeneralUtility::removePrefixPathFromList(
-            GeneralUtility::getAllFilesAndFoldersInPath([], $extensionPath, 'php', 0),
-            $extensionPath
-        );
-
-        $result = [];
-
-        if (is_array($xmlFiles)) {
-            foreach ($xmlFiles as $file) {
-                if ($this->isLanguageFile($file) && !$this->xliffFileAlreadyExists($extensionPath, $file)) {
-                    $result[$file] = ['filename' => $file];
-                }
-            }
-        }
-
-        if (is_array($phpFiles)) {
-            foreach ($phpFiles as $file) {
-                if ($this->isLanguageFile($file) && !$this->xliffFileAlreadyExists($extensionPath, $file)) {
-                    $result[$file] = ['filename' => $file];
-                }
-            }
-        }
-
-        if (!empty($result)) {
-            ksort($result);
-        }
-
-        return $result;
-    }
-
-    protected function isLanguageFile(string $filePath): bool
-    {
-        return strpos($filePath, 'locallang') !== false;
-    }
-
-    protected function xliffFileAlreadyExists(string $extensionPath, string $filePath): bool
-    {
-        $xliffFileName = preg_replace('#\.(xml|php)$#', '.xlf', $extensionPath . $filePath);
-
-        return (bool)file_exists($xliffFileName);
-    }
-
-    protected function isArgumentSetAndAvailable(array $values, string $key): ?string
-    {
-        $value = $this->request->hasArgument($key) ? $this->request->getArgument($key) : '';
-        return empty($values) || empty($value) || !isset($values[$value]) ? false : $value;
+        return $GLOBALS['LANG'];
     }
 }
