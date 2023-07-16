@@ -1,20 +1,13 @@
 <html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers" data-namespace-typo3-fluid="true">
 
-<f:layout name="Default"/>
+<f:layout name="Module"/>
 
 <f:section name="Content">
-	<h1><f:translate id="header.conversion"/></h1>
+	<h1><f:translate id="LLL:EXT:ew_llxml2xliff/Resources/Private/Language/locallang.xlf:header.conversion"/></h1>
 
-	<f:form action="showFiles">
-		<div class="form-section form-group">
-			<label for="extension"><f:translate id="extension"/></label>
-			<div class="form-control-wrap">
-				<div class="input-group">
-					<f:render partial="SelectExtension" arguments="{_all}"/>
-				</div>
-			</div>
-		</div>
-	</f:form>
+    <form action="{f:be.uri(route: 'web_EwLlxml2xliff.showFiles')}" method="post">
+        <f:render partial="SelectExtension" arguments="{_all}"/>
+	</form>
 </f:section>
 
 </html>

@@ -1,50 +1,42 @@
 <html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers" data-namespace-typo3-fluid="true">
 
-<f:layout name="Default"/>
+<f:layout name="Module"/>
 
 <f:section name="Content">
-	<h1><f:translate id="header.conversion"/></h1>
+    <h1><f:translate id="LLL:EXT:ew_llxml2xliff/Resources/Private/Language/locallang.xlf:header.conversion"/></h1>
 
-	<f:form action="showFiles">
-		<div class="form-section form-group">
-			<label for="extension"><f:translate id="extension"/></label>
-			<div class="form-control-wrap">
-				<div class="input-group">
-					<f:render partial="SelectExtension" arguments="{_all}"/>
-				</div>
-			</div>
-		</div>
-	</f:form>
+    <form action="{f:be.uri(route: 'web_EwLlxml2xliff.showFiles')}" method="post">
+        <f:render partial="SelectExtension" arguments="{_all}"/>
+    </form>
 
-	<f:form action="confirmConversion">
-		<f:form.hidden name="extension" value="{selectedExtension}"/>
-		<div class="form-section form-group">
-			<label for="file"><f:translate id="file"/></label>
-			<div class="form-control-wrap">
-				<div class="input-group">
-					<f:render partial="SelectFile" arguments="{_all}"/>
-				</div>
-			</div>
-		</div>
-	</f:form>
+    <form action="{f:be.uri(route: 'web_EwLlxml2xliff.confirmConversion')}" method="post">
+        <input type="hidden" name="extension" value="{selectedExtension}"/>
+        <f:render partial="SelectFile" arguments="{_all}"/>
+    </form>
 
-	<div class="form-section form-group">
-		<div class="form-control-wrap" style="margin-top: 0;">
-			<f:translate id="processedFile" arguments="{0: convertedFile, 1: selectedExtension}"/>
-			<f:if condition="{wasConvertedPreviously}">
-				<f:then><f:translate id="wasConvertedPreviously"/></f:then>
-				<f:else>
-					<f:if condition="{fileConvertedSuccessfully}">
-						<f:then><f:translate id="fileConvertedSuccessfully.yes"/></f:then>
-						<f:else><f:translate id="fileConvertedSuccessfully.no"/></f:else>
-					</f:if>
-					<br />
-					<br />
-					<f:format.raw>{messages}</f:format.raw>
-				</f:else>
-			</f:if>
-		</div>
-	</div>
+    <div class="form-section">
+        <div class="form-group">
+            <div class="formengine-field-item">
+                <div class="form-control-wrap">
+                    <div class="form-wizards-element">
+                        <f:translate id="LLL:EXT:ew_llxml2xliff/Resources/Private/Language/locallang.xlf:processedFile" arguments="{0: convertedFile, 1: selectedExtension}"/>
+                        <f:if condition="{wasConvertedPreviously}">
+                            <f:then><f:translate id="LLL:EXT:ew_llxml2xliff/Resources/Private/Language/locallang.xlf:wasConvertedPreviously"/></f:then>
+                            <f:else>
+                                <p>
+                                <f:if condition="{fileConvertedSuccessfully}">
+                                    <f:then><f:translate id="LLL:EXT:ew_llxml2xliff/Resources/Private/Language/locallang.xlf:fileConvertedSuccessfully.yes"/></f:then>
+                                    <f:else><f:translate id="LLL:EXT:ew_llxml2xliff/Resources/Private/Language/locallang.xlf:fileConvertedSuccessfully.no"/></f:else>
+                                </f:if>
+                                </p>
+                                <p><f:format.raw>{messages}</f:format.raw></p>
+                            </f:else>
+                        </f:if>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </f:section>
 
 </html>

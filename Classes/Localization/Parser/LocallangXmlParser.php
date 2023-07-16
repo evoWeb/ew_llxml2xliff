@@ -1,6 +1,6 @@
 <?php
 
-namespace Evoweb\EwLlxml2xliff\Localization\Parser;
+declare(strict_types=1);
 
 /*
  * This file is part of the TYPO3 CMS project.
@@ -14,6 +14,8 @@ namespace Evoweb\EwLlxml2xliff\Localization\Parser;
  *
  * The TYPO3 project - inspiring people to share!
  */
+
+namespace Evoweb\EwLlxml2xliff\Localization\Parser;
 
 use TYPO3\CMS\Core\Localization\Exception\InvalidXmlFileException;
 use TYPO3\CMS\Core\Localization\Parser\AbstractXmlParser;
@@ -39,21 +41,26 @@ class LocallangXmlParser extends AbstractXmlParser
      *
      * @return array
      */
-    public function getParsedData($sourcePath, $languageKey)
+    public function getParsedData($sourcePath, $languageKey): array
     {
         $this->sourcePath = $sourcePath;
         $this->languageKey = $languageKey;
+
         // Parse source
         $parsedSource = $this->parseXmlFile();
+
         // Parse target
         $localizedTargetPath = $this->getLocalizedFileName($this->sourcePath, $this->languageKey);
         $targetPath = $this->languageKey !== 'default' && @is_file($localizedTargetPath)
-            ? $localizedTargetPath : $this->sourcePath;
+            ? $localizedTargetPath
+            : $this->sourcePath;
+
         try {
             $parsedTarget = $this->getParsedTargetData($targetPath);
-        } catch (InvalidXmlFileException $e) {
+        } catch (InvalidXmlFileException) {
             $parsedTarget = $this->getParsedTargetData($this->sourcePath);
         }
+
         $LOCAL_LANG = [];
         $LOCAL_LANG[$languageKey] = $parsedSource;
         ArrayUtility::mergeRecursiveWithOverrule($LOCAL_LANG[$languageKey], $parsedTarget);
@@ -61,12 +68,49 @@ class LocallangXmlParser extends AbstractXmlParser
     }
 
     /**
+     * Parse the given language key tag
+     */
+    protected function getParsedDataForElement(\SimpleXMLElement $bodyOfFileTag, string $element): array
+    {
+        $parsedData = [];
+        $children = $bodyOfFileTag->children();
+        if ($children->count() === 0) {
+            // Check for externally-referenced resource:
+            // <languageKey index="fr">EXT:yourext/path/to/localized/locallang.xml</languageKey>
+            $reference = sprintf('%s', $bodyOfFileTag);
+            if (str_ends_with($reference, '.xml')) {
+                return $this->getParsedTargetData(GeneralUtility::getFileAbsFileName($reference));
+            }
+        }
+
+        foreach ($children as $translationElement) {
+            if ($translationElement->getName() === 'label') {
+                $parsedData[(string)$translationElement['index']][0] = [
+                    $element => (string)$translationElement
+                ];
+            }
+        }
+        return $parsedData;
+    }
+
+    /**
      * Returns array representation of XLIFF data, starting from a root node.
-     *
-     * @param \SimpleXMLElement $root XML root element
-     * @param string $element Target or Source
-     * @return array
-     * @throws InvalidXmlFileException
+     */
+    protected function doParsingFromRoot(\SimpleXMLElement $root): array
+    {
+        return $this->doParsingFromRootForElement($root, 'source');
+    }
+
+    /**
+     * Returns array representation of XLIFF data, starting from a root node.
+     */
+    protected function doParsingTargetFromRoot(\SimpleXMLElement $root): array
+    {
+        return $this->doParsingFromRootForElement($root, 'target');
+    }
+
+    /**
+     * Returns array representation of XLIFF data, starting from a root node.
      */
     protected function doParsingFromRootForElement(\SimpleXMLElement $root, string $element): array
     {
@@ -100,66 +144,11 @@ class LocallangXmlParser extends AbstractXmlParser
     }
 
     /**
-     * Parse the given language key tag
-     *
-     * @param \SimpleXMLElement $bodyOfFileTag
-     * @param string $element
-     * @return array
-     */
-    protected function getParsedDataForElement(\SimpleXMLElement $bodyOfFileTag, string $element): array
-    {
-        $parsedData = [];
-        $children = $bodyOfFileTag->children();
-        if ($children->count() === 0) {
-            // Check for externally-referenced resource:
-            // <languageKey index="fr">EXT:yourext/path/to/localized/locallang.xml</languageKey>
-            $reference = sprintf('%s', $bodyOfFileTag);
-            if (substr($reference, -4) === '.xml') {
-                return $this->getParsedTargetData(GeneralUtility::getFileAbsFileName($reference));
-            }
-        }
-
-        foreach ($children as $translationElement) {
-            if ($translationElement->getName() === 'label') {
-                $parsedData[(string)$translationElement['index']][0] = [
-                    $element => (string)$translationElement
-                ];
-            }
-        }
-        return $parsedData;
-    }
-
-    /**
-     * Returns array representation of XLIFF data, starting from a root node.
-     *
-     * @param \SimpleXMLElement $root A root node
-     * @return array An array representing parsed XLIFF
-     */
-    protected function doParsingFromRoot(\SimpleXMLElement $root): array
-    {
-        return $this->doParsingFromRootForElement($root, 'source');
-    }
-
-    /**
-     * Returns array representation of XLIFF data, starting from a root node.
-     *
-     * @param \SimpleXMLElement $root A root node
-     * @return array An array representing parsed XLIFF
-     */
-    protected function doParsingTargetFromRoot(\SimpleXMLElement $root): array
-    {
-        return $this->doParsingFromRootForElement($root, 'target');
-    }
-
-    /**
      * Returns parsed representation of XML file.
      *
      * Parses XML if it wasn't done before. Caches parsed data.
-     *
-     * @param string $path An absolute path to XML file
-     * @return array Parsed XML file
      */
-    public function getParsedTargetData(string $path): array
+    protected function getParsedTargetData(string $path): array
     {
         if (!isset($this->parsedTargetFiles[$path])) {
             $this->parsedTargetFiles[$path] = $this->parseXmlTargetFile($path);
@@ -169,10 +158,6 @@ class LocallangXmlParser extends AbstractXmlParser
 
     /**
      * Reads and parses XML file and returns internal representation of data.
-     *
-     * @param string $targetPath Path of the target file
-     * @return array
-     * @throws \TYPO3\CMS\Core\Localization\Exception\InvalidXmlFileException
      */
     protected function parseXmlTargetFile(string $targetPath): array
     {
