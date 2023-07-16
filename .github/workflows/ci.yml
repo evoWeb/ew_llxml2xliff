@@ -2,10 +2,10 @@ name: build
 
 on:
   push:
-    branches: [ develop, main ]
+    branches: [ 4.x, main ]
     tags: [ '*' ]
   pull_request:
-    branches: [ develop ]
+    branches: [ 4.x ]
 
 jobs:
 
