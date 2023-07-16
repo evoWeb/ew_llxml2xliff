@@ -36,6 +36,8 @@ checkResources () {
     fi
     echo "#################################################################" >&2
     echo "" >&2
+
+    ./additionalTests.sh -s clean
 }
 
 #################################################
@@ -74,13 +76,14 @@ runFunctionalTests () {
 
     ./additionalTests.sh -p ${PHP_VERSION} \
         -s composerInstallPackage \
-        -q "typo3/cms-core:${TYPO3_VERSION}" || exit 1 ; \
+        -q "typo3/cms-core:${TYPO3_VERSION}" \
+        -r " --dev ${PREFER_LOWEST}" || exit 1 ; \
         EXIT_CODE_CORE=$?
 
     ./additionalTests.sh -p ${PHP_VERSION} \
         -s composerInstallPackage \
         -q "typo3/testing-framework:${TESTING_FRAMEWORK}" \
-        -o " --dev ${PREFER_LOWEST}" || exit 1 ; \
+        -r " --dev ${PREFER_LOWEST}" || exit 1 ; \
         EXIT_CODE_FRAMEWORK=$?
 
     ./runTests.sh -p ${PHP_VERSION} -s composerValidate || exit 1 ; \
@@ -118,8 +121,9 @@ cleanup () {
 
 checkResources
 
-runFunctionalTests "8.1" "^12.0" "dev-main" "Tests/Functional" || exit 1
-runFunctionalTests "8.1" "^12.0" "dev-main" "Tests/Functional" "--prefer-lowest" || exit 1
-# runFunctionalTests "8.1" "dev-main" "dev-main" "Tests/Functional" || exit 1
+runFunctionalTests "8.1" "^11.0" "^6.6.2" "Tests/Functional" || exit 1
+runFunctionalTests "8.1" "^11.0" "^6.6.2" "Tests/Functional" "--prefer-lowest" || exit 1
+runFunctionalTests "8.2" "^11.0" "^6.6.2" "Tests/Functional" || exit 1
+runFunctionalTests "8.2" "^11.0" "^6.6.2" "Tests/Functional" "--prefer-lowest" || exit 1
 
 cleanup

@@ -134,10 +134,16 @@ while getopts ":a:s:c:d:i:j:k:p:e:xy:q:o:nhuv" OPT; do
         s)
             TEST_SUITE=${OPTARG}
             ;;
+        p)
+            PHP_VERSION=${OPTARG}
+            if ! [[ ${PHP_VERSION} =~ ^(8.1|8.2)$ ]]; then
+                INVALID_OPTIONS+=("${OPTARG}")
+            fi
+            ;;
         q)
             PACKAGE=${OPTARG}
             ;;
-        o)
+        r)
             COMPOSER_PARAMETER=${OPTARG}
             ;;
     esac
