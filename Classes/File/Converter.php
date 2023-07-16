@@ -192,8 +192,10 @@ class Converter
         $xml[] = '<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">';
         $xml[] = '	<file source-language="en"'
             . ($langKey !== 'default' ? ' target-language="' . $langKey . '"' : '')
-            . ' datatype="plaintext" original="EXT:' . $this->extension . '/Resources/Private/Language/locallang.xlf" date="'
-            . gmdate('Y-m-d\TH:i:s\Z') . '"' . ' product-name="' . $this->extension . '">';
+            . ' datatype="plaintext" original="EXT:' . $this->extension
+            . '/Resources/Private/Language/locallang.xlf" date="'
+            . gmdate('Y-m-d\TH:i:s\Z')
+            . '" product-name="' . $this->extension . '">';
         $xml[] = '		<header/>';
         $xml[] = '		<body>';
 
