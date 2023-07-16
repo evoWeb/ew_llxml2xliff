@@ -2,53 +2,73 @@
 	"name": "evoweb/ew-llxml2xliff",
 	"type": "typo3-cms-extension",
 	"description": "Provides a backend module to convert locallang.xml and locallang.php files to xliff. For every language, contained in the source file, an extra file gets created.",
-	"homepage": "http://www.evoweb.de/",
-
-	"license": "GPL-2.0-or-later",
-
-	"support" : {
-		"docs": "https://docs.typo3.org/p/evoweb/ew-llxml2xliff/master/en-us/",
-		"issues": "https://github.com/evoWeb/ew_llxml2xliff/issues"
-	},
-
+	"homepage": "https://www.evoweb.de",
+	"license": [
+		"GPL-2.0-or-later"
+	],
 	"keywords": [
 		"llxml",
 		"xliff",
 		"converter"
 	],
-
+	"support" : {
+		"source": "https://github.com/evoWeb/ew_llxml2xliff",
+		"issues": "https://github.com/evoWeb/ew_llxml2xliff/issues",
+		"docs": "https://docs.typo3.org/p/evoweb/ew-llxml2xliff/master/en-us/"
+	},
+	"config": {
+		"bin-dir": "bin",
+		"platform": {
+			"php": "8.1.1"
+		},
+		"sort-packages": true,
+		"allow-plugins": {
+			"typo3/class-alias-loader": true,
+			"typo3/cms-composer-installers": true
+		}
+	},
 	"require": {
+		"php": "^7.4 || ^8.1",
 		"ext-simplexml": "*",
 		"ext-libxml": "*",
-
-		"typo3/cms-core": "^11.0",
-		"typo3/cms-extbase": "*",
-		"typo3/cms-fluid": "*",
-		"typo3/cms-extensionmanager": "*"
+		"typo3/cms-core": "^11.5",
+		"typo3/cms-backend": "^11.5",
+		"typo3/cms-extbase": "^11.5",
+		"typo3/cms-fluid": "^11.5",
+		"typo3/cms-extensionmanager": "^11.5"
 	},
-
+	"require-dev": {
+		"typo3/testing-framework": "^6.6.2"
+	},
+	"extra": {
+		"typo3/cms": {
+			"extension-key": "ew_llxml2xliff"
+		}
+	},
+	"scripts": {
+		"prepare-release": [
+			"rm -rf .github",
+			"rm -rf Build",
+			"rm -rf Tests",
+			"rm .gitattributes",
+			"rm .gitignore",
+			"sed -i \"s/version' => '.*'/version' => '$(echo ${GITHUB_REF} | cut -d / -f 3)'/\" ext_emconf.php\n"
+		],
+		"post-install-cmd": [
+			"ln -sf ../vendor/typo3/testing-framework/Resources/Core/Build/ Build/phpunit;"
+		],
+		"post-update-cmd": [
+			"@post-install-cmd"
+		]
+	},
 	"autoload": {
 		"psr-4": {
 			"Evoweb\\EwLlxml2xliff\\": "Classes/"
 		}
 	},
-
-	"config": {
-		"vendor-dir": ".Build/Web/vendor"
-	},
-	"extra": {
-		"typo3/cms": {
-			"extension-key": "ew_llxml2xliff",
-			"web-dir": ".Build/Web"
+	"autoload-dev": {
+		"psr-4": {
+			"Evoweb\\EwLlxml2xliff\\Tests\\": "Tests/"
 		}
-	},
-
-	"scripts": {
-		"post-autoload-dump": "mkdir -p .Build/Web/typo3conf/ext/ && ln -snf ../../../.. .Build/Web/typo3conf/ext/ew_llxml2xliff",
-		"prepare-release": [
-			"rm -rf .Build",
-			"rm -rf .github",
-			"sed -i \"s/version' => '.*'/version' => '$(echo ${GITHUB_REF} | cut -d / -f 3)'/\" ext_emconf.php\n"
-		]
 	}
 }

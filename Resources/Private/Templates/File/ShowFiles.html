@@ -6,31 +6,12 @@
 	<h1><f:translate id="header.conversion"/></h1>
 
 	<f:form action="showFiles">
-		<div class="form-section form-group">
-			<label for="extension"><f:translate id="extension"/></label>
-			<div class="form-control-wrap">
-				<div class="input-group">
-					<f:render partial="SelectExtension" arguments="{_all}"/>
-				</div>
-			</div>
-		</div>
+        <f:render partial="SelectExtension" arguments="{_all}"/>
 	</f:form>
 
 	<f:form action="confirmConversion">
 		<f:form.hidden name="extension" value="{selectedExtension}"/>
-		<div class="form-section form-group">
-			<label for="file"><f:translate id="file"/></label>
-			<div class="form-control-wrap">
-				<f:if condition="{files}">
-					<f:then>
-						<div class="input-group">
-							<f:render partial="SelectFile" arguments="{_all}"/>
-						</div>
-					</f:then>
-					<f:else><f:translate id="noFilesToConvert" arguments="{0: selectedExtension}"/></f:else>
-				</f:if>
-			</div>
-		</div>
+        <f:render partial="SelectFile" arguments="{_all}"/>
 	</f:form>
 </f:section>
 

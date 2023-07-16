@@ -1,14 +1,21 @@
 <html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers" data-namespace-typo3-fluid="true">
 
-<f:form.select
-	name="extension"
-	value="{selectedExtension}"
-	class="form-control"
-	id="extension"
-	options="{extensions}"
-	optionValueField="key"
-	optionLabelField="key"
-	additionalAttributes="{onchange : 'submit()'}"
-	prependOptionLabel="{f:translate(id: 'please.select')}"/>
+<div class="form-section form-group">
+    <label for="extension"><f:translate id="extension"/></label>
+    <div class="form-control-wrap">
+        <div class="input-group">
+            <f:form.select
+                name="extension"
+                value="{selectedExtension}"
+                class="form-control"
+                id="extension"
+                options="{extensions}"
+                optionValueField="key"
+                optionLabelField="key"
+                additionalAttributes="{onchange : 'submit()'}"
+                prependOptionLabel="{f:translate(id: 'please.select')}"/>
+        </div>
+    </div>
+</div>
 
 </html>

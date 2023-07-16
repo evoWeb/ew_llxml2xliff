@@ -1,10 +1,8 @@
-.. include:: Includes.txt
+.. include:: /Includes.rst.txt
 
-.. _start:
-
-=========================================
-ew_llxml2xliff: Converting llxml to xliff
-=========================================
+=========================
+Converting llxml to xliff
+=========================
 
 :Extension key:
     ew_llxml2xliff
@@ -22,13 +20,14 @@ ew_llxml2xliff: Converting llxml to xliff
     forDevelopers
 
 :Copyright:
-    2016-2019
+    2016-2023
 
 :Author:
-    evoWeb
+    Sebastian Fischer
 
 :License:
-    Open Content License available from http://www.opencontent.org/opl.shtml
+   This document is published under the
+   `Open Publication License <https://www.opencontent.org/openpub/>`__.
 
 :Rendered:
     |today|
@@ -36,18 +35,21 @@ ew_llxml2xliff: Converting llxml to xliff
 The content of this document is related to TYPO3,
 a GNU/GPL CMS/Framework available from http://typo3.org
 
-.. only:: html
-
-   .. tip::
-
-      :ref: `Sitemap`
+----
 
 **Table of Contents**
 
 .. toctree::
-   :maxdepth: 5
+   :maxdepth: 2
    :titlesonly:
-   :glob:
 
    Introduction/Index
    Installation/Index
+
+.. Meta Menu
+
+.. toctree::
+   :hidden:
+
+   Sitemap
+   genindex

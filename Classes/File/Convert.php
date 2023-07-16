@@ -1,6 +1,6 @@
 <?php
 
-namespace Evoweb\EwLlxml2xliff\Utility;
+namespace Evoweb\EwLlxml2xliff\File;
 
 /*
  *  Copyright notice

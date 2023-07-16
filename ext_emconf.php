@@ -12,7 +12,7 @@ $EM_CONF['ew_llxml2xliff'] = [
     'version' => '4.0.1',
     'constraints' => [
         'depends' => [
-            'typo3' => '11.0.0-11.9.99',
+            'typo3' => '11.0.0-11.5.99',
         ],
         'conflicts' => [],
         'suggests' => [],

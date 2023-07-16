@@ -39,7 +39,7 @@ class LocallangXmlParser extends AbstractXmlParser
      *
      * @return array
      */
-    public function getParsedData($sourcePath, $languageKey)
+    public function getParsedData($sourcePath, $languageKey): array
     {
         $this->sourcePath = $sourcePath;
         $this->languageKey = $languageKey;
@@ -61,12 +61,49 @@ class LocallangXmlParser extends AbstractXmlParser
     }
 
     /**
+     * Parse the given language key tag
+     */
+    protected function getParsedDataForElement(\SimpleXMLElement $bodyOfFileTag, string $element): array
+    {
+        $parsedData = [];
+        $children = $bodyOfFileTag->children();
+        if ($children->count() === 0) {
+            // Check for externally-referenced resource:
+            // <languageKey index="fr">EXT:yourext/path/to/localized/locallang.xml</languageKey>
+            $reference = sprintf('%s', $bodyOfFileTag);
+            if (substr($reference, -4) === '.xml') {
+                return $this->getParsedTargetData(GeneralUtility::getFileAbsFileName($reference));
+            }
+        }
+
+        foreach ($children as $translationElement) {
+            if ($translationElement->getName() === 'label') {
+                $parsedData[(string)$translationElement['index']][0] = [
+                    $element => (string)$translationElement
+                ];
+            }
+        }
+        return $parsedData;
+    }
+
+    /**
      * Returns array representation of XLIFF data, starting from a root node.
-     *
-     * @param \SimpleXMLElement $root XML root element
-     * @param string $element Target or Source
-     * @return array
-     * @throws InvalidXmlFileException
+     */
+    protected function doParsingFromRoot(\SimpleXMLElement $root): array
+    {
+        return $this->doParsingFromRootForElement($root, 'source');
+    }
+
+    /**
+     * Returns array representation of XLIFF data, starting from a root node.
+     */
+    protected function doParsingTargetFromRoot(\SimpleXMLElement $root): array
+    {
+        return $this->doParsingFromRootForElement($root, 'target');
+    }
+
+    /**
+     * Returns array representation of XLIFF data, starting from a root node.
      */
     protected function doParsingFromRootForElement(\SimpleXMLElement $root, string $element): array
     {
@@ -100,64 +137,9 @@ class LocallangXmlParser extends AbstractXmlParser
     }
 
     /**
-     * Parse the given language key tag
-     *
-     * @param \SimpleXMLElement $bodyOfFileTag
-     * @param string $element
-     * @return array
-     */
-    protected function getParsedDataForElement(\SimpleXMLElement $bodyOfFileTag, string $element): array
-    {
-        $parsedData = [];
-        $children = $bodyOfFileTag->children();
-        if ($children->count() === 0) {
-            // Check for externally-referenced resource:
-            // <languageKey index="fr">EXT:yourext/path/to/localized/locallang.xml</languageKey>
-            $reference = sprintf('%s', $bodyOfFileTag);
-            if (substr($reference, -4) === '.xml') {
-                return $this->getParsedTargetData(GeneralUtility::getFileAbsFileName($reference));
-            }
-        }
-
-        foreach ($children as $translationElement) {
-            if ($translationElement->getName() === 'label') {
-                $parsedData[(string)$translationElement['index']][0] = [
-                    $element => (string)$translationElement
-                ];
-            }
-        }
-        return $parsedData;
-    }
-
-    /**
-     * Returns array representation of XLIFF data, starting from a root node.
-     *
-     * @param \SimpleXMLElement $root A root node
-     * @return array An array representing parsed XLIFF
-     */
-    protected function doParsingFromRoot(\SimpleXMLElement $root): array
-    {
-        return $this->doParsingFromRootForElement($root, 'source');
-    }
-
-    /**
-     * Returns array representation of XLIFF data, starting from a root node.
-     *
-     * @param \SimpleXMLElement $root A root node
-     * @return array An array representing parsed XLIFF
-     */
-    protected function doParsingTargetFromRoot(\SimpleXMLElement $root): array
-    {
-        return $this->doParsingFromRootForElement($root, 'target');
-    }
-
-    /**
      * Returns parsed representation of XML file.
      *
      * Parses XML if it wasn't done before. Caches parsed data.
-     *
-     * @param string $path An absolute path to XML file
-     * @return array Parsed XML file
      */
     public function getParsedTargetData(string $path): array
     {
@@ -169,10 +151,6 @@ class LocallangXmlParser extends AbstractXmlParser
 
     /**
      * Reads and parses XML file and returns internal representation of data.
-     *
-     * @param string $targetPath Path of the target file
-     * @return array
-     * @throws \TYPO3\CMS\Core\Localization\Exception\InvalidXmlFileException
      */
     protected function parseXmlTargetFile(string $targetPath): array
     {
@@ -180,9 +158,7 @@ class LocallangXmlParser extends AbstractXmlParser
         if (file_exists($targetPath)) {
             $xmlContent = file_get_contents($targetPath);
             // Disables the functionality to allow external entities to be loaded when parsing the XML, must be kept
-            $previousValueOfEntityLoader = libxml_disable_entity_loader(true);
             $rootXmlNode = simplexml_load_string($xmlContent, \SimpleXMLElement::class, LIBXML_NOWARNING);
-            libxml_disable_entity_loader($previousValueOfEntityLoader);
         }
         if ($rootXmlNode === false) {
             $xmlError = libxml_get_last_error();
