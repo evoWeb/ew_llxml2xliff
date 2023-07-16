@@ -19,13 +19,10 @@ install the extension by hitting the action for that.
 Download via Composer
 =====================
 
-Add evoweb/extender to the require in your composer.json like in the following
-example and run 'composer install'.
+Add evoweb/extender to the require in your composer.json.
 
 .. code-block:: bash
    :caption: Enter on shell
 
    composer require evoweb/ew-llxml2xliff
 
-Alternatively if you have an existing project with a configured composer.json you
-can add extender with the command by running 'composer require evoweb/ew-llxml2xliff'.

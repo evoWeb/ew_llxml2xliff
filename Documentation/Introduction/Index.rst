@@ -13,6 +13,7 @@ What does it do?
 Provides a backend module to convert locallang.xml and locallang.php files
 to xliff. For every language, contained in the source file, an extra file gets created.
 
+
 Converting llxml to xliff:
 ==========================
 
