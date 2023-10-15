@@ -56,42 +56,53 @@ runFunctionalTests () {
     local TEST_PATH=${4}
     local PREFER_LOWEST=${5}
 
-    echo "#################################################################" >&2
-    echo "Run unit and/or functional tests on TYPO3 ${TYPO3_VERSION}" >&2
-    echo "with PHP ${PHP_VERSION} and testing framework ${TESTING_FRAMEWORK}">&2
-    echo "#################################################################" >&2
-
-    echo -n "Restore composer.json state  ... " ; \
-        rm ../../composer.lock ; \
-        git checkout ../../composer.json ; \
-        echo "done"
+    echo "###########################################################################" >&2
+    echo " Run unit and/or functional tests with" >&2
+    echo " - TYPO3 ${TYPO3_VERSION}" >&2
+    echo " - PHP ${PHP_VERSION}">&2
+    echo " - Testing framework ${TESTING_FRAMEWORK}">&2
+    echo " - Test path ${TEST_PATH}">&2
+    echo " - Additional ${PREFER_LOWEST}">&2
+    echo "###########################################################################" >&2
 
     ./runTests.sh -s cleanTests
 
-    ./additionalTests.sh -p ${PHP_VERSION} -s lintPhp || exit 1 ; \
+    ./additionalTests.sh \
+        -p ${PHP_VERSION} \
+        -s lintPhp || exit 1 ; \
         EXIT_CODE_LINT=$?
 
-    ./runTests.sh -p ${PHP_VERSION} -s composerInstall || exit 1 ; \
-        EXIT_CODE_INSTALL=$?
+    ./runTests.sh \
+        -p ${PHP_VERSION} \
+        -s composerInstall || exit 1 ; \
+        EXIT_CODE_LINT=$?
 
-    ./additionalTests.sh -p ${PHP_VERSION} \
+    ./additionalTests.sh \
+        -p ${PHP_VERSION} \
         -s composerInstallPackage \
         -q "typo3/cms-core:${TYPO3_VERSION}" \
-        -r " --dev ${PREFER_LOWEST}" || exit 1 ; \
+        -r " ${PREFER_LOWEST}" || exit 1 ; \
         EXIT_CODE_CORE=$?
 
-    ./additionalTests.sh -p ${PHP_VERSION} \
+    ./additionalTests.sh \
+        -p ${PHP_VERSION} \
         -s composerInstallPackage \
         -q "typo3/testing-framework:${TESTING_FRAMEWORK}" \
         -r " --dev ${PREFER_LOWEST}" || exit 1 ; \
         EXIT_CODE_FRAMEWORK=$?
 
-    ./runTests.sh -p ${PHP_VERSION} -s composerValidate || exit 1 ; \
+    ./runTests.sh \
+        -p ${PHP_VERSION} \
+        -s composerValidate || exit 1 ; \
         EXIT_CODE_VALIDATE=$?
 
-    echo "#################################################################" >&2
-    echo "Run unit and/or functional tests on TYPO3 ${TYPO3_VERSION}" >&2
-    echo "with PHP ${PHP_VERSION} and testing framework ${TESTING_FRAMEWORK}">&2
+    echo "###########################################################################" >&2
+    echo " Finished unit and/or functional tests with" >&2
+    echo " - TYPO3 ${TYPO3_VERSION}" >&2
+    echo " - PHP ${PHP_VERSION}">&2
+    echo " - Testing framework ${TESTING_FRAMEWORK}">&2
+    echo " - Test path ${TEST_PATH}">&2
+    echo " - Additional ${PREFER_LOWEST}">&2
     if [[ ${EXIT_CODE_LINT} -eq 0 ]] && \
         [[ ${EXIT_CODE_INSTALL} -eq 0 ]] && \
         [[ ${EXIT_CODE_CORE} -eq 0 ]] && \
@@ -121,9 +132,11 @@ cleanup () {
 
 checkResources
 
-runFunctionalTests "8.1" "^12.0" "dev-main" "Tests/Functional" || exit 1
-runFunctionalTests "8.1" "^12.0" "dev-main" "Tests/Functional" "--prefer-lowest" || exit 1
-runFunctionalTests "8.2" "^12.0" "dev-main" "Tests/Functional" || exit 1
-runFunctionalTests "8.2" "^12.0" "dev-main" "Tests/Functional" "--prefer-lowest" || exit 1
-
+runFunctionalTests "8.1" "^12.4" "^8.0.2" "Tests/Functional" || exit 1
+cleanup
+runFunctionalTests "8.1" "^12.4" "^8.0.2" "Tests/Functional" "--prefer-lowest" || exit 1
+cleanup
+runFunctionalTests "8.2" "^12.4" "^8.0.2" "Tests/Functional" || exit 1
+cleanup
+runFunctionalTests "8.2" "^12.4" "^8.0.2" "Tests/Functional" "--prefer-lowest" || exit 1
 cleanup
