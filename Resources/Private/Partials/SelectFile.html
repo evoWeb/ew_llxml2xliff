@@ -1,26 +1,16 @@
 <html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers" data-namespace-typo3-fluid="true">
 
-<fieldset class="form-section">
-    <div class="form-group">
-        <label for="file" class="form-label"><f:translate id="LLL:EXT:ew_llxml2xliff/Resources/Private/Language/locallang.xlf:file"/></label>
-        <div class="formengine-field-item">
-            <div class="form-control-wrap">
-                <div class="form-wizards-wrap">
-                    <div class="form-wizards-element">
-                        <select name="file" id="file" class="form-select form-control-adapt" onchange="submit()">
-                            <option>{f:translate(id: 'LLL:EXT:ew_llxml2xliff/Resources/Private/Language/locallang.xlf:please.select')}</option>
-                            <f:for each="{files}" as="file">
-                                <f:if condition="{file.filename}=={selectedFile}">
-                                    <f:then><option value="{file.filename}" selected>{file.filename}</option></f:then>
-                                    <f:else><option value="{file.filename}">{file.filename}</option></f:else>
-                                </f:if>
-                            </f:for>
-                        </select>
-                    </div>
-                </div>
-            </div>
-        </div>
+<f:render partial="Fieldset" contentAs="field">
+    <label for="file" class="form-label"><f:translate id="LLL:EXT:ew_llxml2xliff/Resources/Private/Language/locallang.xlf:file"/></label>
+    <div class="input-group">
+        <span class="input-group-addon input-group-icon"></span>
+        <select name="file" id="file" class="form-select form-control-adapt">
+            <option>{f:translate(id: 'LLL:EXT:ew_llxml2xliff/Resources/Private/Language/locallang.xlf:please.select')}</option>
+            <f:for each="{rows}" as="row">
+                <option value="{row.filename}" data-icon="" {row.selected}>{row.filename}</option>
+            </f:for>
+        </select>
     </div>
-</fieldset>
+</f:render>
 
 </html>

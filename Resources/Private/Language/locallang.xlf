@@ -28,7 +28,7 @@
 			</trans-unit>
 
 			<trans-unit id="processedFile">
-				<source>File "%1$s" in extension "%2$s"</source>
+				<source>The file "EXT:%2$s/%1$s"</source>
 			</trans-unit>
 
 			<trans-unit id="wasConvertedPreviously">

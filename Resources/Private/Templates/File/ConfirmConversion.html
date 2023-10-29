@@ -6,30 +6,25 @@
     <h1><f:translate id="LLL:EXT:ew_llxml2xliff/Resources/Private/Language/locallang.xlf:header.conversion"/></h1>
 
     <form action="{f:be.uri(route: 'web_EwLlxml2xliff.showFiles')}" method="post">
-        <f:render partial="SelectExtension" arguments="{_all}"/>
+        <f:render partial="SelectExtension" arguments="{rows: extensions}"/>
     </form>
 
     <form action="{f:be.uri(route: 'web_EwLlxml2xliff.confirmConversion')}" method="post">
         <input type="hidden" name="extension" value="{selectedExtension}"/>
-        <f:render partial="SelectFile" arguments="{_all}"/>
+        <f:render partial="SelectFile" arguments="{rows: files}"/>
     </form>
 
     <form action="{f:be.uri(route: 'web_EwLlxml2xliff.convertFile')}" method="post">
         <input type="hidden" name="extension" value="{selectedExtension}"/>
         <input type="hidden" name="file" value="{selectedFile}"/>
-        <fieldset class="form-section">
-            <div class="form-group">
-                <div class="formengine-field-item">
-                    <div class="form-control-wrap">
-                        <div class="form-wizards-element">
-                            <span class="input-group-btn">
-                                <button class="btn btn-default"><f:translate id="LLL:EXT:ew_llxml2xliff/Resources/Private/Language/locallang.xlf:convert"/></button>
-                            </span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </fieldset>
+
+        <f:render partial="Fieldset" contentAs="field">
+            <span class="input-group-btn">
+                <button class="btn btn-default confirm">
+                    <f:translate id="LLL:EXT:ew_llxml2xliff/Resources/Private/Language/locallang.xlf:convert"/>
+                </button>
+            </span>
+        </f:render>
     </form>
 </f:section>
 

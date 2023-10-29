@@ -15,83 +15,102 @@ declare(strict_types=1);
 
 namespace Evoweb\EwLlxml2xliff\Service;
 
+use Evoweb\EwLlxml2xliff\File\Converter;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extensionmanager\Utility\ListUtility;
 
 class ExtensionService
 {
-    public function __construct(protected ListUtility $listUtility)
-    {
+    public function __construct(
+        protected readonly ListUtility $listUtility,
+        protected readonly Converter $converter,
+    ) {
     }
 
     public function getLocalExtensions(): array
     {
-        $availableExtensions = $this->listUtility->getAvailableExtensions();
-        $extensions = array_filter($availableExtensions, function ($extension) {
-            $extensionsWithFileToConvert = [];
-            if (count($this->getFilesOfExtension($extension['key'] ?? ''))) {
-                $extensionsWithFileToConvert[] = $extension;
-            }
-            return $extension['type'] == 'Local' && count($extensionsWithFileToConvert);
-        }, ARRAY_FILTER_USE_BOTH);
+        $extensions = array_filter(
+            $this->listUtility->getAvailableExtensions(),
+            function (array $extension) {
+                if ($extension['type'] !== 'Local' || ($extension['key'] ?? '') === '') {
+                    return false;
+                }
+                $extensionsWithFileToConvert = [];
+                if (count($this->getFilesOfExtension($extension['key']))) {
+                    $extensionsWithFileToConvert[] = $extension;
+                }
+                return count($extensionsWithFileToConvert);
+            },
+            ARRAY_FILTER_USE_BOTH
+        );
         ksort($extensions);
         return $extensions;
     }
 
     /**
-     * Gather files that need to be converted
-     *
-     * @param string $extensionKey Extension for which to get list of files of
-     *
-     * @return array
+     * Gather files for given extension key that need to be converted
      */
     public function getFilesOfExtension(string $extensionKey): array
     {
         $extensionPath = ExtensionManagementUtility::extPath($extensionKey);
-
-        $xmlFiles = GeneralUtility::removePrefixPathFromList(
-            GeneralUtility::getAllFilesAndFoldersInPath([], $extensionPath, 'xml', 0),
-            $extensionPath
-        );
-        $phpFiles = GeneralUtility::removePrefixPathFromList(
-            GeneralUtility::getAllFilesAndFoldersInPath([], $extensionPath, 'php', 0),
-            $extensionPath
-        );
+        $files = GeneralUtility::getAllFilesAndFoldersInPath([], $extensionPath, 'php,xml', 0);
 
         $result = [];
 
-        if (is_array($xmlFiles)) {
-            foreach ($xmlFiles as $file) {
-                if ($this->isLanguageFile($file) && !$this->xliffFileAlreadyExists($extensionPath, $file)) {
-                    $result[$file] = ['filename' => $file];
-                }
+        foreach ($files as $file) {
+            if ($this->isLanguageFile($file) && !$this->xliffFileAlreadyExists($extensionPath, $file)) {
+                $filename = GeneralUtility::removePrefixPathFromList([$file], $extensionPath)[0];
+                $result[$filename] = [
+                    'filename' => $filename
+                ];
             }
         }
 
-        if (is_array($phpFiles)) {
-            foreach ($phpFiles as $file) {
-                if ($this->isLanguageFile($file) && !$this->xliffFileAlreadyExists($extensionPath, $file)) {
-                    $result[$file] = ['filename' => $file];
-                }
-            }
-        }
-
-        if (!empty($result)) {
-            ksort($result);
-        }
+        ksort($result);
 
         return $result;
     }
 
     protected function isLanguageFile(string $filePath): bool
     {
-        return str_contains($filePath, 'locallang');
+        return str_contains($filePath, 'Resources/Private/Language/');
+    }
+
+    public function convertLanguageFile(string $selectedExtension, string $selectedFile, array $files): array
+    {
+        $wasConvertedPreviously = false;
+        $fileConvertedSuccessfully = false;
+        $messages = '';
+
+        $extensionPath = ExtensionManagementUtility::extPath($selectedExtension);
+        if ($this->xliffFileAlreadyExists($extensionPath, $selectedFile)) {
+            $wasConvertedPreviously = true;
+        } else {
+            $this->converter->setExtension($selectedExtension);
+            if (str_contains($selectedFile, '.xml')) {
+                $messages = $this->converter->writeXmlAsXlfFilesInPlace($selectedFile);
+            } else {
+                $messages = $this->converter->writePhpAsXlfFilesInPlace($selectedFile);
+            }
+
+            if (!str_contains($messages, 'ERROR')) {
+                $fileConvertedSuccessfully = true;
+            }
+            unset($files[$selectedFile]);
+        }
+
+        return [
+            'wasConvertedPreviously' => $wasConvertedPreviously,
+            'fileConvertedSuccessfully' => $fileConvertedSuccessfully,
+            'messages' => $messages,
+            'files' => $files
+        ];
     }
 
     public function xliffFileAlreadyExists(string $extensionPath, string $filePath): bool
     {
         $xliffFileName = preg_replace('#\.(xml|php)$#', '.xlf', $extensionPath . $filePath);
-        return file_exists($xliffFileName);
+        return @file_exists($xliffFileName);
     }
 }

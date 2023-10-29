@@ -6,7 +6,7 @@
 	<h1><f:translate id="LLL:EXT:ew_llxml2xliff/Resources/Private/Language/locallang.xlf:header.conversion"/></h1>
 
     <form action="{f:be.uri(route: 'web_EwLlxml2xliff.showFiles')}" method="post">
-        <f:render partial="SelectExtension" arguments="{_all}"/>
+        <f:render partial="SelectExtension" arguments="{rows: extensions}"/>
 	</form>
 </f:section>
 

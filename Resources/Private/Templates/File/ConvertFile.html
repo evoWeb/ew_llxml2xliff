@@ -6,37 +6,29 @@
     <h1><f:translate id="LLL:EXT:ew_llxml2xliff/Resources/Private/Language/locallang.xlf:header.conversion"/></h1>
 
     <form action="{f:be.uri(route: 'web_EwLlxml2xliff.showFiles')}" method="post">
-        <f:render partial="SelectExtension" arguments="{_all}"/>
+        <f:render partial="SelectExtension" arguments="{rows: extensions}"/>
     </form>
 
     <form action="{f:be.uri(route: 'web_EwLlxml2xliff.confirmConversion')}" method="post">
         <input type="hidden" name="extension" value="{selectedExtension}"/>
-        <f:render partial="SelectFile" arguments="{_all}"/>
+        <f:render partial="SelectFile" arguments="{rows: files}"/>
     </form>
 
-    <div class="form-section">
-        <div class="form-group">
-            <div class="formengine-field-item">
-                <div class="form-control-wrap">
-                    <div class="form-wizards-element">
-                        <f:translate id="LLL:EXT:ew_llxml2xliff/Resources/Private/Language/locallang.xlf:processedFile" arguments="{0: convertedFile, 1: selectedExtension}"/>
-                        <f:if condition="{wasConvertedPreviously}">
-                            <f:then><f:translate id="LLL:EXT:ew_llxml2xliff/Resources/Private/Language/locallang.xlf:wasConvertedPreviously"/></f:then>
-                            <f:else>
-                                <p>
-                                <f:if condition="{fileConvertedSuccessfully}">
-                                    <f:then><f:translate id="LLL:EXT:ew_llxml2xliff/Resources/Private/Language/locallang.xlf:fileConvertedSuccessfully.yes"/></f:then>
-                                    <f:else><f:translate id="LLL:EXT:ew_llxml2xliff/Resources/Private/Language/locallang.xlf:fileConvertedSuccessfully.no"/></f:else>
-                                </f:if>
-                                </p>
-                                <p><f:format.raw>{messages}</f:format.raw></p>
-                            </f:else>
-                        </f:if>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+    <f:render partial="Fieldset" contentAs="field">
+        <p>
+            <f:translate id="LLL:EXT:ew_llxml2xliff/Resources/Private/Language/locallang.xlf:processedFile" arguments="{0: selectedFile, 1: selectedExtension}"/>
+            <f:if condition="{wasConvertedPreviously}">
+                <f:then><f:translate id="LLL:EXT:ew_llxml2xliff/Resources/Private/Language/locallang.xlf:wasConvertedPreviously"/></f:then>
+                <f:else>
+                    <f:if condition="{fileConvertedSuccessfully}">
+                        <f:then><f:translate id="LLL:EXT:ew_llxml2xliff/Resources/Private/Language/locallang.xlf:fileConvertedSuccessfully.yes"/></f:then>
+                        <f:else><f:translate id="LLL:EXT:ew_llxml2xliff/Resources/Private/Language/locallang.xlf:fileConvertedSuccessfully.no"/></f:else>
+                    </f:if>
+                </f:else>
+            </f:if>
+        </p>
+        <p><f:format.raw>{messages}</f:format.raw></p>
+    </f:render>
 </f:section>
 
 </html>
