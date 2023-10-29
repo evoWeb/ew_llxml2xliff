@@ -17,7 +17,7 @@
                                     </f:for>
                                 </f:spaceless></span>
                                 <select name="extension" id="extension" class="form-select form-control-adapt">
-                                    <option>{f:translate(id: 'LLL:EXT:ew_llxml2xliff/Resources/Private/Language/locallang.xlf:please.select')}</option>
+                                    <option data-icon="">{f:translate(id: 'LLL:EXT:ew_llxml2xliff/Resources/Private/Language/locallang.xlf:please.select')}</option>
                                     <f:for each="{rows}" as="row">
                                         <option value="{row.key}" data-icon="{f:render(section: 'icon', arguments: _all) -> f:format.htmlspecialchars()}" {row.selected}>{row.key}</option>
                                     </f:for>

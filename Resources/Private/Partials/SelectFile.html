@@ -5,7 +5,7 @@
     <div class="input-group">
         <span class="input-group-addon input-group-icon"></span>
         <select name="file" id="file" class="form-select form-control-adapt">
-            <option>{f:translate(id: 'LLL:EXT:ew_llxml2xliff/Resources/Private/Language/locallang.xlf:please.select')}</option>
+            <option data-icon="">{f:translate(id: 'LLL:EXT:ew_llxml2xliff/Resources/Private/Language/locallang.xlf:please.select')}</option>
             <f:for each="{rows}" as="row">
                 <option value="{row.filename}" data-icon="" {row.selected}>{row.filename}</option>
             </f:for>
