@@ -28,6 +28,7 @@ declare(strict_types=1);
 namespace Evoweb\EwLlxml2xliff\File;
 
 use Evoweb\EwLlxml2xliff\Localization\Parser\LocallangXmlParser;
+use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -49,8 +50,6 @@ class Converter
      * Function to convert llxml files
      *
      * @param string $sourceFile Absolute path to the selected ll-XML file
-     *
-     * @return string HTML content
      */
     public function writeXmlAsXlfFilesInPlace(string $sourceFile): string
     {
@@ -87,7 +86,7 @@ class Converter
         $output = '';
         foreach ($languages as $langKey) {
             $newFileName = $dirname . '/' . $this->localizedFileRef($sourceFileOriginal, $langKey);
-            $output .= $this->writeNewXliffFile($sourceFile, $newFileName, $langKey) . '<br />';
+            $output .= $this->writeNewXliffFile($sourceFile, $newFileName, $langKey) . '<br />' . LF;
         }
         return $output;
     }
@@ -96,8 +95,6 @@ class Converter
      * Function to convert php language files
      *
      * @param string $sourceFile Absolute path to the selected ll-XML file
-     *
-     * @return string HTML content
      */
     public function writePhpAsXlfFilesInPlace(string $sourceFile): string
     {
@@ -154,8 +151,8 @@ class Converter
     {
         $path = '';
         if (str_ends_with($fileRef, '.xml') || str_ends_with($fileRef, '.php')) {
-            $lang = $lang === 'default' ? '' : $lang . '.';
-            $path = $lang . pathinfo($fileRef, PATHINFO_FILENAME) . '.xlf';
+            $languagePrefix = $lang === 'default' ? '' : $lang . '.';
+            $path = $languagePrefix . pathinfo($fileRef, PATHINFO_FILENAME) . '.xlf';
         }
         return $path;
     }
@@ -174,11 +171,11 @@ class Converter
         $xml = $this->generateFileContent($xmlFile, $langKey);
 
         $result = '';
-        if (!file_exists($newFileName)) {
+        if (!@file_exists($newFileName)) {
             GeneralUtility::writeFile($newFileName, $xml);
-
-            $result = $newFileName;
+            $result = str_replace(Environment::getComposerRootPath(), '', $newFileName);
         }
+
         return $result;
     }
 
@@ -254,11 +251,11 @@ class Converter
      */
     protected function getCombinedTranslationFileContent(string $languageFile): array
     {
+        $LOCAL_LANG = [];
         if (strpos($languageFile, '.xml')) {
-            $ll = GeneralUtility::xml2array(file_get_contents($languageFile));
+            $ll = $this->xml2array(file_get_contents($languageFile));
             $includedLanguages = array_keys($ll['data']);
 
-            $LOCAL_LANG = [];
             foreach ($includedLanguages as $langKey) {
                 /** @var $parser LocallangXmlParser */
                 $parser = GeneralUtility::makeInstance(LocallangXmlParser::class);
@@ -275,7 +272,6 @@ class Converter
             throw new \RuntimeException('data section not found in "' . $languageFile . '"', 1314187884);
         }
 
-        /** @noinspection PhpUndefinedVariableInspection */
         return $LOCAL_LANG;
     }
 

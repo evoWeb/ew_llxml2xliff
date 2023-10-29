@@ -17,6 +17,7 @@ declare(strict_types=1);
 
 namespace Evoweb\EwLlxml2xliff\Localization\Parser;
 
+use TYPO3\CMS\Core\Localization\Exception\FileNotFoundException;
 use TYPO3\CMS\Core\Localization\Exception\InvalidXmlFileException;
 use TYPO3\CMS\Core\Localization\Parser\AbstractXmlParser;
 use TYPO3\CMS\Core\Utility\ArrayUtility;
@@ -34,12 +35,15 @@ class LocallangXmlParser extends AbstractXmlParser
     protected array $parsedTargetFiles = [];
 
     /**
-     * Returns parsed representation of XML file.
+     * Actually doing all the work of parsing an XML file
      *
      * @param string $sourcePath Source file path
      * @param string $languageKey Language key
      *
      * @return array
+     *
+     * @throws FileNotFoundException
+     * @throws InvalidXmlFileException
      */
     public function getParsedData($sourcePath, $languageKey): array
     {
@@ -50,15 +54,15 @@ class LocallangXmlParser extends AbstractXmlParser
         $parsedSource = $this->parseXmlFile();
 
         // Parse target
-        $localizedTargetPath = $this->getLocalizedFileName($this->sourcePath, $this->languageKey);
+        $localizedTargetPath = $this->getLocalizedFileName($sourcePath, $this->languageKey);
         $targetPath = $this->languageKey !== 'default' && @is_file($localizedTargetPath)
             ? $localizedTargetPath
-            : $this->sourcePath;
+            : $sourcePath;
 
         try {
             $parsedTarget = $this->getParsedTargetData($targetPath);
         } catch (InvalidXmlFileException) {
-            $parsedTarget = $this->getParsedTargetData($this->sourcePath);
+            $parsedTarget = $this->getParsedTargetData($sourcePath);
         }
 
         $LOCAL_LANG = [];
@@ -127,6 +131,7 @@ class LocallangXmlParser extends AbstractXmlParser
         } else {
             $parsedData = [];
         }
+
         if ($element === 'target') {
             // Check if the source llxml file contains localized records
             $localizedBodyOfFileTag = $root->data->xpath('languageKey[@index=\'' . $this->languageKey . '\']');
@@ -140,6 +145,7 @@ class LocallangXmlParser extends AbstractXmlParser
                 }
             }
         }
+
         return $parsedData;
     }
 
@@ -162,7 +168,7 @@ class LocallangXmlParser extends AbstractXmlParser
     protected function parseXmlTargetFile(string $targetPath): array
     {
         $rootXmlNode = false;
-        if (file_exists($targetPath)) {
+        if (@file_exists($targetPath)) {
             $xmlContent = file_get_contents($targetPath);
             $rootXmlNode = simplexml_load_string($xmlContent, \SimpleXMLElement::class, LIBXML_NOWARNING);
         }
