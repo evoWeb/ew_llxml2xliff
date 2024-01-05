@@ -53,6 +53,9 @@ class ExtensionService
      */
     public function getFilesOfExtension(string $extensionKey): array
     {
+        if (!ExtensionManagementUtility::isLoaded($extensionKey)) {
+            return [];
+        }
         $extensionPath = ExtensionManagementUtility::extPath($extensionKey);
         $files = GeneralUtility::getAllFilesAndFoldersInPath([], $extensionPath, 'php,xml', 0);
 
