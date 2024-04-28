@@ -19,7 +19,7 @@ use Evoweb\EwLlxml2xliff\File\Converter;
 use Evoweb\EwLlxml2xliff\Service\ExtensionService;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use TYPO3\CMS\Backend\Attribute\Controller;
+use TYPO3\CMS\Backend\Attribute\AsController;
 use TYPO3\CMS\Backend\Template\ModuleTemplate;
 use TYPO3\CMS\Backend\Template\ModuleTemplateFactory;
 use TYPO3\CMS\Core\Http\ImmediateResponseException;
@@ -28,7 +28,7 @@ use TYPO3\CMS\Core\Localization\LanguageService;
 use TYPO3\CMS\Core\Page\JavaScriptModuleInstruction;
 use TYPO3\CMS\Core\Page\PageRenderer;
 
-#[Controller]
+#[AsController]
 class FileController
 {
     public function __construct(
