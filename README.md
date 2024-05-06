@@ -17,3 +17,11 @@ The recommended way to install the extension is by using [Composer](https://getc
 
 Download and install the extension with the extension manger module or directly from the
 [TER](https://extensions.typo3.org/extension/ew_llxml2xliff/).
+
+The transition_conversion_convert_transfer_motion_icon_196300.svg was downloaded
+with the licence information:
+```
+Author: ibob icon
+Licence: Free for commercial use
+Source: https://icon-icons.com/de/symbol/%C3%BCbergang-Konvertierung-konvertieren-transfer-motion/196300
+```

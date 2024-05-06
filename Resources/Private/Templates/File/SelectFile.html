@@ -29,33 +29,32 @@
                                     <span>{selectedExtension.title}</span>
                                 </h5>
 
-                                <h5 class="form-section-headline selected-parameter">
-                                    <span><f:translate id="selected_file" extensionName="ew_llxml2xliff"/>:</span>
-                                    <core:icon identifier="empty-empty" />
-                                    <span>{selectedFile.filename}</span>
-                                </h5>
+                                <f:if condition="{files -> f:count()} == 0">
+                                    <p><f:translate id="noFilesToConvert" extensionName="ew_llxml2xliff"/></p>
+                                </f:if>
 
-                                <div>
-                                    <a href="{f:be.uri(route: 'web_EwLlxml2xliff')}">
-                                        <button type="button" class="btn btn-default" data-inline="1" value="blank" data-identifier="convertExtension">
-                                            <core:icon identifier="actions-exclamation-triangle"/>
-                                            <f:translate id="cancel" extensionName="ew_llxml2xliff"/>
-                                        </button>
-                                    </a>
-                                    <a href="{f:be.uri(route: 'web_EwLlxml2xliff.convertFile', parameters: {extension: selectedExtension.key, file: selectedFile.filename})}">
-                                        <button type="button" class="btn btn-success" data-inline="1" value="blank" data-identifier="convertExtension">
-                                            <core:icon identifier="llxml2xliff-convert" alternativeMarkupIdentifier="inline"/>
-                                            <f:translate id="confirm" extensionName="ew_llxml2xliff"/>
-                                        </button>
-                                    </a>
-                                </div>
+                                <table class="table">
+                                    <f:for each="{files}" as="file">
+                                        <tr>
+                                            <td class="col-title col-responsive">{file.filename}</td>
+                                            <td class="col-control">
+                                                <a href="{f:be.uri(route: 'web_EwLlxml2xliff.confirmConversion', parameters: {extension: selectedExtension.key, file: file.filename})}">
+                                                    <button type="button" class="btn btn-success" data-inline="1" value="blank" data-identifier="convertExtension">
+                                                        <core:icon identifier="llxml2xliff-convert" alternativeMarkupIdentifier="inline"/>
+                                                        <f:translate id="select_file" extensionName="ew_llxml2xliff"/>
+                                                    </button>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    </f:for>
+                                </table>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <f:render partial="Progressbar" arguments="{third: 'true'}"/>
+            <f:render partial="Progressbar" arguments="{second: 'true'}"/>
         </div>
     </div>
 </f:section>

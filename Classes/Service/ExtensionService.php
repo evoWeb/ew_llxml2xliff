@@ -20,18 +20,21 @@ use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extensionmanager\Utility\ListUtility;
 
-class ExtensionService
+readonly class ExtensionService
 {
     public function __construct(
-        protected readonly ListUtility $listUtility,
-        protected readonly Converter $converter,
+        protected ListUtility $listUtility,
+        protected Converter $converter,
     ) {
     }
 
     public function getLocalExtensions(): array
     {
+        $availableExtensions = $this->listUtility->getAvailableExtensions();
+        $availableExtensions = $this->listUtility->enrichExtensionsWithEmConfInformation($availableExtensions);
+
         $extensions = array_filter(
-            $this->listUtility->getAvailableExtensions(),
+            $availableExtensions,
             function (array $extension) {
                 if ($extension['type'] !== 'Local' || ($extension['key'] ?? '') === '') {
                     return false;
