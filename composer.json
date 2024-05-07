@@ -30,11 +30,11 @@
 	"require": {
 		"ext-simplexml": "*",
 		"ext-libxml": "*",
-		"typo3/cms-core": "^12.4 || ^13.0 || 13.0.x-dev || dev-main",
-		"typo3/cms-backend": "^12.4 || ^13.0 || 13.0.x-dev || dev-main",
-		"typo3/cms-extbase": "^12.4 || ^13.0 || 13.0.x-dev || dev-main",
-		"typo3/cms-fluid": "^12.4 || ^13.0 || 13.0.x-dev || dev-main",
-		"typo3/cms-extensionmanager": "^12.4 || ^13.0 || 13.0.x-dev || dev-main",
+		"typo3/cms-core": "^13.0 || 13.0.x-dev || dev-main",
+		"typo3/cms-backend": "^13.0 || 13.0.x-dev || dev-main",
+		"typo3/cms-extbase": "^13.0 || 13.0.x-dev || dev-main",
+		"typo3/cms-fluid": "^13.0 || 13.0.x-dev || dev-main",
+		"typo3/cms-extensionmanager": "^13.0 || 13.0.x-dev || dev-main",
 		"psr/http-message": "^1.1 || ^2.0"
 	},
 	"require-dev": {

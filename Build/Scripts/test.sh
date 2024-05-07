@@ -132,11 +132,11 @@ cleanup () {
 
 checkResources
 
-runFunctionalTests "8.1" "^12.4" "^8.0.2" "Tests/Functional" || exit 1
+runFunctionalTests "8.2" "^13.0" "dev-main" "Tests/Functional" || exit 1
 cleanup
-runFunctionalTests "8.1" "^12.4" "^8.0.2" "Tests/Functional" "--prefer-lowest" || exit 1
+runFunctionalTests "8.2" "^13.0" "dev-main" "Tests/Functional" "--prefer-lowest" || exit 1
 cleanup
-runFunctionalTests "8.2" "^12.4" "^8.0.2" "Tests/Functional" || exit 1
+runFunctionalTests "8.3" "^13.0" "dev-main" "Tests/Functional" || exit 1
 cleanup
-runFunctionalTests "8.2" "^12.4" "^8.0.2" "Tests/Functional" "--prefer-lowest" || exit 1
+runFunctionalTests "8.3" "^13.0" "dev-main" "Tests/Functional" "--prefer-lowest" || exit 1
 cleanup
