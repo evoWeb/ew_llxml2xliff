@@ -51,8 +51,12 @@
 				<source>confirm</source>
 			</trans-unit>
 
+			<trans-unit id="warning">
+				<source>Warning</source>
+			</trans-unit>
+
 			<trans-unit id="noExtensionsToConvertFilesFor">
-				<source>No extension to convert files for.</source>
+				<source>No extension with convertable files found.</source>
 			</trans-unit>
 
 			<trans-unit id="noFilesToConvert">
