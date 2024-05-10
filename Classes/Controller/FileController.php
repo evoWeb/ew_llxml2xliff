@@ -27,7 +27,6 @@ use TYPO3\CMS\Core\Http\PropagateResponseException;
 use TYPO3\CMS\Core\Imaging\IconFactory;
 use TYPO3\CMS\Core\Imaging\IconSize;
 use TYPO3\CMS\Core\Localization\LanguageService;
-use TYPO3\CMS\Core\Page\JavaScriptModuleInstruction;
 use TYPO3\CMS\Core\Page\PageRenderer;
 
 #[AsController]
@@ -148,7 +147,7 @@ readonly class FileController
     {
         $selectedExtension = $this->isArgumentSetAndAvailable($request, $extensions, 'extension');
         if (!$selectedExtension) {
-            throw new PropagateResponseException($this->indexAction($request));
+            throw new PropagateResponseException($this->selectExtensionAction($request));
         }
         return $selectedExtension;
     }
@@ -160,7 +159,7 @@ readonly class FileController
     {
         $selectedFile = $this->isArgumentSetAndAvailable($request, $files, 'file');
         if (!$selectedFile) {
-            throw new PropagateResponseException($this->showFilesAction($request));
+            throw new PropagateResponseException($this->selectFileAction($request));
         }
         return $selectedFile;
     }
