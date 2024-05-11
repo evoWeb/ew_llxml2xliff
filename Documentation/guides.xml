@@ -13,6 +13,7 @@
                edit-on-github="evoWeb/ew_llxml2xliff"
                edit-on-github-directory="Documentation/"
                typo3-core-preferred="stable"
+               interlink-shortcode="evoweb/ew-llxml2xliff"
     />
     <project title="ew_llxml2xliff"
              release="6.0.0"
