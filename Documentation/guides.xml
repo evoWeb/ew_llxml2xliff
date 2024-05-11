@@ -12,7 +12,7 @@
                edit-on-github-branch="develop"
                edit-on-github="evoWeb/ew_llxml2xliff"
                edit-on-github-directory="Documentation/"
-               typo3-core-preferred="main"
+               typo3-core-preferred="stable"
     />
     <project title="ew_llxml2xliff"
              release="6.0.0"
