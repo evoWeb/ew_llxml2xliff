@@ -1,0 +1,86 @@
+{
+    "std:doc": {
+        "Index": [
+            "-",
+            "-",
+            "Index.html",
+            "Converting LLXML to XLIFF"
+        ],
+        "Installation\/Index": [
+            "-",
+            "-",
+            "Installation\/Index.html",
+            "Installation"
+        ],
+        "Introduction\/Index": [
+            "-",
+            "-",
+            "Introduction\/Index.html",
+            "Introduction"
+        ],
+        "Sitemap": [
+            "-",
+            "-",
+            "Sitemap.html",
+            "Sitemap"
+        ]
+    },
+    "std:label": {
+        "installation": [
+            "-",
+            "-",
+            "Installation\/Index.html#installation",
+            "Installation"
+        ],
+        "introduction": [
+            "-",
+            "-",
+            "Introduction\/Index.html#introduction",
+            "Introduction"
+        ]
+    },
+    "std:title": {
+        "converting-llxml-to-xliff": [
+            "-",
+            "-",
+            "Introduction\/Index.html#converting-llxml-to-xliff",
+            "Converting llxml to xliff:"
+        ],
+        "installation-1": [
+            "-",
+            "-",
+            "Installation\/Index.html#installation-1",
+            "Installation"
+        ],
+        "download-via-extension-manager": [
+            "-",
+            "-",
+            "Installation\/Index.html#download-via-extension-manager",
+            "Download via Extension Manager"
+        ],
+        "download-via-composer": [
+            "-",
+            "-",
+            "Installation\/Index.html#download-via-composer",
+            "Download via Composer"
+        ],
+        "introduction-1": [
+            "-",
+            "-",
+            "Introduction\/Index.html#introduction-1",
+            "Introduction"
+        ],
+        "what-does-it-do": [
+            "-",
+            "-",
+            "Introduction\/Index.html#what-does-it-do",
+            "What does it do?"
+        ],
+        "sitemap": [
+            "-",
+            "-",
+            "Sitemap.html#sitemap",
+            "Sitemap"
+        ]
+    }
+}
