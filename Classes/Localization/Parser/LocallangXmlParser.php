@@ -118,6 +118,7 @@ class LocallangXmlParser extends AbstractXmlParser
      */
     protected function doParsingFromRootForElement(\SimpleXMLElement $root, string $element): array
     {
+        // @extensionScannerIgnoreLine
         $bodyOfFileTag = $root->data->languageKey;
         if ($bodyOfFileTag === null) {
             throw new InvalidXmlFileException(
@@ -134,6 +135,7 @@ class LocallangXmlParser extends AbstractXmlParser
 
         if ($element === 'target') {
             // Check if the source llxml file contains localized records
+            // @extensionScannerIgnoreLine
             $localizedBodyOfFileTag = $root->data->xpath('languageKey[@index=\'' . $this->languageKey . '\']');
             if (isset($localizedBodyOfFileTag[0]) && $localizedBodyOfFileTag[0] instanceof \SimpleXMLElement) {
                 $parsedDataTarget = $this->getParsedDataForElement($localizedBodyOfFileTag[0], $element);
