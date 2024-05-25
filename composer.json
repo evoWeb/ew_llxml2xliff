@@ -28,14 +28,14 @@
 		}
 	},
 	"require": {
-		"ext-libxml": "*",
 		"ext-simplexml": "*",
-		"psr/http-message": "^1.1 || ^2.0",
+		"ext-libxml": "*",
+		"typo3/cms-core": "^13.0 || 13.0.x-dev || dev-main",
 		"typo3/cms-backend": "^13.0 || 13.0.x-dev || dev-main",
-		"typo3/cms-core": "^13.0",
 		"typo3/cms-extbase": "^13.0 || 13.0.x-dev || dev-main",
+		"typo3/cms-fluid": "^13.0 || 13.0.x-dev || dev-main",
 		"typo3/cms-extensionmanager": "^13.0 || 13.0.x-dev || dev-main",
-		"typo3/cms-fluid": "^13.0 || 13.0.x-dev || dev-main"
+		"psr/http-message": "^1.1 || ^2.0"
 	},
 	"require-dev": {
 		"friendsofphp/php-cs-fixer": "^3.57.1",
