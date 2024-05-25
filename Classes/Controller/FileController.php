@@ -39,8 +39,7 @@ readonly class FileController
         protected ModuleTemplateFactory $moduleTemplateFactory,
         protected Converter $fileConverter,
         protected ExtensionService $extensionService,
-    ) {
-    }
+    ) {}
 
     public function selectExtensionAction(ServerRequestInterface $request): ResponseInterface
     {
@@ -198,7 +197,6 @@ readonly class FileController
             $buttonBar->addButton($newFileConversionButton);
         } catch (\Exception) {
         }
-
 
         return $moduleTemplate;
     }

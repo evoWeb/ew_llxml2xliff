@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 /*
- * This file is part of the TYPO3 CMS project.
+ * This file is developed by evoWeb.
  *
  * It is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License, either version 2
@@ -11,8 +11,6 @@ declare(strict_types=1);
  *
  * For the full copyright and license information, please read the
  * LICENSE.txt file that was distributed with this source code.
- *
- * The TYPO3 project - inspiring people to share!
  */
 
 namespace Evoweb\EwLlxml2xliff\Localization\Parser;
@@ -90,7 +88,7 @@ class LocallangXmlParser extends AbstractXmlParser
         foreach ($children as $translationElement) {
             if ($translationElement->getName() === 'label') {
                 $parsedData[(string)$translationElement['index']][0] = [
-                    $element => (string)$translationElement
+                    $element => (string)$translationElement,
                 ];
             }
         }

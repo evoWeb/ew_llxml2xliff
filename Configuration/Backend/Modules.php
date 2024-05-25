@@ -22,7 +22,7 @@ return [
             ],
             'convertFile' => [
                 'target' => FileController::class . '::convertFileAction',
-            ]
+            ],
         ],
     ],
 ];

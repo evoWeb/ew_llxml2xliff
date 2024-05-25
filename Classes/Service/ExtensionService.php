@@ -25,8 +25,7 @@ readonly class ExtensionService
     public function __construct(
         protected ListUtility $listUtility,
         protected Converter $converter,
-    ) {
-    }
+    ) {}
 
     public function getLocalExtensions(): array
     {
@@ -68,7 +67,7 @@ readonly class ExtensionService
             if ($this->isLanguageFile($file) && !$this->xliffFileAlreadyExists($extensionPath, $file)) {
                 $filename = GeneralUtility::removePrefixPathFromList([$file], $extensionPath)[0];
                 $result[$filename] = [
-                    'filename' => $filename
+                    'filename' => $filename,
                 ];
             }
         }
@@ -110,7 +109,7 @@ readonly class ExtensionService
             'wasConvertedPreviously' => $wasConvertedPreviously,
             'fileConvertedSuccessfully' => $fileConvertedSuccessfully,
             'messages' => $messages,
-            'files' => $files
+            'files' => $files,
         ];
     }
 
