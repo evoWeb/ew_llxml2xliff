@@ -19,7 +19,7 @@
 	"config": {
 		"bin-dir": "bin",
 		"platform": {
-			"php": "8.1.1"
+			"php": "8.2.1"
 		},
 		"sort-packages": true,
 		"allow-plugins": {
@@ -28,17 +28,17 @@
 		}
 	},
 	"require": {
-		"php": "^8.1",
 		"ext-simplexml": "*",
 		"ext-libxml": "*",
-		"typo3/cms-core": "^12.4 || dev-main",
-		"typo3/cms-backend": "^12.4 || dev-main",
-		"typo3/cms-extbase": "^12.4 || dev-main",
-		"typo3/cms-fluid": "^12.4 || dev-main",
-		"typo3/cms-extensionmanager": "^12.4 || dev-main"
+		"typo3/cms-core": "^13.0 || 13.0.x-dev || dev-main",
+		"typo3/cms-backend": "^13.0 || 13.0.x-dev || dev-main",
+		"typo3/cms-extbase": "^13.0 || 13.0.x-dev || dev-main",
+		"typo3/cms-fluid": "^13.0 || 13.0.x-dev || dev-main",
+		"typo3/cms-extensionmanager": "^13.0 || 13.0.x-dev || dev-main",
+		"psr/http-message": "^1.1 || ^2.0"
 	},
 	"require-dev": {
-		"sbuerk/typo3-cmscomposerinstallers-testingframework-bridge": "dev-main",
+		"friendsofphp/php-cs-fixer": "^3.57.1",
 		"typo3/testing-framework": "dev-main"
 	},
 	"extra": {
@@ -65,11 +65,6 @@
 	"autoload": {
 		"psr-4": {
 			"Evoweb\\EwLlxml2xliff\\": "Classes/"
-		}
-	},
-	"autoload-dev": {
-		"psr-4": {
-			"Evoweb\\EwLlxml2xliff\\Tests\\": "Tests/"
 		}
 	}
 }

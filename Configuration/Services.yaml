@@ -6,7 +6,4 @@ services:
     public: false
 
   Evoweb\EwLlxml2xliff\:
-    resource: '../Classes/*'
-
-  Evoweb\EwLlxml2xliff\Controller\FileController:
-    tags: [ 'backend.controller' ]
+    resource: '../Classes/'

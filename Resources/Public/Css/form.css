@@ -1,7 +1,8 @@
-.pt15 {
-    padding-top: 15px;
+[data-module-name="web_EwLlxml2xliff"] .modal-multi-step-wizard .modal-body .carousel-inner {
+    width: 100%;
 }
 
-.pt30 {
-    padding-top: 30px;
+.selected-parameter {
+    display: grid;
+    grid-template-columns: 12rem 1.5rem 1fr;
 }

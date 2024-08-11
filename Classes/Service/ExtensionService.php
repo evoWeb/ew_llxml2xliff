@@ -20,18 +20,20 @@ use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extensionmanager\Utility\ListUtility;
 
-class ExtensionService
+readonly class ExtensionService
 {
     public function __construct(
-        protected readonly ListUtility $listUtility,
-        protected readonly Converter $converter,
-    ) {
-    }
+        protected ListUtility $listUtility,
+        protected Converter $converter,
+    ) {}
 
     public function getLocalExtensions(): array
     {
+        $availableExtensions = $this->listUtility->getAvailableExtensions();
+        $availableExtensions = $this->listUtility->enrichExtensionsWithEmConfInformation($availableExtensions);
+
         $extensions = array_filter(
-            $this->listUtility->getAvailableExtensions(),
+            $availableExtensions,
             function (array $extension) {
                 if ($extension['type'] !== 'Local' || ($extension['key'] ?? '') === '') {
                     return false;
@@ -53,8 +55,11 @@ class ExtensionService
      */
     public function getFilesOfExtension(string $extensionKey): array
     {
+        if (!ExtensionManagementUtility::isLoaded($extensionKey)) {
+            return [];
+        }
         $extensionPath = ExtensionManagementUtility::extPath($extensionKey);
-        $files = GeneralUtility::getAllFilesAndFoldersInPath([], $extensionPath, 'php,xml', 0);
+        $files = GeneralUtility::getAllFilesAndFoldersInPath([], $extensionPath, 'php,xml');
 
         $result = [];
 
@@ -62,7 +67,7 @@ class ExtensionService
             if ($this->isLanguageFile($file) && !$this->xliffFileAlreadyExists($extensionPath, $file)) {
                 $filename = GeneralUtility::removePrefixPathFromList([$file], $extensionPath)[0];
                 $result[$filename] = [
-                    'filename' => $filename
+                    'filename' => $filename,
                 ];
             }
         }
@@ -104,7 +109,7 @@ class ExtensionService
             'wasConvertedPreviously' => $wasConvertedPreviously,
             'fileConvertedSuccessfully' => $fileConvertedSuccessfully,
             'messages' => $messages,
-            'files' => $files
+            'files' => $files,
         ];
     }
 

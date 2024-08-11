@@ -1,0 +1,20 @@
+<html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers" data-namespace-typo3-fluid="true">
+
+<div class="modal-footer py-2 px-4 border-top">
+    <div class="progress" role="progressbar" aria-valuemin="0" aria-valuenow="25" aria-valuemax="100" aria-label="Choose">
+        <div class="progress-bar first-step {f:if(condition: first, else: 'inactive')}" style="width: 25%;">
+            <f:translate id="extension" extensionName="ew_llxml2xliff"/>
+        </div>
+        <div class="progress-bar step {f:if(condition: second, else: 'inactive')}" style="width: 25%;">
+            <f:translate id="file" extensionName="ew_llxml2xliff"/>
+        </div>
+        <div class="progress-bar step {f:if(condition: third, else: 'inactive')}" style="width: 25%;">
+            <f:translate id="confirm_selection" extensionName="ew_llxml2xliff"/>
+        </div>
+        <div class="progress-bar last-step {f:if(condition: forth, else: 'inactive')}" style="width: 25%;">
+            <f:translate id="finish" extensionName="ew_llxml2xliff"/>
+        </div>
+    </div>
+</div>
+
+</html>

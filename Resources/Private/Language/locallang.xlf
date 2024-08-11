@@ -4,27 +4,63 @@
 		<header/>
 		<body>
 			<trans-unit id="header.conversion">
-				<source>Convert llxml file to xliff</source>
-			</trans-unit>
-
-			<trans-unit id="please.select">
-				<source>Please select</source>
+				<source>LLXML-file to XLIFF-file converter</source>
 			</trans-unit>
 
 			<trans-unit id="extension">
 				<source>Extension</source>
 			</trans-unit>
 
+			<trans-unit id="select_extension">
+				<source>select extension</source>
+			</trans-unit>
+
+			<trans-unit id="selected_extension">
+				<source>Selected Extension</source>
+			</trans-unit>
+
 			<trans-unit id="file">
 				<source>File</source>
 			</trans-unit>
 
-			<trans-unit id="convert">
-				<source>Convert selected File</source>
+			<trans-unit id="select_file">
+				<source>select file</source>
+			</trans-unit>
+
+			<trans-unit id="selected_file">
+				<source>Selected File</source>
+			</trans-unit>
+
+			<trans-unit id="confirm_selection">
+				<source>Confirm selection</source>
+			</trans-unit>
+
+			<trans-unit id="finish">
+				<source>Finish!</source>
+			</trans-unit>
+
+			<trans-unit id="start_new_conversion">
+				<source>Start new conversion</source>
+			</trans-unit>
+
+			<trans-unit id="cancel">
+				<source>cancel</source>
+			</trans-unit>
+
+			<trans-unit id="confirm">
+				<source>confirm</source>
+			</trans-unit>
+
+			<trans-unit id="warning">
+				<source>Warning</source>
+			</trans-unit>
+
+			<trans-unit id="noExtensionsToConvertFilesFor">
+				<source>No extension with convertable files found.</source>
 			</trans-unit>
 
 			<trans-unit id="noFilesToConvert">
-				<source>No files to convert found in extension: "%1$s"</source>
+				<source>No files to convert.</source>
 			</trans-unit>
 
 			<trans-unit id="processedFile">
@@ -32,15 +68,15 @@
 			</trans-unit>
 
 			<trans-unit id="wasConvertedPreviously">
-				<source>was converted previously</source>
+				<source>was converted previously.</source>
 			</trans-unit>
 
-			<trans-unit id="fileConvertedSuccessfully.yes">
-				<source>was converted successfully</source>
+			<trans-unit id="fileConvertedSuccessfully">
+				<source>was converted successfully.</source>
 			</trans-unit>
 
-			<trans-unit id="fileConvertedSuccessfully.no">
-				<source>couldn't be converted automatically</source>
+			<trans-unit id="fileCouldntBeConverted">
+				<source>couldn't be converted automatically.</source>
 			</trans-unit>
 		</body>
 	</file>

@@ -1,0 +1,74 @@
+<html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+      xmlns:core="http://typo3.org/ns/TYPO3/CMS/Core/ViewHelpers"
+      data-namespace-typo3-fluid="true">
+
+<f:layout name="Module"/>
+
+<f:section name="Content">
+    <h1><f:translate id="LLL:EXT:ew_llxml2xliff/Resources/Private/Language/locallang.xlf:header.conversion"/></h1>
+
+    <div class="modal-multi-step-wizard">
+        <div class="modal-content">
+            <div class="modal-body py-2 px-4">
+                <div class="carousel slide" data-bs-ride="false">
+                    <div class="carousel-inner" role="listbox">
+                        <div class="carousel-item active" data-bs-slide="new-form-step-1" data-step="0">
+                            <div class="new-form-modal">
+                                <f:if condition="{extensions -> f:count()} == 0">
+                                    <div class="card card-size-small">
+                                        <div class="card-header">
+                                            <div class="card-icon">
+                                                <core:icon identifier="actions-exclamation-triangle" size="large" />
+                                            </div>
+                                            <div class="card-header-body">
+                                                <h2 class="card-title"><f:translate id="warning" extensionName="ew_llxml2xliff"/></h2>
+                                                <span class="card-subtitle"><f:translate id="noExtensionsToConvertFilesFor" extensionName="ew_llxml2xliff"/></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </f:if>
+
+                                <div class="card-container">
+                                    <f:for each="{extensions}" as="extension" key="extensionKey">
+                                        <div class="card card-size-small">
+                                            <div class="card-header">
+                                                <div class="card-icon">
+                                                    <span class="icon icon-size-large">
+                                                        <f:if condition="{extension.icon}">
+                                                            <f:then>
+                                                                <img class="extension-icon" src="{extension.icon}" alt="" />
+                                                            </f:then>
+                                                            <f:else>
+                                                                <core:icon identifier="empty-empty" />
+                                                            </f:else>
+                                                        </f:if>
+                                                    </span>
+                                                </div>
+                                                <div class="card-header-body">
+                                                    <h2 class="card-title">{extension.title}</h2>
+                                                    <span class="card-subtitle">{extension.description}</span>
+                                                </div>
+                                            </div>
+                                            <div class="card-footer">
+                                                <a href="{f:be.uri(route: 'web_EwLlxml2xliff.showFiles', parameters: {extension: extension.key})}">
+                                                <button type="button" class="btn btn-success" data-inline="1" value="blank" data-identifier="convertExtension">
+                                                    <core:icon identifier="actions-plus" />
+                                                    <f:translate id="select_extension" extensionName="ew_llxml2xliff"/>
+                                                </button>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </f:for>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <f:render partial="Progressbar" arguments="{first: 'true'}"/>
+        </div>
+    </div>
+</f:section>
+
+</html>

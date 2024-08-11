@@ -8,24 +8,20 @@ return [
         'access' => 'user,group',
         'path' => '/module/web/llxmlconverter',
         'iconIdentifier' => 'llxml2xlifficon',
-        'inheritNavigationComponentFromMainModule' => false,
         'labels' => 'LLL:EXT:ew_llxml2xliff/Resources/Private/Language/locallang_mod.xlf',
         'routes' => [
             '_default' => [
-                'target' => FileController::class . '::indexAction',
+                'target' => FileController::class . '::selectExtensionAction',
             ],
             'showFiles' => [
-                'target' => FileController::class . '::showFilesAction',
-                'methods' => ['POST'],
+                'target' => FileController::class . '::selectFileAction',
             ],
             'confirmConversion' => [
                 'target' => FileController::class . '::confirmConversionAction',
-                'methods' => ['POST'],
             ],
             'convertFile' => [
                 'target' => FileController::class . '::convertFileAction',
-                'methods' => ['POST'],
-            ]
+            ],
         ],
     ],
 ];

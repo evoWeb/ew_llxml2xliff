@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<guides xmlns="https://www.phpdoc.org/guides" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="https://www.phpdoc.org/guides ../vendor/phpdocumentor/guides-cli/resources/schema/guides.xsd"
+        links-are-relative="true"
+        max-menu-depth="2"
+>
+    <extension class="\T3Docs\Typo3DocsTheme\DependencyInjection\Typo3DocsThemeExtension"
+               project-home="https://github.com/evoWeb/ew_llxml2xliff"
+               project-contact="ew-llxml2xliff@evoweb.de"
+               project-repository="https://github.com/evoWeb/ew_llxml2xliff"
+               project-issues="https://github.com/evoWeb/ew_llxml2xliff/issues"
+               edit-on-github-branch="develop"
+               edit-on-github="evoWeb/ew_llxml2xliff"
+               edit-on-github-directory="Documentation/"
+               typo3-core-preferred="stable"
+               interlink-shortcode="evoweb/ew-llxml2xliff"
+    />
+    <project title="ew_llxml2xliff"
+             release="6.0.0"
+             version="6.0.0"
+             copyright="since 2016 by evoWeb"
+    />
+    <inventory id="t3tsref" url="https://docs.typo3.org/m/typo3/reference-typoscript/main/en-us/"/>
+</guides>
