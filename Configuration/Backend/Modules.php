@@ -8,7 +8,6 @@ return [
         'access' => 'user,group',
         'path' => '/module/web/llxmlconverter',
         'iconIdentifier' => 'llxml2xlifficon',
-        'inheritNavigationComponentFromMainModule' => false,
         'labels' => 'LLL:EXT:ew_llxml2xliff/Resources/Private/Language/locallang_mod.xlf',
         'routes' => [
             '_default' => [

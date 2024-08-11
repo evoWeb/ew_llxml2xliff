@@ -45,7 +45,10 @@ readonly class FileController
     {
         [$extensions] = $this->prepareExtensions($request, false);
 
-        $moduleTemplate = $this->initializeModuleTemplate($request);
+        $moduleTemplate = $this->initializeModuleTemplate(
+            $request,
+            'LLL:EXT:ew_llxml2xliff/Resources/Private/Language/locallang.xlf:extension'
+        );
         $moduleTemplate->assign('extensions', $extensions);
         return $moduleTemplate->renderResponse('File/SelectExtension');
     }
@@ -55,7 +58,10 @@ readonly class FileController
         [$extensions, $selectedExtension, $selectedExtensionKey] = $this->prepareExtensions($request);
         [$files] = $this->prepareFiles($request, $selectedExtensionKey, false);
 
-        $moduleTemplate = $this->initializeModuleTemplate($request);
+        $moduleTemplate = $this->initializeModuleTemplate(
+            $request,
+            'LLL:EXT:ew_llxml2xliff/Resources/Private/Language/locallang.xlf:file'
+        );
         $moduleTemplate->assignMultiple([
             'extensions' => $extensions,
             'selectedExtension' => $selectedExtension,
@@ -70,7 +76,10 @@ readonly class FileController
         [$extensions, $selectedExtension, $selectedExtensionKey] = $this->prepareExtensions($request);
         [$files, $selectedFile, $selectedFileKey] = $this->prepareFiles($request, $selectedExtensionKey);
 
-        $moduleTemplate = $this->initializeModuleTemplate($request);
+        $moduleTemplate = $this->initializeModuleTemplate(
+            $request,
+            'LLL:EXT:ew_llxml2xliff/Resources/Private/Language/locallang.xlf:confirm_selection'
+        );
         $moduleTemplate->assignMultiple([
             'extensions' => $extensions,
             'selectedExtension' => $selectedExtension,
@@ -90,7 +99,10 @@ readonly class FileController
         $conversionResult = $this->extensionService
             ->convertLanguageFile($selectedExtensionKey, $selectedFileKey, $files);
 
-        $moduleTemplate = $this->initializeModuleTemplate($request);
+        $moduleTemplate = $this->initializeModuleTemplate(
+            $request,
+            'LLL:EXT:ew_llxml2xliff/Resources/Private/Language/locallang.xlf:finish'
+        );
         $moduleTemplate->assignMultiple([
             'extensions' => $extensions,
             'selectedExtension' => $selectedExtension,
@@ -169,7 +181,7 @@ readonly class FileController
         return ($formFieldValue !== '' && isset($values[$formFieldValue])) ? $formFieldValue : null;
     }
 
-    protected function initializeModuleTemplate(ServerRequestInterface $request): ModuleTemplate
+    protected function initializeModuleTemplate(ServerRequestInterface $request, string $context): ModuleTemplate
     {
         $this->pageRenderer->addCssFile('EXT:ew_llxml2xliff/Resources/Public/Css/form.css');
 
@@ -177,7 +189,8 @@ readonly class FileController
         $moduleTemplate->setTitle(
             $this->getLanguageService()->sL(
                 'LLL:EXT:ew_llxml2xliff/Resources/Private/Language/locallang_mod.xlf:mlang_tabs_tab'
-            )
+            ),
+            $this->getLanguageService()->sL($context)
         );
 
         $buttonBar = $moduleTemplate->getDocHeaderComponent()->getButtonBar();

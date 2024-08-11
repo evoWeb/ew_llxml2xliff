@@ -87,7 +87,7 @@ class LocallangXmlParser extends AbstractXmlParser
 
         foreach ($children as $translationElement) {
             if ($translationElement->getName() === 'label') {
-                $parsedData[(string)$translationElement['index']][0] = [
+                $parsedData[(string)$translationElement['index']] = [
                     $element => (string)$translationElement,
                 ];
             }

@@ -22,8 +22,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Conversion of locallang*.[xml|php] files to locallang.xlf.
- *
- * @author Xavier Perseguers <xavier@typo3.org>
  */
 class Converter
 {
@@ -156,7 +154,7 @@ class Converter
      */
     protected function writeNewXliffFile(string $xmlFile, string $newFileName, string $langKey): string
     {
-        $xml = $this->generateFileContent($xmlFile, $langKey);
+        $xml = $this->generateFileContent($xmlFile, $langKey, $newFileName);
 
         $result = '';
         if (!@file_exists($newFileName)) {
@@ -167,67 +165,35 @@ class Converter
         return $result;
     }
 
-    protected function generateFileContent(string $xmlFile, string $langKey): string
+    protected function generateFileContent(string $xmlFile, string $langKey, string $newFileName): string
     {
         // Initialize variables:
-        $xml = [];
         $LOCAL_LANG = $this->getCombinedTranslationFileContent($xmlFile);
+        $originalFile = $this->getOriginalFileName($newFileName, $langKey);
 
+        $xml = [];
         $xml[] = '<?xml version="1.0" encoding="UTF-8"?>';
         $xml[] = '<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">';
-        $xml[] = '	<file source-language="en"'
-            . ($langKey !== 'default' ? ' target-language="' . $langKey . '"' : '')
-            . ' datatype="plaintext" original="EXT:' . $this->extension
-            . '/Resources/Private/Language/locallang.xlf" date="'
-            . gmdate('Y-m-d\TH:i:s\Z')
+        $xml[] = '  <file source-language="en"' . ($langKey !== 'default' ? ' target-language="' . $langKey . '"' : '')
+            . ' datatype="plaintext" original="' . $originalFile . '" date="' . gmdate('Y-m-d\TH:i:s\Z')
             . '" product-name="' . $this->extension . '">';
-        $xml[] = '		<header/>';
-        $xml[] = '		<body>';
+        $xml[] = '    <body>';
 
         foreach ($LOCAL_LANG[$langKey] as $key => $data) {
-            if (is_array($data)) {
-                $target = $data[0]['target'] ?? '';
-                $source = $data[0]['source'] ?? $target;
-            } else {
-                $source = $LOCAL_LANG['default'][$key];
-                $target = $data;
-            }
-
-            if (str_contains($source, chr(10))) {
-                $preserve = 'xml:space="preserve"';
-            } else {
-                $preserve = '';
-            }
-
-            if (empty($source)) {
-                $source = '<source/>';
-            } else {
-                $source = '<source>' . htmlspecialchars($source) . '</source>';
-            }
-
-            if (empty($target)) {
-                $target = '<target/>';
-            } else {
-                $target = '<target>' . htmlspecialchars($target) . '</target>';
-            }
-
-            if ($langKey === 'default') {
-                $xml[] = '			<trans-unit id="' . $key . '" resname="' . $key . '" ' . $preserve . '>';
-                $xml[] = '				' . $source;
-            } else {
-                $xml[] = '			<trans-unit id="' . $key . '" resname="' . $key . '" ' . $preserve
-                    . ' approved="yes">';
-                $xml[] = '				' . $source;
-                $xml[] = '				' . $target;
-            }
-            $xml[] = '			</trans-unit>';
+            $xml[] = (string)(new TransUnit($data, $key, $langKey, $LOCAL_LANG));
         }
 
-        $xml[] = '		</body>';
-        $xml[] = '	</file>';
+        $xml[] = '    </body>';
+        $xml[] = '  </file>';
         $xml[] = '</xliff>';
 
         return implode(LF, $xml);
+    }
+
+    protected function getOriginalFileName(string $filename, string $langKey): string
+    {
+        $currentTargetName = str_replace($langKey . '.', '', pathinfo($filename, PATHINFO_FILENAME));
+        return 'EXT:' . $this->extension . '/Resources/Private/Language/' . $currentTargetName . '.xlf';
     }
 
     /**
@@ -265,23 +231,20 @@ class Converter
 
     /**
      * Converts an XML string to a PHP array.
-     * This is the reverse function of array2xml()
+     * This is the reverse function of GeneralUtility::array2xml()
      * This is a wrapper for xml2arrayProcess that adds a two-level cache
      *
      * @param string $string XML content to convert into an array
-     * @param string $NSprefix The tag-prefix resolve, e.g. a namespace like "T3:"
+     * @param string $namespacePrefix The tag-prefix resolve, e.g. a namespace like "T3:"
      * @param bool $reportDocTag If set, the document tag will be set in the key "_DOCUMENT_TAG" of the output array
      *
      * @return array|string If the parsing had errors, a string with the error message is returned.
      *         Otherwise, an array with the content.
      *
-     * @see array2xml(),xml2arrayProcess()
+     * @see GeneralUtility::array2xml(),GeneralUtility::xml2arrayProcess()
      */
-    protected function xml2array(
-        string $string,
-        string $NSprefix = '',
-        bool $reportDocTag = false
-    ): array|string {
-        return GeneralUtility::xml2array($string, $NSprefix, $reportDocTag);
+    protected function xml2array(string $string, string $namespacePrefix = '', bool $reportDocTag = false): array|string
+    {
+        return GeneralUtility::xml2array($string, $namespacePrefix, $reportDocTag);
     }
 }
