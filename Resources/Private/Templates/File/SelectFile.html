@@ -5,56 +5,54 @@
 <f:layout name="Module"/>
 
 <f:section name="Content">
-    <h1><f:translate id="LLL:EXT:ew_llxml2xliff/Resources/Private/Language/locallang.xlf:header.conversion"/></h1>
+    <div class="container">
+        <h1><f:translate id="LLL:EXT:ew_llxml2xliff/Resources/Private/Language/locallang.xlf:header.conversion"/></h1>
 
-    <div class="modal-multi-step-wizard">
-        <div class="modal-content">
-            <div class="modal-body py-2 px-4">
-                <div class="carousel slide" data-bs-ride="false">
-                    <div class="carousel-inner" role="listbox">
-                        <div class="carousel-item active" data-bs-slide="new-form-step-1" data-step="0">
-                            <div class="new-form-modal">
-                                <h5 class="form-section-headline selected-parameter">
-                                    <span><f:translate id="selected_extension" extensionName="ew_llxml2xliff"/>:</span>
-                                    <span class="icon">
-                                        <f:if condition="{selectedExtension.icon}">
-                                            <f:then>
-                                                <img class="extension-icon" src="{selectedExtension.icon}" alt="" />
-                                            </f:then>
-                                            <f:else>
-                                                <core:icon identifier="empty-empty" />
-                                            </f:else>
-                                        </f:if>
-                                    </span>
-                                    <span>{selectedExtension.title}</span>
-                                </h5>
+        <h5 class="form-section-headline selected-parameter py-2">
+            <span><f:translate id="selected_extension" extensionName="ew_llxml2xliff"/>:</span>
+            <span class="icon">
+                <f:if condition="{selectedExtension.icon}">
+                    <f:then>
+                        <img class="extension-icon" src="{selectedExtension.icon}" alt="" />
+                    </f:then>
+                    <f:else>
+                        <core:icon identifier="empty-empty" />
+                    </f:else>
+                </f:if>
+            </span>
+            <span>{selectedExtension.title}</span>
+        </h5>
 
-                                <f:if condition="{files -> f:count()} == 0">
-                                    <p><f:translate id="noFilesToConvert" extensionName="ew_llxml2xliff"/></p>
-                                </f:if>
-
-                                <table class="table">
-                                    <f:for each="{files}" as="file">
-                                        <tr>
-                                            <td class="col-title col-responsive">{file.filename}</td>
-                                            <td class="col-control">
-                                                <a href="{f:be.uri(route: 'web_EwLlxml2xliff.confirmConversion', parameters: {extension: selectedExtension.key, file: file.filename})}">
-                                                    <button type="button" class="btn btn-success" data-inline="1" value="blank" data-identifier="convertExtension">
-                                                        <core:icon identifier="llxml2xliff-convert" alternativeMarkupIdentifier="inline"/>
-                                                        <f:translate id="select_file" extensionName="ew_llxml2xliff"/>
-                                                    </button>
-                                                </a>
-                                            </td>
-                                        </tr>
-                                    </f:for>
-                                </table>
-                            </div>
-                        </div>
+        <f:if condition="{files -> f:count()} == 0">
+            <div class="card-container">
+                <div class="card card-size-small">
+                    <div class="card-header-body">
+                        <p><f:translate id="noFilesToConvert" extensionName="ew_llxml2xliff"/></p>
                     </div>
                 </div>
             </div>
+        </f:if>
 
-            <f:render partial="Progressbar" arguments="{second: 'true'}"/>
+        <table class="table">
+            <f:for each="{files}" as="file">
+                <tr>
+                    <td class="col-title col-responsive">{file.filename}</td>
+                    <td class="col-control">
+                        <a href="{f:be.uri(route: 'web_EwLlxml2xliff.confirmConversion', parameters: {extension: selectedExtension.key, file: file.filename})}">
+                            <button type="button" class="btn btn-success" data-inline="1" value="blank" data-identifier="convertExtension">
+                                <core:icon identifier="llxml2xliff-convert" alternativeMarkupIdentifier="inline"/>
+                                <f:translate id="select_file" extensionName="ew_llxml2xliff"/>
+                            </button>
+                        </a>
+                    </td>
+                </tr>
+            </f:for>
+        </table>
+
+        <div class="modal-multi-step-wizard">
+            <div class="modal-content">
+                <f:render partial="Progressbar" arguments="{now: 50}"/>
+            </div>
         </div>
     </div>
 </f:section>
