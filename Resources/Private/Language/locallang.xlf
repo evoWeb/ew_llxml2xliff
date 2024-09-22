@@ -12,7 +12,7 @@
 			</trans-unit>
 
 			<trans-unit id="select_extension">
-				<source>select extension</source>
+				<source>Select extension</source>
 			</trans-unit>
 
 			<trans-unit id="selected_extension">
@@ -24,7 +24,7 @@
 			</trans-unit>
 
 			<trans-unit id="select_file">
-				<source>select file</source>
+				<source>Select file</source>
 			</trans-unit>
 
 			<trans-unit id="selected_file">

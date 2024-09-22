@@ -1,17 +1,20 @@
 <html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers" data-namespace-typo3-fluid="true">
 
-<div class="modal-footer py-2 px-4 border-top">
-    <div class="progress" role="progressbar" aria-valuemin="0" aria-valuenow="25" aria-valuemax="100" aria-label="Choose">
-        <div class="progress-bar first-step {f:if(condition: first, else: 'inactive')}" style="width: 25%;">
+<div class="modal-footer py-2 border-top">
+    <div class="progress row-cols-xxl-4"
+         role="progressbar"
+         aria-valuemin="0" aria-valuenow="{now}" aria-valuemax="100" aria-label="Choose"
+        style="--bs-progress-height: 32px; --bs-border-color: var(--module-bg);">
+        <div class="progress-bar col border-end {f:if(condition: '{now} == 25', else: 'inactive')}">
             <f:translate id="extension" extensionName="ew_llxml2xliff"/>
         </div>
-        <div class="progress-bar step {f:if(condition: second, else: 'inactive')}" style="width: 25%;">
+        <div class="progress-bar col border-end {f:if(condition: '{now} == 50', else: 'inactive')}">
             <f:translate id="file" extensionName="ew_llxml2xliff"/>
         </div>
-        <div class="progress-bar step {f:if(condition: third, else: 'inactive')}" style="width: 25%;">
+        <div class="progress-bar col border-end {f:if(condition: '{now} == 75', else: 'inactive')}">
             <f:translate id="confirm_selection" extensionName="ew_llxml2xliff"/>
         </div>
-        <div class="progress-bar last-step {f:if(condition: forth, else: 'inactive')}" style="width: 25%;">
+        <div class="progress-bar col {f:if(condition: '{now} == 100', else: 'inactive')}">
             <f:translate id="finish" extensionName="ew_llxml2xliff"/>
         </div>
     </div>
