@@ -1,19 +1,19 @@
 <!DOCTYPE html>
 <html class="no-js" lang="en">
 <head>
-    <title>Converting LLXML to XLIFF documentation</title>
+    <title>Converting LLXML to XLIFF — ew_llxml2xliff 6.0.1 documentation</title>
 
     
 <meta charset="utf-8">
 <meta content="width=device-width, initial-scale=1.0" name="viewport">
 <meta content="phpdocumentor/guides" name="generator">
-<meta content="" name="docsearch:name">
+<meta content="ew_llxml2xliff" name="docsearch:name">
 <meta content="" name="docsearch:package_type">
-<meta content="" name="docsearch:release">
-<meta content="" name="docsearch:version">
-<meta content="2024-09-22T15:22:30+00:00" name="docsearch:modified">
-<meta content="2024-09-22T15:22:30+00:00" name="dc.modified">
-<meta content="2024-09-22T15:22:30+00:00" property="article:modified_time">
+<meta content="6.0.1" name="docsearch:release">
+<meta content="6.0.1" name="docsearch:version">
+<meta content="2024-11-02T13:34:30+00:00" name="docsearch:modified">
+<meta content="2024-11-02T13:34:30+00:00" name="dc.modified">
+<meta content="2024-11-02T13:34:30+00:00" property="article:modified_time">
     <link href="http://purl.org/dc/elements/1.1/" rel="schema.dc">
 <link href="_resources/css/theme.css" rel="stylesheet">
 <link href="https://docs.typo3.org/search/" rel="search" title="Search">
@@ -36,24 +36,27 @@
     <div class="page-header">
         <div class="page-header-inner">
             <div class="row">
-                <div class="col-sm-3 col-md-4 col-lg-6">
+                <div class="col-md-2 col-lg-4">
                     <a class="logo" href="https://docs.typo3.org/" title="TYPO3 Documentation">
                         <img alt="TYPO3 Logo" class="logo-image" src="_resources/img/typo3-logo.svg" width="484" height="130">
                     </a>
                 </div>
-                <div class="col-sm-9 col-md-8 col-lg-6">
-                    <search role="search">
-                        <form action="https://docs.typo3.org/search/search" id="global-search-form" method="get">
-			                <div class="sr-only"><label for="globalsearchinput">TYPO3 documentation...</label></div>
-                            <div class="input-group mb-3 mt-sm-3">
-                                <select class="form-select search__scope" id="searchscope" name="scope">
-                                    <option value="">Search all</option>
-                                </select>
-                                <input autocomplete="off" class="form-control shadow-none" id="globalsearchinput" name="q" placeholder="TYPO3 documentation..." type="text" value="">
-                                <button class="btn btn-light search__submit" type="submit"><i class="fa fa-search"></i>&nbsp;<span class="d-none d-md-inline">Search</span></button>
-                            </div>
-                        </form>
-                    </search>
+                <div class="col-md-10 col-lg-8">
+                    <div class="menu-search-wrapper">
+                        <all-documentations-menu data-override-url="https://render-guides.ddev.site/menu-proxy.php"></all-documentations-menu>
+                                                <search role="search">
+                            <form action="https://docs.typo3.org/search/search" id="global-search-form" method="get">
+                                <div class="sr-only"><label for="globalsearchinput">TYPO3 documentation...</label></div>
+                                <div class="input-group mb-3 mt-sm-3">
+                                    <select class="form-select search__scope" id="searchscope" name="scope">
+                                        <option value="">Search all</option>
+                                    </select>
+                                    <input autocomplete="off" class="form-control shadow-none" id="globalsearchinput" name="q" placeholder="TYPO3 documentation..." type="text" value="">
+                                    <button class="btn btn-light search__submit" type="submit"><i class="fa fa-search"></i>&nbsp;<span class="d-none d-md-inline">Search</span></button>
+                                </div>
+                            </form>
+                        </search>
+                    </div>
                 </div>
             </div>
         </div>
@@ -67,8 +70,22 @@
                     
 <div class="toc-header">
     <div class="toc-title">
-        <a class="toc-title-project" href="#"></a>
-            </div>
+        <a class="toc-title-project" href="#">ew_llxml2xliff</a>
+            <div class="toc-version-wrapper" id="toc-version-wrapper">
+                <!--
+                    LOCAL RENDERING NOTICE:
+                    https://docs.typo3.org/other/t3docs/render-guides/main/en-us/Developer/AjaxVersions.html
+                -->
+
+                <div id="toc-version" class="toc-version" data-override-url-proxy="https://render-guides.ddev.site/versions-proxy.php?url=" data-override-url-self="https://docs.typo3.org/m/typo3/tutorial-getting-started/12.4/en-us/Concepts/Index.html">
+                
+                    <span class="toc-version-prefix">Release:</span>
+                    <span class="toc-version-number">6.0.1</span>
+                </div>
+                <div id="toc-version-options" class="toc-version-options">
+                    <p><span class="fa fa-spinner fa-spin"></span> Loading data.</p>
+                </div>
+            </div></div>
     <div class="toc-actions">
         <label class="toc-toggle" for="toggleToc">
             Menu
@@ -77,16 +94,14 @@
 </div>                    <div class="toc-collapse">
                                                 <div aria-label="main navigation" class="toc" role="navigation">
                                 <div aria-label="Main navigation" class="main_menu" role="navigation">
-        
-    <ul class="menu-level-1">
+            <ul class="menu-level-1">
     <li class="">
     <a href="Introduction/Index.html">
         Introduction
     </a></li>    <li class="">
     <a href="Installation/Index.html">
         Installation
-    </a></li>    </ul>
-    <ul class="menu-level-1">
+    </a></li>    </ul>    <ul class="menu-level-1">
     <li class="">
     <a href="Sitemap.html">
         Sitemap
@@ -101,6 +116,9 @@
                     <li><a href="https://docs.typo3.org/m/typo3/docs-how-to-document/main/en-us/WritingDocsOfficial/GithubMethod.html" rel="nofollow noopener" target="_blank">
                     How to edit
             </a></li>
+                    <li><a href="https://github.com/evoWeb/ew_llxml2xliff/edit/develop/Documentation/Index.rst" rel="nofollow noopener" target="_blank">
+                    Edit current document on GitHub
+            </a></li>
         </ul>
 </div>
                         </div>
@@ -113,7 +131,11 @@
 <ol class="breadcrumb">
                 <li aria-current="page"  class="breadcrumb-item  active">Converting LLXML to XLIFF</li>
         </ol>
-        <div class="breadcrumb-additions">    <a class="btn btn-sm btn-light" href="_sources/Index.rst.txt" rel="nofollow noopener" target="_blank">
+        <div class="breadcrumb-additions">        <a class="btn btn-sm btn-light" href="https://github.com/evoWeb/ew_llxml2xliff/issues/new/choose?title=Problem+on+https%3A%2F%2Fgithub.com%2FevoWeb%2Few_llxml2xliff%2FIndex.html" id="btnReportIssue" rel="nofollow noopener" target="_blank">
+            <span class="btn-icon"><i class="fas fa-bug"></i></span>
+            <span class="btn-text">Report issue</span>
+        </a>
+        <a class="btn btn-sm btn-light" href="_sources/Index.rst.txt" rel="nofollow noopener" target="_blank">
         <span class="btn-icon"><span class="fas fa-code"></span></span>
         <span class="btn-text">View source</span>
     </a>
@@ -121,13 +143,18 @@
         <span class="btn-icon"><span class="fas fa-info-circle"></span></span>
         <span class="btn-text">How to edit</span>
     </a>
+        <a class="btn btn-sm btn-secondary" href="https://github.com/evoWeb/ew_llxml2xliff/edit/develop/Documentation/Index.rst" id="btnEditOnGitHub" rel="nofollow noopener" target="_blank">
+        <span class="btn-icon"><span class="fab fa-github"></span></span>
+        <span class="btn-text">Edit on GitHub</span>
+    </a>
     </div>    </nav>
                     
 <article class="document" itemscope="itemscope" itemtype="http://schema.org/Article" role="main">
     <div itemprop="articleBody">
         <!-- content start -->
                 
-<section class="section" id="converting-llxml-to-xliff">
+<section class="section" id="converting-llxml-to-xliff" data-rst-anchor="start">
+            <a id="start"></a>
             <h1>Converting LLXML to XLIFF<a class="headerlink" href="#converting-llxml-to-xliff" data-bs-toggle="modal" data-bs-target="#linkReferenceModal"  title="Reference this headline"><i class="fa-solid fa-paragraph"></i></a></h1>
             <dl class="field-list simple ">
             <dt class="field-odd">Extension key</dt>
@@ -146,24 +173,13 @@
 
         <dd class="field-odd">
             
+    <p>6.0.1</p>
         </dd>
             <dt class="field-odd">Language</dt>
 
         <dd class="field-odd">
             
     <p>en</p>
-        </dd>
-            <dt class="field-odd">Description</dt>
-
-        <dd class="field-odd">
-            
-    <p>Converting llxml to xliff</p>
-        </dd>
-            <dt class="field-odd">Copyright</dt>
-
-        <dd class="field-odd">
-            
-    <p>2016-2024</p>
         </dd>
             <dt class="field-odd">Author</dt>
 
@@ -183,10 +199,19 @@ license.</p>
 
         <dd class="field-odd">
             
-    <p>Sun, 22 Sep 2024 15:22:30 +0000</p>
+    <p>Sat, 02 Nov 2024 13:34:30 +0000</p>
+        </dd>
+            <dt class="field-odd">Copyright</dt>
+
+        <dd class="field-odd">
+            
+    <p>2016-2024</p>
         </dd>
     </dl>
             <hr />
+            
+    <p>Converting llxml to xliff</p>
+
             
     <p>The content of this document is related to TYPO3,
 a GNU/GPL CMS/Framework available from <a href="http://typo3.org">http://typo3.org</a></p>
@@ -230,7 +255,7 @@ a GNU/GPL CMS/Framework available from <a href="http://typo3.org">http://typo3.o
     </main>
 
     <div class="modal fade" id="linkReferenceModal" tabindex="-1" aria-labelledby="linkReferenceModalLabel"
-    aria-hidden="true" data-current-filename="Index">
+    aria-hidden="true" data-current-filename="Index" data-interlink-shortcode="evoweb/ew-llxml2xliff">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -248,7 +273,8 @@ a GNU/GPL CMS/Framework available from <a href="http://typo3.org">http://typo3.o
                     <p>Copy and freely share the link</p>
                 </div>
                 <div class="mb-3">
-                    <div class="alert alert-warning alert-permalink-rst" role="alert">This link target has no permanent anchor assigned.The link below can be used, but is prone to change if the page gets moved.
+                    <div class="alert alert-warning alert-permalink-rst" role="alert">This link target has no permanent anchor assigned.                        You can make a <a href="https://github.com/evoWeb/ew_llxml2xliff/edit/develop/Documentation/Index.rst">pull request on GitHub</a> to suggest an anchor.
+                        The link below can be used, but is prone to change if the page gets moved.
                     </div>
                     <label for="permalink-rst" class="col-form-label">reStructuredText (reST):</label>
                     <div class="input-group">
@@ -297,10 +323,18 @@ a GNU/GPL CMS/Framework available from <a href="http://typo3.org">http://typo3.o
     <div class="frame frame-ruler-before frame-background-dark">
         <div class="frame-container">
             <div class="frame-inner">
-                                <div class="footer-additional">
-                    <p class="text-center">Last rendered: Sep 22, 2024 15:22</p>
+                <ul class="footer-simplemenu">
+                        <li><a href="https://github.com/evoWeb/ew_llxml2xliff" title="Home" rel="nofollow noopener"><span>Home</span></a></li>
+                                                <li><a href="ew-llxml2xliff@evoweb.de" title="Contact" rel="nofollow noopener"><span>Contact</span></a></li>
+                                                <li><a href="https://github.com/evoWeb/ew_llxml2xliff/issues" rel="nofollow noopener" title="Issues"><span>Issues</span></a></li>
+                                                <li><a href="https://github.com/evoWeb/ew_llxml2xliff" rel="nofollow noopener" title="Repository"><span>Repository</span></a></li>
+                                            </ul>                <div class="footer-additional">
+                    <p class="text-center">Last rendered: Nov 02, 2024 13:34</p>
                 </div>
                 <div class="footer-meta">
+                                        <div class="footer-meta-copyright">
+                        &copy; since 2016 by evoWeb
+                    </div>
                     <ul class="footer-meta-navigation">
                         <li><a href="https://typo3.org/legal-notice" rel="nofollow" target="_blank" title="Legal Notice">Legal Notice</a></li>
                         <li><a href="https://typo3.org/privacy-policy" rel="nofollow" target="_blank" title="Privacy Policy">Privacy Policy</a></li>
