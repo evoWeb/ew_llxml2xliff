@@ -105,8 +105,7 @@ class Converter
 
     /**
      * @param string $languageFile Absolute reference to the base locallang file
-     *
-     * @return array
+     * @return string[]
      */
     protected function getAvailableTranslations(string $languageFile): array
     {
@@ -198,10 +197,9 @@ class Converter
 
     /**
      * Reads/Requires locallang files and returns raw $LOCAL_LANG array
-     *
      * @param string $languageFile Absolute reference to the ll-XML locallang file.
-     *
-     * @return array LOCAL_LANG array from ll-XML file (with all possible sub-files for languages included)
+     * @return array<string, array<string, string>> LOCAL_LANG array from ll-XML file
+     *  (with all possible sub-files for languages included)
      */
     protected function getCombinedTranslationFileContent(string $languageFile): array
     {
@@ -211,7 +209,7 @@ class Converter
             $includedLanguages = array_keys($ll['data']);
 
             foreach ($includedLanguages as $langKey) {
-                /** @var $parser LocallangXmlParser */
+                /** @var LocallangXmlParser $parser */
                 $parser = GeneralUtility::makeInstance(LocallangXmlParser::class);
                 $localLangContent = $parser->getParsedData($languageFile, $langKey);
                 unset($parser);
@@ -219,7 +217,7 @@ class Converter
             }
         } else {
             require($languageFile);
-            $includedLanguages = isset($LOCAL_LANG) ? array_keys($LOCAL_LANG) : [];
+            $includedLanguages = array_keys($LOCAL_LANG);
         }
 
         if (empty($includedLanguages)) {
@@ -238,7 +236,7 @@ class Converter
      * @param string $namespacePrefix The tag-prefix resolve, e.g. a namespace like "T3:"
      * @param bool $reportDocTag If set, the document tag will be set in the key "_DOCUMENT_TAG" of the output array
      *
-     * @return array|string If the parsing had errors, a string with the error message is returned.
+     * @return array<string, mixed>|string If the parsing had errors, a string with the error message is returned.
      *         Otherwise, an array with the content.
      *
      * @see GeneralUtility::array2xml(),GeneralUtility::xml2arrayProcess()

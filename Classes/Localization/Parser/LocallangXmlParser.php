@@ -29,6 +29,7 @@ class LocallangXmlParser extends AbstractXmlParser
 {
     /**
      * Associative array of "filename => parsed data" pairs.
+     * @var array<string, array<string, mixed>> $parsedTargetFiles
      */
     protected array $parsedTargetFiles = [];
 
@@ -38,7 +39,7 @@ class LocallangXmlParser extends AbstractXmlParser
      * @param string $sourcePath Source file path
      * @param string $languageKey Language key
      *
-     * @return array
+     * @return array<string, array<string, string>>
      *
      * @throws FileNotFoundException
      * @throws InvalidXmlFileException
@@ -71,6 +72,7 @@ class LocallangXmlParser extends AbstractXmlParser
 
     /**
      * Parse the given language key tag
+     * @return array<string, array<string, string>>
      */
     protected function getParsedDataForElement(\SimpleXMLElement $bodyOfFileTag, string $element): array
     {
@@ -97,6 +99,7 @@ class LocallangXmlParser extends AbstractXmlParser
 
     /**
      * Returns array representation of XLIFF data, starting from a root node.
+     * @return array<string, array<string, string>>
      */
     protected function doParsingFromRoot(\SimpleXMLElement $root): array
     {
@@ -105,6 +108,7 @@ class LocallangXmlParser extends AbstractXmlParser
 
     /**
      * Returns array representation of XLIFF data, starting from a root node.
+     * @return array<string, array<string, string>>
      */
     protected function doParsingTargetFromRoot(\SimpleXMLElement $root): array
     {
@@ -113,6 +117,7 @@ class LocallangXmlParser extends AbstractXmlParser
 
     /**
      * Returns array representation of XLIFF data, starting from a root node.
+     * @return array<string, array<string, string>>
      */
     protected function doParsingFromRootForElement(\SimpleXMLElement $root, string $element): array
     {
@@ -153,6 +158,7 @@ class LocallangXmlParser extends AbstractXmlParser
      * Returns parsed representation of XML file.
      *
      * Parses XML if it wasn't done before. Caches parsed data.
+     * @return array<string, array<string, string>>
      */
     protected function getParsedTargetData(string $path): array
     {
@@ -164,6 +170,7 @@ class LocallangXmlParser extends AbstractXmlParser
 
     /**
      * Reads and parses XML file and returns internal representation of data.
+     * @return array<string, array<string, string>>
      */
     protected function parseXmlTargetFile(string $targetPath): array
     {

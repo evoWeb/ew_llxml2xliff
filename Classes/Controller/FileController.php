@@ -115,6 +115,10 @@ readonly class FileController
         return $moduleTemplate->renderResponse('File/ConvertFile');
     }
 
+    /**
+     * @return array<string|array<array<string, string>>>
+     * @throws PropagateResponseException
+     */
     protected function prepareExtensions(ServerRequestInterface $request, bool $selected = true): array
     {
         $extensions = $this->extensionService->getLocalExtensions();
@@ -133,6 +137,10 @@ readonly class FileController
         return [$extensions, $selectedExtension, $selectedExtensionKey];
     }
 
+    /**
+     * @return array<string|array<array<string, string>>>
+     * @throws PropagateResponseException
+     */
     protected function prepareFiles(ServerRequestInterface $request, string $extension, bool $selected = true): array
     {
         $files = $this->extensionService->getFilesOfExtension($extension);
@@ -152,6 +160,7 @@ readonly class FileController
     }
 
     /**
+     * @param array<string, mixed> $extensions
      * @throws PropagateResponseException
      */
     protected function getSelectedExtension(ServerRequestInterface $request, array $extensions): string
@@ -164,6 +173,7 @@ readonly class FileController
     }
 
     /**
+     * @param array<string, mixed> $files
      * @throws PropagateResponseException
      */
     protected function getSelectedFile(ServerRequestInterface $request, array $files): string
@@ -175,6 +185,9 @@ readonly class FileController
         return $selectedFile;
     }
 
+    /**
+     * @param array<string, mixed> $values
+     */
     protected function isArgumentSetAndAvailable(ServerRequestInterface $request, array $values, string $key): ?string
     {
         $formFieldValue = (string)($request->getParsedBody()[$key] ?? $request->getQueryParams()[$key] ?? '');
