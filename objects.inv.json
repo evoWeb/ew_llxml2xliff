@@ -2,25 +2,25 @@
     "std:doc": {
         "Index": [
             "ew_llxml2xliff",
-            "6.0.1",
+            "7.0.0",
             "Index.html",
             "Converting LLXML to XLIFF"
         ],
         "Installation\/Index": [
             "ew_llxml2xliff",
-            "6.0.1",
+            "7.0.0",
             "Installation\/Index.html",
             "Installation"
         ],
         "Introduction\/Index": [
             "ew_llxml2xliff",
-            "6.0.1",
+            "7.0.0",
             "Introduction\/Index.html",
             "Introduction"
         ],
         "Sitemap": [
             "ew_llxml2xliff",
-            "6.0.1",
+            "7.0.0",
             "Sitemap.html",
             "Sitemap"
         ]
@@ -28,19 +28,19 @@
     "std:label": {
         "start": [
             "ew_llxml2xliff",
-            "6.0.1",
+            "7.0.0",
             "Index.html#start",
             "Converting LLXML to XLIFF"
         ],
         "installation": [
             "ew_llxml2xliff",
-            "6.0.1",
+            "7.0.0",
             "Installation\/Index.html#installation",
             "Installation"
         ],
         "introduction": [
             "ew_llxml2xliff",
-            "6.0.1",
+            "7.0.0",
             "Introduction\/Index.html#introduction",
             "Introduction"
         ]
@@ -48,37 +48,37 @@
     "std:title": {
         "converting-llxml-to-xliff": [
             "ew_llxml2xliff",
-            "6.0.1",
+            "7.0.0",
             "Introduction\/Index.html#converting-llxml-to-xliff",
             "Converting llxml to xliff:"
         ],
         "installation-1": [
             "ew_llxml2xliff",
-            "6.0.1",
-            "Installation\/Index.html#installation-1",
+            "7.0.0",
+            "Installation\/Index.html#installation",
             "Installation"
         ],
         "download-via-composer": [
             "ew_llxml2xliff",
-            "6.0.1",
+            "7.0.0",
             "Installation\/Index.html#download-via-composer",
             "Download via Composer"
         ],
         "introduction-1": [
             "ew_llxml2xliff",
-            "6.0.1",
-            "Introduction\/Index.html#introduction-1",
+            "7.0.0",
+            "Introduction\/Index.html#introduction",
             "Introduction"
         ],
         "what-does-it-do": [
             "ew_llxml2xliff",
-            "6.0.1",
+            "7.0.0",
             "Introduction\/Index.html#what-does-it-do",
             "What does it do?"
         ],
         "sitemap": [
             "ew_llxml2xliff",
-            "6.0.1",
+            "7.0.0",
             "Sitemap.html#sitemap",
             "Sitemap"
         ]

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html class="no-js" lang="en">
 <head>
-    <title>ew_llxml2xliff 6.0.1
+    <title>ew_llxml2xliff 7.0.0
         documentation</title>
 
     
@@ -10,21 +10,20 @@
 <meta content="phpdocumentor/guides" name="generator">
 <meta content="ew_llxml2xliff" name="docsearch:name">
 <meta content="" name="docsearch:package_type">
-<meta content="6.0.1" name="docsearch:release">
-<meta content="6.0.1" name="docsearch:version">
-<meta content="2024-11-17T13:01:05+00:00" name="docsearch:modified">
-<meta content="2024-11-17T13:01:05+00:00" name="dc.modified">
-<meta content="2024-11-17T13:01:05+00:00" property="article:modified_time">
+<meta content="7.0.0" name="docsearch:release">
+<meta content="7.0.0" name="docsearch:version">
+<meta content="2025-11-30T12:23:57+00:00" name="docsearch:modified">
+<meta content="2025-11-30T12:23:57+00:00" name="dc.modified">
+<meta content="2025-11-30T12:23:57+00:00" property="article:modified_time">
     <link href="http://purl.org/dc/elements/1.1/" rel="schema.dc">
 <link href="../_resources/css/theme.css" rel="stylesheet">
 <link href="https://docs.typo3.org/search/" rel="search" title="Search">
-<script src="https://typo3.azureedge.net/typo3infrastructure/universe/dist/webcomponents-loader.js"></script>
-<script src="https://typo3.azureedge.net/typo3infrastructure/universe/dist/typo3-universe.js" type="module"></script>
+<script src="https://cdn.typo3.com/typo3infrastructure/universe/dist/webcomponents-loader.js"></script>
+<script src="https://cdn.typo3.com/typo3infrastructure/universe/dist/typo3-universe.js" type="module"></script>
                 </head>
 <body>
 <div class="page">
-    
-<header>
+    <header>
     <div class="page-topbar">
         <div class="page-topbar-inner">
             <typo3-universe active="documentation">
@@ -34,15 +33,37 @@
     </div>
     <div class="page-header">
         <div class="page-header-inner">
-            <div class="row">
-                <div class="col-md-2 col-lg-4">
+            <div class="d-flex flex-wrap">
+                <div class="logo-wrapper">
                     <a class="logo" href="https://docs.typo3.org/" title="TYPO3 Documentation">
                         <img alt="TYPO3 Logo" class="logo-image" src="../_resources/img/typo3-logo.svg" width="484" height="130">
                     </a>
                 </div>
-                <div class="col-md-10 col-lg-8">
+                <div class="align-self-center order-lg-2 order-last">
+                    
+<div class="toc-header">
+    <div class="toc-title pe-3">
+                            <a class="toc-title-project" href="../Index.html">Converting LLXML to XLIFF</a>
+            </div>
+    <label for="languageSelect" class="visually-hidden">Select language</label>
+        <select id="languageSelect" class="form-select d-none">
+        </select>
+
+                                  
+        <label for="versionSelect" class="visually-hidden">Select version</label>
+        <select id="versionSelect" class="form-select"
+                data-current-version="7.0.0"
+            data-override-url-proxy="../_resources/js/versions-proxy.php?url=" data-override-url-self="https://docs.typo3.org/m/typo3/tutorial-getting-started/12.4/en-us/Concepts/Index.html"
+        >
+            <option disabled selected>Loading versions...</option>
+        </select>
+    </div>                </div>
+                <div class="ms-auto order-lg-3 d-flex">
                     <div class="menu-search-wrapper">
-                        <all-documentations-menu data-override-url="https://render-guides.ddev.site/_resources/js/menu-proxy.php"></all-documentations-menu>
+                        <button id="toc-toggle" class="btn btn-light d-block d-lg-none" tabindex="0" aria-controls="toc-collapse" aria-expanded="false">
+                            <i class="fas fa-bars"></i> <span class="visually-hidden">Mobile Menu</span>
+                        </button>
+                        <all-documentations-menu data-override-url="../_resources/js/menu-proxy.php"></all-documentations-menu>
                                                 <search role="search">
                             <form action="https://docs.typo3.org/search/search" id="global-search-form" method="get">
                                 <div class="sr-only"><label for="globalsearchinput">TYPO3 documentation...</label></div>
@@ -51,10 +72,28 @@
                                         <option value="">Search all</option>
                                     </select>
                                     <input autocomplete="off" class="form-control shadow-none" id="globalsearchinput" name="q" placeholder="TYPO3 documentation..." type="text" value="">
-                                    <button class="btn btn-light search__submit" type="submit"><i class="fa fa-search"></i>&nbsp;<span class="d-none d-md-inline">Search</span></button>
+                                    <button class="btn btn-light" type="submit"><i class="fa fa-search"></i>&nbsp;<span class="d-none d-md-inline">Search</span></button>
                                 </div>
                             </form>
+                            <div id="global-search-root"></div>
                         </search>
+                        <div class="position-relative d-inline-block">
+                            <button id="options-toggle" class="btn btn-light d-block" type="button" aria-expanded="false">
+                                <i class="fas fa-cog"></i> <span class="visually-hidden">Options</span>
+                            </button>
+
+                            <div id="options-panel"
+                                 class="shadow p-3"
+                                 role="menu"
+                                 aria-hidden="true">
+                                <h6 class="dropdown-header text-muted text-uppercase small mb-2">Options</h6>
+
+                                                                                                        <a class="dropdown-item d-flex align-items-center gap-2" href="../Index.html" rel="noopener">
+                                        <i class="fas fa-file-alt"></i>
+                                        Switch to regular view
+                                    </a>
+                                                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -64,31 +103,8 @@
         <div class="page-main-inner">
             <div class="page-main-navigation">
                 <nav>
-                    
-<div class="toc-header">
-    <div class="toc-title">
-        <a class="toc-title-project" href="#">ew_llxml2xliff</a>
-            <div class="toc-version-wrapper" id="toc-version-wrapper">
-                <!--
-                    LOCAL RENDERING NOTICE:
-                    https://docs.typo3.org/other/t3docs/render-guides/main/en-us/Developer/AjaxVersions.html
-                -->
 
-                <div id="toc-version" class="toc-version" data-override-url-proxy="https://render-guides.ddev.site/_resources/js/versions-proxy.php?url=" data-override-url-self="https://docs.typo3.org/m/typo3/tutorial-getting-started/12.4/en-us/Concepts/Index.html">
-                
-                    <span class="toc-version-prefix">Release:</span>
-                    <span class="toc-version-number" tabindex="0">6.0.1</span>
-                </div>
-                <div id="toc-version-options" class="toc-version-options">
-                    <p><span class="fa fa-spinner fa-spin"></span> Loading data.</p>
-                </div>
-            </div></div>
-    <div class="toc-actions">
-        <button id="toc-toggle" class="btn btn-light d-block d-lg-none" tabindex="0" aria-controls="toc-collapse" aria-expanded="false">
-            Menu
-        </button>
-    </div>
-</div>                    <div id="toc-collapse">
+                    <div id="toc-collapse">
                                                 <div aria-label="main navigation" class="toc"
                              role="navigation">
                                                                                 </div>
@@ -101,7 +117,7 @@
             
 <section class="section" id="converting-llxml-to-xliff" data-rst-anchor="start">
             <a id="start"></a>
-            <h1>Converting LLXML to XLIFF<a class="headerlink" href="#converting-llxml-to-xliff" data-bs-toggle="modal" data-bs-target="#linkReferenceModal"  title="Reference this headline"><i class="fa-solid fa-paragraph"></i></a></h1>
+            <h1>Converting LLXML to XLIFF<a class="headerlink" href="#converting-llxml-to-xliff" data-bs-toggle="modal" data-bs-target="#linkReferenceModal"  title="Reference this headline">&nbsp;<i class="fa-solid fa-link"></i></a></h1>
             <dl class="field-list simple ">
             <dt class="field-odd">Extension key</dt>
 
@@ -119,7 +135,7 @@
 
         <dd class="field-odd">
             
-    <p>6.0.1</p>
+    <p>7.0.0</p>
         </dd>
             <dt class="field-odd">Language</dt>
 
@@ -145,94 +161,7 @@ license.</p>
 
         <dd class="field-odd">
             
-    <p>Sun, 17 Nov 2024 13:01:05 +0000</p>
-        </dd>
-            <dt class="field-odd">Copyright</dt>
-
-        <dd class="field-odd">
-            
-    <p>2016-2024</p>
-        </dd>
-    </dl>
-            <hr />
-            
-    <p>Converting llxml to xliff</p>
-
-            
-    <p>The content of this document is related to TYPO3,
-a GNU/GPL CMS/Framework available from <a href="http://typo3.org">http://typo3.org</a></p>
-
-            <hr />
-            
-    <p><strong>Table of Contents</strong></p>
-
-            <div class="toctree-wrapper compound">
-        <ul class="menu-level">
-    <li class="toc-item">
-    <a href="#introduction-1">Introduction</a>
-
-
-</li>
-    <li class="toc-item">
-    <a href="#installation-1">Installation</a>
-
-
-</li>
-    </ul>
-</div>
-            
-    </section>
-
-        </article>
-<article>
-            
-<section class="section" id="converting-llxml-to-xliff" data-rst-anchor="start">
-            <a id="start"></a>
-            <h1>Converting LLXML to XLIFF<a class="headerlink" href="#converting-llxml-to-xliff" data-bs-toggle="modal" data-bs-target="#linkReferenceModal"  title="Reference this headline"><i class="fa-solid fa-paragraph"></i></a></h1>
-            <dl class="field-list simple ">
-            <dt class="field-odd">Extension key</dt>
-
-        <dd class="field-odd">
-            
-    <p>ew_llxml2xliff</p>
-        </dd>
-            <dt class="field-odd">Package name</dt>
-
-        <dd class="field-odd">
-            
-    <p>evoweb/ew-llxml2xliff</p>
-        </dd>
-            <dt class="field-odd">Version</dt>
-
-        <dd class="field-odd">
-            
-    <p>6.0.1</p>
-        </dd>
-            <dt class="field-odd">Language</dt>
-
-        <dd class="field-odd">
-            
-    <p>en</p>
-        </dd>
-            <dt class="field-odd">Author</dt>
-
-        <dd class="field-odd">
-            
-    <p>Sebastian Fischer</p>
-        </dd>
-            <dt class="field-odd">License</dt>
-
-        <dd class="field-odd">
-            
-    <p>This document is published under the
-<a href="https://www.opencontent.org/openpub/">Open Publication</a>.
-license.</p>
-        </dd>
-            <dt class="field-odd">Rendered</dt>
-
-        <dd class="field-odd">
-            
-    <p>Sun, 17 Nov 2024 13:01:05 +0000</p>
+    <p>Sun, 30 Nov 2025 12:23:57 +0000</p>
         </dd>
             <dt class="field-odd">Copyright</dt>
 
@@ -275,16 +204,16 @@ a GNU/GPL CMS/Framework available from <a href="http://typo3.org">http://typo3.o
             
 <section class="section" id="introduction-1" data-rst-anchor="introduction">
             <a id="introduction"></a>
-            <h1>Introduction<a class="headerlink" href="#introduction-1" data-bs-toggle="modal" data-bs-target="#linkReferenceModal"  title="Reference this headline"><i class="fa-solid fa-paragraph"></i></a></h1>
+            <h1>Introduction<a class="headerlink" href="#introduction-1" data-bs-toggle="modal" data-bs-target="#linkReferenceModal"  title="Reference this headline">&nbsp;<i class="fa-solid fa-link"></i></a></h1>
             <section class="section" id="what-does-it-do">
-            <h2>What does it do?<a class="headerlink" href="#what-does-it-do" data-bs-toggle="modal" data-bs-target="#linkReferenceModal"  title="Reference this headline"><i class="fa-solid fa-paragraph"></i></a></h2>
+            <h2>What does it do?<a class="headerlink" href="#what-does-it-do" data-bs-toggle="modal" data-bs-target="#linkReferenceModal"  title="Reference this headline">&nbsp;<i class="fa-solid fa-link"></i></a></h2>
             
     <p>Provides a backend module to convert locallang.xml and locallang.php files
 to xliff. For every language, contained in the source file, an extra file gets created.</p>
 
     </section>
             <section class="section" id="converting-llxml-to-xliff">
-            <h2>Converting llxml to xliff:<a class="headerlink" href="#converting-llxml-to-xliff" data-bs-toggle="modal" data-bs-target="#linkReferenceModal"  title="Reference this headline"><i class="fa-solid fa-paragraph"></i></a></h2>
+            <h2>Converting llxml to xliff:<a class="headerlink" href="#converting-llxml-to-xliff" data-bs-toggle="modal" data-bs-target="#linkReferenceModal"  title="Reference this headline">&nbsp;<i class="fa-solid fa-link"></i></a></h2>
             
     
 <ol type="1">
@@ -305,9 +234,9 @@ file can be deleted.</p>
             
 <section class="section" id="installation-1" data-rst-anchor="installation">
             <a id="installation"></a>
-            <h1>Installation<a class="headerlink" href="#installation-1" data-bs-toggle="modal" data-bs-target="#linkReferenceModal"  title="Reference this headline"><i class="fa-solid fa-paragraph"></i></a></h1>
+            <h1>Installation<a class="headerlink" href="#installation-1" data-bs-toggle="modal" data-bs-target="#linkReferenceModal"  title="Reference this headline">&nbsp;<i class="fa-solid fa-link"></i></a></h1>
             <section class="section" id="download-via-composer">
-            <h2>Download via Composer<a class="headerlink" href="#download-via-composer" data-bs-toggle="modal" data-bs-target="#linkReferenceModal"  title="Reference this headline"><i class="fa-solid fa-paragraph"></i></a></h2>
+            <h2>Download via Composer<a class="headerlink" href="#download-via-composer" data-bs-toggle="modal" data-bs-target="#linkReferenceModal"  title="Reference this headline">&nbsp;<i class="fa-solid fa-link"></i></a></h2>
             
     <p>Add evoweb/extender to the require in your composer.json.</p>
 
@@ -330,7 +259,7 @@ file can be deleted.</p>
 <article>
             
 <section class="section" id="sitemap">
-            <h1>Sitemap<a class="headerlink" href="#sitemap" data-bs-toggle="modal" data-bs-target="#linkReferenceModal"  title="Reference this headline"><i class="fa-solid fa-paragraph"></i></a></h1>
+            <h1>Sitemap<a class="headerlink" href="#sitemap" data-bs-toggle="modal" data-bs-target="#linkReferenceModal"  title="Reference this headline">&nbsp;<i class="fa-solid fa-link"></i></a></h1>
     </section>
 
         </article>
@@ -351,17 +280,19 @@ file can be deleted.</p>
             <div class="modal-body">
                 <div class="alert alert-success d-none" id="permalink-alert-success" role="alert"></div>
                 <div class="mb-3">
+                    <div class="permalink-short-wrapper">
+                        <label for="permalink-short" class="col-form-label">Permalink (Shortlink)</label>
+                        <div class="input-group">
+                            <input class="form-control code" id="permalink-short" readonly>
+                            <button type="button" class="btn btn-outline-secondary copy-button" data-target="permalink-short"><i class="far fa-clone"></i></button>
+                        </div>
+                        <p><em>Copy and freely share the link</em></p>
+                    </div>
                     <label for="permalink-uri" class="col-form-label">URL</label>
                     <div class="input-group">
                         <input class="form-control code" id="permalink-uri" readonly>
                         <button type="button" class="btn btn-outline-secondary copy-button" data-target="permalink-uri"><i class="far fa-clone"></i></button>
                     </div>
-                    <label for="permalink-short" class="col-form-label">Permalink (Shortlink)</label>
-                    <div class="input-group">
-                        <input class="form-control code" id="permalink-short" readonly>
-                        <button type="button" class="btn btn-outline-secondary copy-button" data-target="permalink-short"><i class="far fa-clone"></i></button>
-                    </div>
-                    <p><em>Copy and freely share the link</em></p>
                 </div>
                 <div class="mb-3">
                     <div class="alert alert-warning alert-permalink-rst" role="alert">This link target has no permanent anchor assigned.The link below can be used, but is prone to change if the page gets moved.
@@ -372,6 +303,13 @@ file can be deleted.</p>
                         <button type="button" class="btn btn-outline-secondary copy-button" data-target="permalink-rst"><i class="far fa-clone"></i></button>
                     </div>
                     <p><em>Copy this link into your TYPO3 manual.</em></p>
+                </div>
+                <div class="mb-3">
+                    <label for="permalink-md" class="col-form-label">Link in Markdown</label>
+                    <div class="input-group">
+                        <textarea class="form-control code" id="permalink-md" readonly></textarea>
+                        <button type="button" class="btn btn-outline-secondary copy-button" data-target="permalink-md"><i class="far fa-clone"></i></button>
+                    </div>
                 </div>
                 <div class="mb-3">
                     <label for="permalink-html" class="col-form-label">Link in HTML</label>
@@ -419,7 +357,7 @@ file can be deleted.</p>
                                                 <li><a href="https://github.com/evoWeb/ew_llxml2xliff/issues" rel="nofollow noopener" title="Issues"><span>Issues</span></a></li>
                                                 <li><a href="https://github.com/evoWeb/ew_llxml2xliff" rel="nofollow noopener" title="Repository"><span>Repository</span></a></li>
                                             </ul>                <div class="footer-additional">
-                    <p class="text-center">Last rendered: Nov 17, 2024 13:01</p>
+                    <p class="text-center">Last rendered: Nov 30, 2025 12:23</p>
                 </div>
                 <div class="footer-meta">
                                         <div class="footer-meta-copyright">
