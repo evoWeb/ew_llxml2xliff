@@ -31,10 +31,14 @@ readonly class TransUnit
         array $LOCAL_LANG
     ) {
         if (is_array($data)) {
+            // @extensionScannerIgnoreLine
             $this->target = $data['target'] ?? '';
+            // @extensionScannerIgnoreLine
             $this->source = $data['source'] ?? $this->target;
         } else {
+            // @extensionScannerIgnoreLine
             $this->target = $data;
+            // @extensionScannerIgnoreLine
             $this->source = $LOCAL_LANG['default'][$key];
         }
     }
@@ -60,13 +64,16 @@ readonly class TransUnit
 
     protected function getTargetNode(): string
     {
-        return empty($this->target)
+        // @extensionScannerIgnoreLine
+        $target = $this->target;
+        return empty($target)
             ? '<target/>'
-            : '<target>' . htmlspecialchars($this->target) . '</target>';
+            : '<target>' . htmlspecialchars($target) . '</target>';
     }
 
     public function __toString(): string
     {
+        // @extensionScannerIgnoreLine
         return '      <trans-unit id="' . $this->key . '" resname="' . $this->key . '"'
             . $this->getPreserved() . $this->getApproved() . '>' . LF
             . '        ' . $this->getSourceNode() . LF
