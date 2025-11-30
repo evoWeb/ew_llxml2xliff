@@ -46,7 +46,7 @@ return (new \PhpCsFixer\Config())
     ->setFinder(
         PhpCsFixer\Finder::create()
             ->ignoreVCSIgnored(true)
-            ->in(realpath(__DIR__ . '/../../'))
+            ->in(realpath(__DIR__ . '/../ew-llxml2xliff/'))
             ->exclude('bin')
             ->exclude('public')
             ->exclude('typo3temp')

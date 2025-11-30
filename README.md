@@ -1,6 +1,6 @@
 # ew_llxml2xliff
 
-![build](https://github.com/evoWeb/ew_llxml2xliff/workflows/build/badge.svg?branch=develop)
+![build](https://github.com/evoWeb/ew_llxml2xliff/actions/workflows/ci.yml/badge.svg?branch=develop)
 [![Latest Stable Version](https://poser.pugx.org/evoweb/ew-llxml2xliff/v/stable)](https://packagist.org/packages/evoweb/ew-llxml2xliff)
 [![Monthly Downloads](https://poser.pugx.org/evoweb/ew-llxml2xliff/d/monthly)](https://packagist.org/packages/evoweb/ew-llxml2xliff)
 [![Total Downloads](https://poser.pugx.org/evoweb/ew-llxml2xliff/downloads)](https://packagist.org/packages/evoweb/ew-llxml2xliff)
@@ -19,7 +19,7 @@ Download and install the extension with the extension manger module or directly 
 [TER](https://extensions.typo3.org/extension/ew_llxml2xliff/).
 
 The transition_conversion_convert_transfer_motion_icon_196300.svg was downloaded
-with the licence information:
+with the license information:
 ```
 Author: ibob icon
 Licence: Free for commercial use

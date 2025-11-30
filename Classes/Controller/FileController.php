@@ -7,7 +7,7 @@ declare(strict_types=1);
  *
  * It is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License, either version 2
- * of the License, or any later version.
+ * of the License or any later version.
  *
  * For the full copyright and license information, please read the
  * LICENSE.txt file that was distributed with this source code.
@@ -15,53 +15,52 @@ declare(strict_types=1);
 
 namespace Evoweb\EwLlxml2xliff\Controller;
 
-use Evoweb\EwLlxml2xliff\File\Converter;
 use Evoweb\EwLlxml2xliff\Service\ExtensionService;
+use Exception;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use TYPO3\CMS\Backend\Attribute\AsController;
 use TYPO3\CMS\Backend\Routing\UriBuilder;
+use TYPO3\CMS\Backend\Template\Components\ComponentFactory;
 use TYPO3\CMS\Backend\Template\ModuleTemplate;
 use TYPO3\CMS\Backend\Template\ModuleTemplateFactory;
-use TYPO3\CMS\Core\Http\PropagateResponseException;
 use TYPO3\CMS\Core\Imaging\IconFactory;
 use TYPO3\CMS\Core\Imaging\IconSize;
 use TYPO3\CMS\Core\Localization\LanguageService;
-use TYPO3\CMS\Core\Page\PageRenderer;
 
 #[AsController]
 readonly class FileController
 {
     public function __construct(
-        protected IconFactory $iconFactory,
-        protected UriBuilder $uriBuilder,
-        protected PageRenderer $pageRenderer,
         protected ModuleTemplateFactory $moduleTemplateFactory,
-        protected Converter $fileConverter,
+        protected UriBuilder $uriBuilder,
+        protected ComponentFactory $componentFactory,
+        protected IconFactory $iconFactory,
         protected ExtensionService $extensionService,
-    ) {}
+    ) {
+    }
 
     public function selectExtensionAction(ServerRequestInterface $request): ResponseInterface
     {
-        [$extensions] = $this->prepareExtensions($request, false);
+        [, $extensions] = $this->prepareExtensions($request, false);
 
-        $moduleTemplate = $this->initializeModuleTemplate(
-            $request,
-            'LLL:EXT:ew_llxml2xliff/Resources/Private/Language/locallang.xlf:extension'
-        );
+        $moduleTemplate = $this->initializeModuleTemplate($request, 'ew_llxml2xliff.messages:extension');
         $moduleTemplate->assign('extensions', $extensions);
         return $moduleTemplate->renderResponse('File/SelectExtension');
     }
 
     public function selectFileAction(ServerRequestInterface $request): ResponseInterface
     {
-        [$extensions, $selectedExtension, $selectedExtensionKey] = $this->prepareExtensions($request);
-        [$files] = $this->prepareFiles($request, $selectedExtensionKey, false);
+        [$response, $extensions, $selectedExtension, $selectedExtensionKey] = $this->prepareExtensions($request);
+        if ($response !== null) {
+            return $response;
+        }
+        [$response, $files] = $this->prepareFiles($request, $selectedExtensionKey, false);
+        if ($response !== null) {
+            return $response;
+        }
 
-        $moduleTemplate = $this->initializeModuleTemplate(
-            $request,
-            'LLL:EXT:ew_llxml2xliff/Resources/Private/Language/locallang.xlf:file'
-        );
+        $moduleTemplate = $this->initializeModuleTemplate($request, 'ew_llxml2xliff.messages:file');
         $moduleTemplate->assignMultiple([
             'extensions' => $extensions,
             'selectedExtension' => $selectedExtension,
@@ -73,13 +72,16 @@ readonly class FileController
 
     public function confirmConversionAction(ServerRequestInterface $request): ResponseInterface
     {
-        [$extensions, $selectedExtension, $selectedExtensionKey] = $this->prepareExtensions($request);
-        [$files, $selectedFile, $selectedFileKey] = $this->prepareFiles($request, $selectedExtensionKey);
+        [$response, $extensions, $selectedExtension, $selectedExtensionKey] = $this->prepareExtensions($request);
+        if ($response !== null) {
+            return $response;
+        }
+        [$response, $files, $selectedFile, $selectedFileKey] = $this->prepareFiles($request, $selectedExtensionKey);
+        if ($response !== null) {
+            return $response;
+        }
 
-        $moduleTemplate = $this->initializeModuleTemplate(
-            $request,
-            'LLL:EXT:ew_llxml2xliff/Resources/Private/Language/locallang.xlf:confirm_selection'
-        );
+        $moduleTemplate = $this->initializeModuleTemplate($request, 'ew_llxml2xliff.messages:confirm_selection');
         $moduleTemplate->assignMultiple([
             'extensions' => $extensions,
             'selectedExtension' => $selectedExtension,
@@ -93,16 +95,19 @@ readonly class FileController
 
     public function convertFileAction(ServerRequestInterface $request): ResponseInterface
     {
-        [$extensions, $selectedExtension, $selectedExtensionKey] = $this->prepareExtensions($request);
-        [$files, $selectedFile, $selectedFileKey] = $this->prepareFiles($request, $selectedExtensionKey);
+        [$response, $extensions, $selectedExtension, $selectedExtensionKey] = $this->prepareExtensions($request);
+        if ($response !== null) {
+            return $response;
+        }
+        [$response, $files, $selectedFile, $selectedFileKey] = $this->prepareFiles($request, $selectedExtensionKey);
+        if ($response !== null) {
+            return $response;
+        }
 
         $conversionResult = $this->extensionService
             ->convertLanguageFile($selectedExtensionKey, $selectedFileKey, $files);
 
-        $moduleTemplate = $this->initializeModuleTemplate(
-            $request,
-            'LLL:EXT:ew_llxml2xliff/Resources/Private/Language/locallang.xlf:finish'
-        );
+        $moduleTemplate = $this->initializeModuleTemplate($request, 'ew_llxml2xliff.messages:finish');
         $moduleTemplate->assignMultiple([
             'extensions' => $extensions,
             'selectedExtension' => $selectedExtension,
@@ -115,10 +120,15 @@ readonly class FileController
         return $moduleTemplate->renderResponse('File/ConvertFile');
     }
 
+    /**
+     * @return array<ResponseInterface|string|array<array<string, string>>|null>
+     */
     protected function prepareExtensions(ServerRequestInterface $request, bool $selected = true): array
     {
         $extensions = $this->extensionService->getLocalExtensions();
-        $selectedExtensionKey = $selected ? $this->getSelectedExtension($request, $extensions) : '';
+        [$response, $selectedExtensionKey] = $selected
+            ? $this->getSelectedExtension($request, $extensions)
+            : [null, ''];
         $selectedExtension = null;
 
         foreach ($extensions as &$extension) {
@@ -130,13 +140,18 @@ readonly class FileController
             }
         }
 
-        return [$extensions, $selectedExtension, $selectedExtensionKey];
+        return [$response, $extensions, $selectedExtension, $selectedExtensionKey];
     }
 
+    /**
+     * @return array<ResponseInterface|string|array<array<string, string>>|null>
+     */
     protected function prepareFiles(ServerRequestInterface $request, string $extension, bool $selected = true): array
     {
         $files = $this->extensionService->getFilesOfExtension($extension);
-        $selectedFileKey = $selected ? $this->getSelectedFile($request, $files) : '';
+        [$response, $selectedFileKey] = $selected
+            ? $this->getSelectedFile($request, $files)
+            : [null, ''];
         $selectedFile = null;
 
         foreach ($files as &$file) {
@@ -148,67 +163,71 @@ readonly class FileController
             }
         }
 
-        return [$files, $selectedFile, $selectedFileKey];
+        return [$response, $files, $selectedFile, $selectedFileKey];
     }
 
     /**
-     * @throws PropagateResponseException
+     * @param array<string, mixed> $extensions
+     * @return array<ResponseInterface|string|null>
      */
-    protected function getSelectedExtension(ServerRequestInterface $request, array $extensions): string
+    protected function getSelectedExtension(ServerRequestInterface $request, array $extensions): array
     {
+        $response = null;
         $selectedExtension = $this->isArgumentSetAndAvailable($request, $extensions, 'extension');
-        if (!$selectedExtension) {
-            throw new PropagateResponseException($this->selectExtensionAction($request));
+        if ($selectedExtension === '') {
+            $response = $this->selectExtensionAction($request);
         }
-        return $selectedExtension;
+        return [$response, $selectedExtension];
     }
 
     /**
-     * @throws PropagateResponseException
+     * @param array<string, mixed> $files
+     * @return array<ResponseInterface|string|null>
      */
-    protected function getSelectedFile(ServerRequestInterface $request, array $files): string
+    protected function getSelectedFile(ServerRequestInterface $request, array $files): array
     {
+        $response = null;
         $selectedFile = $this->isArgumentSetAndAvailable($request, $files, 'file');
-        if (!$selectedFile) {
-            throw new PropagateResponseException($this->selectFileAction($request));
+        if ($selectedFile === '') {
+            $response = $this->selectFileAction($request);
         }
-        return $selectedFile;
+        return [$response, $selectedFile];
     }
 
-    protected function isArgumentSetAndAvailable(ServerRequestInterface $request, array $values, string $key): ?string
+    /**
+     * @param array<string, mixed> $values
+     */
+    protected function isArgumentSetAndAvailable(ServerRequestInterface $request, array $values, string $key): string
     {
-        $formFieldValue = (string)($request->getParsedBody()[$key] ?? $request->getQueryParams()[$key] ?? '');
-        return ($formFieldValue !== '' && isset($values[$formFieldValue])) ? $formFieldValue : null;
+        $moduleData = $request->getAttribute('moduleData');
+        $moduleData->cleanUp(['extension', 'file']);
+        $formFieldValue = $moduleData->get($key);
+        return ($formFieldValue !== '' && isset($values[$formFieldValue])) ? $formFieldValue : '';
     }
 
     protected function initializeModuleTemplate(ServerRequestInterface $request, string $context): ModuleTemplate
     {
-        $this->pageRenderer->addCssFile('EXT:ew_llxml2xliff/Resources/Public/Css/form.css');
-
         $moduleTemplate = $this->moduleTemplateFactory->create($request);
         $moduleTemplate->setTitle(
-            $this->getLanguageService()->sL(
-                'LLL:EXT:ew_llxml2xliff/Resources/Private/Language/locallang_mod.xlf:mlang_tabs_tab'
-            ),
+            $this->getLanguageService()->sL('ew_llxml2xliff.mod:title'),
             $this->getLanguageService()->sL($context)
         );
 
-        $buttonBar = $moduleTemplate->getDocHeaderComponent()->getButtonBar();
-
         try {
+            $buttonBar = $moduleTemplate->getDocHeaderComponent()->getButtonBar();
             $newFileConversionUrl = (string)$this->uriBuilder->buildUriFromRoute('web_EwLlxml2xliff');
-            $newFileConversionButton = $buttonBar->makeLinkButton()
+            $newFileConversionButton = $this->componentFactory->createLinkButton()
                 ->setDataAttributes(['identifier' => 'newFileConversion'])
                 ->setHref($newFileConversionUrl)
                 ->setTitle(
                     $this->getLanguageService()->sL(
-                        'LLL:EXT:ew_llxml2xliff/Resources/Private/Language/locallang.xlf:start_new_conversion'
+                        'ew_llxml2xliff.messages:start_new_conversion'
                     )
                 )
                 ->setShowLabelText(true)
                 ->setIcon($this->iconFactory->getIcon('actions-plus', IconSize::SMALL));
             $buttonBar->addButton($newFileConversionButton);
-        } catch (\Exception) {
+        } catch (Exception) {
         }
 
         return $moduleTemplate;

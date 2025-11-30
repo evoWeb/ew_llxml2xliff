@@ -7,7 +7,7 @@ declare(strict_types=1);
  *
  * It is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License, either version 2
- * of the License, or any later version.
+ * of the License or any later version.
  *
  * For the full copyright and license information, please read the
  * LICENSE.txt file that was distributed with this source code.
@@ -27,6 +27,9 @@ readonly class ExtensionService
         protected Converter $converter,
     ) {}
 
+    /**
+     * @return array<array<string, mixed>>
+     */
     public function getLocalExtensions(): array
     {
         $availableExtensions = $this->listUtility->getAvailableExtensions();
@@ -51,7 +54,8 @@ readonly class ExtensionService
     }
 
     /**
-     * Gather files for given extension key that need to be converted
+     * Gather files for a given extension key that need to be converted
+     * @return array<string, array<string, string>>
      */
     public function getFilesOfExtension(string $extensionKey): array
     {
@@ -82,6 +86,10 @@ readonly class ExtensionService
         return str_contains($filePath, 'Resources/Private/Language/');
     }
 
+    /**
+     * @param array<string, array<string, string>> $files
+     * @return array<string, string|bool>
+     */
     public function convertLanguageFile(string $selectedExtension, string $selectedFile, array $files): array
     {
         $wasConvertedPreviously = false;

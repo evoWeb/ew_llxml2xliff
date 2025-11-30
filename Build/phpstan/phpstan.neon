@@ -1,0 +1,21 @@
+includes:
+  - phpstan-baseline.neon
+  - ../vendor/friendsoftypo3/phpstan-typo3/extension.neon
+
+parameters:
+  # Use local .cache dir instead of /tmp
+  tmpDir: ../.cache/phpstan
+
+  level: 6
+
+  bootstrapFiles:
+    - phpstan-constants.php
+
+  paths:
+    - ../../
+
+  excludePaths:
+    # we do not check required extensions
+    - ../../Build/*
+    # ext_emconf.php get the $_EXTKEY set from outside. We'll ignore all of them
+    - ../ext_emconf.php

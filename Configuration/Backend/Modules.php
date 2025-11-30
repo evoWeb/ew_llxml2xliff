@@ -8,7 +8,7 @@ return [
         'access' => 'user,group',
         'path' => '/module/web/llxmlconverter',
         'iconIdentifier' => 'llxml2xlifficon',
-        'labels' => 'LLL:EXT:ew_llxml2xliff/Resources/Private/Language/locallang_mod.xlf',
+        'labels' => 'ew_llxml2xliff.mod',
         'routes' => [
             '_default' => [
                 'target' => FileController::class . '::selectExtensionAction',
@@ -22,6 +22,10 @@ return [
             'convertFile' => [
                 'target' => FileController::class . '::convertFileAction',
             ],
+        ],
+        'moduleData' => [
+            'extension' => '',
+            'file' => '',
         ],
     ],
 ];

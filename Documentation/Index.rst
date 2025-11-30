@@ -1,4 +1,6 @@
-.. include:: /Includes.rst.txt
+..  include:: /Includes.rst.txt
+
+..  _start:
 
 =========================
 Converting LLXML to XLIFF
@@ -16,12 +18,6 @@ Converting LLXML to XLIFF
 :Language:
     en
 
-:Description:
-    Converting llxml to xliff
-
-:Copyright:
-    2016-2024
-
 :Author:
     Sebastian Fischer
 
@@ -33,7 +29,12 @@ Converting LLXML to XLIFF
 :Rendered:
     |today|
 
+:Copyright:
+    2016-2024
+
 ----
+
+Converting llxml to xliff
 
 The content of this document is related to TYPO3,
 a GNU/GPL CMS/Framework available from http://typo3.org
