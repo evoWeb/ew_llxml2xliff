@@ -41,7 +41,8 @@ class LocallangXmlParser
     /**
      * Loads the current XML file before processing.
      *
-     * @return array<string, array<string, string>> An array representing a parsed XML file (structure depends on concrete parser)
+     * @return array<string, array<string, string>> An array representing a
+     *  parsed XML file (structure depends on concrete parser)
      * @throws InvalidXmlFileException
      */
     protected function parseXmlFile(): array
@@ -57,7 +58,8 @@ class LocallangXmlParser
         if ($rootXmlNode === false) {
             $xmlError = libxml_get_last_error();
             throw new InvalidXmlFileException(
-                'The path provided does not point to an existing and accessible well-formed XML file. Reason: ' . $xmlError->message . ' in ' . $this->sourcePath . ', line ' . $xmlError->line,
+                'The path provided does not point to an existing and accessible well-formed XML file. Reason: '
+                . $xmlError->message . ' in ' . $this->sourcePath . ', line ' . $xmlError->line,
                 1278155988
             );
         }
@@ -70,7 +72,8 @@ class LocallangXmlParser
      *
      * @param string $fileRef Absolute file reference to a locallang file
      * @param string $language Language key
-     * @param bool $sameLocation If TRUE, then locallang localization file name will be returned with the same directory as $fileRef
+     * @param bool $sameLocation If TRUE, then locallang localization file
+     *  name will be returned with the same directory as $fileRef
      * @return string Absolute path to the language file
      */
     protected function getLocalizedFileName(string $fileRef, string $language, bool $sameLocation = false): string
@@ -104,8 +107,10 @@ class LocallangXmlParser
             }
             // Add an empty first-entry if not there.
             [$file_extPath, $file_fileName] = $temp;
-            // The filename is prefixed with "[language key]." because it prevents the llxmltranslate tool from detecting it.
-            return Environment::getLabelsPath() . '/' . $language . '/' . $extensionKey . '/' . ($file_extPath ? $file_extPath . '/' : '') . $language . '.' . $file_fileName;
+            // The filename is prefixed with "[language key]." because
+            // it prevents the llxmltranslate tool from detecting it.
+            return Environment::getLabelsPath() . '/' . $language . '/' . $extensionKey . '/'
+                . ($file_extPath ? $file_extPath . '/' : '') . $language . '.' . $file_fileName;
         }
         return '';
     }
@@ -202,7 +207,8 @@ class LocallangXmlParser
         $bodyOfFileTag = $root->data->languageKey;
         if ($bodyOfFileTag === null) {
             throw new InvalidXmlFileException(
-                'Invalid locallang.xml language file "' . PathUtility::stripPathSitePrefix($this->sourcePath) . '"',
+                'Invalid locallang.xml language file "'
+                . substr($this->sourcePath, strlen(Environment::getPublicPath() . '/')) . '"',
                 1487944884
             );
         }
