@@ -1,0 +1,52 @@
+<html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+      xmlns:core="http://typo3.org/ns/TYPO3/CMS/Core/ViewHelpers"
+      data-namespace-typo3-fluid="true">
+
+<f:layout name="Module"/>
+
+<f:section name="Content">
+    <div class="container">
+        <h1><f:translate id="header.conversion" domain="ew_llxml2xliff.messages"/></h1>
+
+        <f:render partial="Progressbar" arguments="{active: 3}"/>
+
+        <h5 class="form-section-headline">
+            <span><f:translate id="selected_extension" domain="ew_llxml2xliff.messages"/>:</span>
+            <span class="icon">
+                <f:if condition="{selectedExtension.icon}">
+                    <f:then>
+                        <img class="extension-icon" src="{selectedExtension.icon}" alt="" />
+                    </f:then>
+                    <f:else>
+                        <core:icon identifier="empty-empty" />
+                    </f:else>
+                </f:if>
+            </span>
+            <span>{selectedExtension.title}</span>
+        </h5>
+
+        <h5 class="form-section-headline">
+            <span><f:translate id="selected_file" domain="ew_llxml2xliff.messages"/>:</span>
+            <core:icon identifier="empty-empty" />
+            <span>{selectedFile.filename}</span>
+        </h5>
+
+        <div class="card-container">
+            <div class="card card-size-small">
+                <div class="card-body">
+                    <a href="{f:be.uri(route: 'web_EwLlxml2xliff')}"><button
+                        type="button" class="btn btn-default" data-inline="1" value="blank" data-identifier="convertExtension">
+                            <core:icon identifier="actions-exclamation-triangle"/>
+                            <f:translate id="cancel" domain="ew_llxml2xliff.messages"/>
+                    </button></a>
+                    <a href="{f:be.uri(route: 'web_EwLlxml2xliff.convertFile', parameters: {extension: selectedExtension.key, file: selectedFile.filename})}"><button
+                        type="button" class="btn btn-default" data-inline="1" value="blank" data-identifier="convertExtension">
+                            <f:translate id="confirm" domain="ew_llxml2xliff.messages"/>
+                    </button></a>
+                </div>
+            </div>
+        </div>
+    </div>
+</f:section>
+
+</html>

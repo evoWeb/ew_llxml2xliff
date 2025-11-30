@@ -7,7 +7,7 @@ declare(strict_types=1);
  *
  * It is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License, either version 2
- * of the License, or any later version.
+ * of the License or any later version.
  *
  * For the full copyright and license information, please read the
  * LICENSE.txt file that was distributed with this source code.
@@ -16,6 +16,7 @@ declare(strict_types=1);
 namespace Evoweb\EwLlxml2xliff\File;
 
 use Evoweb\EwLlxml2xliff\Localization\Parser\LocallangXmlParser;
+use RuntimeException;
 use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -78,7 +79,7 @@ class Converter
     }
 
     /**
-     * Function to convert php language files
+     * Function to convert PHP language files
      *
      * @param string $sourceFile Absolute path to the selected ll-XML file
      */
@@ -118,7 +119,7 @@ class Converter
         }
 
         if (empty($languages)) {
-            throw new \RuntimeException('data section not found in "' . $languageFile . '"', 1314187884);
+            throw new RuntimeException('data section not found in "' . $languageFile . '"', 1314187884);
         }
 
         return $languages;
@@ -146,7 +147,7 @@ class Converter
      * Processing of the submitted form; Will create and write the XLIFF file and tell the new file name.
      *
      * @param string $xmlFile Absolute path to the locallang.xml file to convert
-     * @param string $newFileName The new file name to write to (absolute path, .xlf ending)
+     * @param string $newFileName The new file name to write to (an absolute path, .xlf ending)
      * @param string $langKey The language key
      *
      * @return string HTML text string message
@@ -158,7 +159,7 @@ class Converter
         $result = '';
         if (!@file_exists($newFileName)) {
             GeneralUtility::writeFile($newFileName, $xml);
-            $result = str_replace(Environment::getComposerRootPath(), '', $newFileName);
+            $result = str_replace(Environment::getProjectPath(), '', $newFileName);
         }
 
         return $result;
@@ -199,7 +200,7 @@ class Converter
      * Reads/Requires locallang files and returns raw $LOCAL_LANG array
      * @param string $languageFile Absolute reference to the ll-XML locallang file.
      * @return array<string, array<string, string>> LOCAL_LANG array from ll-XML file
-     *  (with all possible sub-files for languages included)
+     *  (with all possible subfiles for languages included)
      */
     protected function getCombinedTranslationFileContent(string $languageFile): array
     {
@@ -221,7 +222,7 @@ class Converter
         }
 
         if (empty($includedLanguages)) {
-            throw new \RuntimeException('data section not found in "' . $languageFile . '"', 1314187884);
+            throw new RuntimeException('data section not found in "' . $languageFile . '"', 1314187884);
         }
 
         return $LOCAL_LANG;

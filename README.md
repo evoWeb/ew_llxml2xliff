@@ -19,7 +19,7 @@ Download and install the extension with the extension manger module or directly 
 [TER](https://extensions.typo3.org/extension/ew_llxml2xliff/).
 
 The transition_conversion_convert_transfer_motion_icon_196300.svg was downloaded
-with the licence information:
+with the license information:
 ```
 Author: ibob icon
 Licence: Free for commercial use

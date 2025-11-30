@@ -6,10 +6,12 @@
 
 <f:section name="Content">
     <div class="container">
-        <h1><f:translate id="LLL:EXT:ew_llxml2xliff/Resources/Private/Language/locallang.xlf:header.conversion"/></h1>
+        <h1><f:translate id="header.conversion" domain="ew_llxml2xliff.messages"/></h1>
 
-        <h5 class="form-section-headline selected-parameter">
-            <span><f:translate id="selected_extension" extensionName="ew_llxml2xliff"/>:</span>
+        <f:render partial="Progressbar" arguments="{active: 4}"/>
+
+        <h5 class="form-section-headline">
+            <span><f:translate id="selected_extension" domain="ew_llxml2xliff.messages"/>:</span>
             <span class="icon">
                 <f:if condition="{selectedExtension.icon}">
                     <f:then>
@@ -23,8 +25,8 @@
             <span>{selectedExtension.title}</span>
         </h5>
 
-        <h5 class="form-section-headline selected-parameter">
-            <span><f:translate id="selected_file" extensionName="ew_llxml2xliff"/>:</span>
+        <h5 class="form-section-headline">
+            <span><f:translate id="selected_file" domain="ew_llxml2xliff.messages"/>:</span>
             <core:icon identifier="empty-empty" />
             <span>{selectedFile.filename}</span>
         </h5>
@@ -33,27 +35,21 @@
             <div class="card card-size-small">
                 <div class="card-body">
                     <p class="card-text">
-                        <f:translate id="processedFile" extensionName="ew_llxml2xliff" arguments="{0: selectedFileKey, 1: selectedExtensionKey}"/>
+                        <f:translate id="processedFile" domain="ew_llxml2xliff.messages" arguments="{0: selectedFileKey, 1: selectedExtensionKey}"/>
                         <f:if condition="{wasConvertedPreviously}">
                             <f:then>
-                                <f:translate id="wasConvertedPreviously" extensionName="ew_llxml2xliff"/>
+                                <f:translate id="wasConvertedPreviously" domain="ew_llxml2xliff.messages"/>
                             </f:then>
                             <f:else if="{fileConvertedSuccessfully}">
-                                <f:translate id="fileConvertedSuccessfully" extensionName="ew_llxml2xliff"/>
+                                <f:translate id="fileConvertedSuccessfully" domain="ew_llxml2xliff.messages"/>
                             </f:else>
                             <f:else>
-                                <f:translate id="fileCouldntBeConverted" extensionName="ew_llxml2xliff"/>
+                                <f:translate id="fileCouldntBeConverted" domain="ew_llxml2xliff.messages"/>
                             </f:else>
                         </f:if><br>
                         <f:format.raw>{messages}</f:format.raw>
                     </p>
                 </div>
-            </div>
-        </div>
-
-        <div class="modal-multi-step-wizard">
-            <div class="modal-content">
-                <f:render partial="Progressbar" arguments="{now: 100}"/>
             </div>
         </div>
     </div>

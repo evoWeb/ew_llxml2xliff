@@ -6,10 +6,12 @@
 
 <f:section name="Content">
     <div class="container">
-        <h1><f:translate id="LLL:EXT:ew_llxml2xliff/Resources/Private/Language/locallang.xlf:header.conversion"/></h1>
+        <h1><f:translate id="header.conversion" domain="ew_llxml2xliff.messages"/></h1>
 
-        <h5 class="form-section-headline selected-parameter py-2">
-            <span><f:translate id="selected_extension" extensionName="ew_llxml2xliff"/>:</span>
+        <f:render partial="Progressbar" arguments="{active: 2}"/>
+
+        <h5 class="form-section-headline py-2">
+            <span><f:translate id="selected_extension" domain="ew_llxml2xliff.messages"/>:</span>
             <span class="icon">
                 <f:if condition="{selectedExtension.icon}">
                     <f:then>
@@ -27,7 +29,7 @@
             <div class="card-container">
                 <div class="card card-size-small">
                     <div class="card-header-body">
-                        <p><f:translate id="noFilesToConvert" extensionName="ew_llxml2xliff"/></p>
+                        <p><f:translate id="noFilesToConvert" domain="ew_llxml2xliff.messages"/></p>
                     </div>
                 </div>
             </div>
@@ -40,19 +42,13 @@
                     <td class="col-control">
                         <a href="{f:be.uri(route: 'web_EwLlxml2xliff.confirmConversion', parameters: {extension: selectedExtension.key, file: file.filename})}">
                             <button type="button" class="btn btn-default" data-inline="1" value="blank" data-identifier="convertExtension">
-                                <f:translate id="select_file" extensionName="ew_llxml2xliff"/>
+                                <f:translate id="select_file" domain="ew_llxml2xliff.messages"/>
                             </button>
                         </a>
                     </td>
                 </tr>
             </f:for>
         </table>
-
-        <div class="modal-multi-step-wizard">
-            <div class="modal-content">
-                <f:render partial="Progressbar" arguments="{now: 50}"/>
-            </div>
-        </div>
     </div>
 </f:section>
 

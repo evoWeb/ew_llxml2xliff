@@ -7,7 +7,7 @@ declare(strict_types=1);
  *
  * It is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License, either version 2
- * of the License, or any later version.
+ * of the License or any later version.
  *
  * For the full copyright and license information, please read the
  * LICENSE.txt file that was distributed with this source code.
@@ -22,9 +22,6 @@ readonly class TransUnit
     protected string $target;
 
     /**
-     * @param string|array<string, string> $data
-     * @param string $key
-     * @param string $langKey
      * @param array<string, array<string, string>> $LOCAL_LANG
      */
     public function __construct(

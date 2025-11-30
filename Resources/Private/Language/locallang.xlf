@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
-	<file source-language="en" datatype="plaintext" original="messages" date="2018-10-21T21:13:12Z" product-name="ew_llxml2xliff">
+	<file source-language="en" datatype="plaintext" original="EXT:ew-llxml2xliff/Resources/Private/Language/locallang.xlf" date="2018-10-21T21:13:12Z" product-name="ew_llxml2xliff">
 		<header/>
 		<body>
 			<trans-unit id="header.conversion">
