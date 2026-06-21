@@ -20,27 +20,27 @@ jobs:
 
       - name: Install
         run: Build/Scripts/runTests.sh \
-          -p 8.4 \
+          -p '8.4' \
           -s composerInstall
 
       - name: Run the xliff lint
         run: Build/Scripts/runTests.sh \
-          -p 8.4 \
+          -p '8.4' \
           -s phpstan
 
       - name: Run the xliff lint
         run: Build/Scripts/runTests.sh \
-          -p 8.4 \
+          -p '8.4' \
           -s cgl
 
       - name: Run the xliff lint
         run: Build/Scripts/runTests.sh \
-          -p 8.4 \
+          -p '8.4' \
           -s checkIntegrityXliff
 
       - name: Test documentation build
         run: Build/Scripts/runTests.sh \
-          -p 8.4 \
+          -p '8.4' \
           -s checkRstRenderingSingle
 
       - name: Cleanup
