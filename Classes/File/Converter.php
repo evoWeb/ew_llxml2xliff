@@ -226,7 +226,7 @@ class Converter
         }
 
         if (empty($includedLanguages)) {
-            throw new RuntimeException('data section not found in "' . $languageFile . '"', 1314187884);
+            throw new \RuntimeException('data section not found in "' . $languageFile . '"', 1314187884);
         }
 
         return $LOCAL_LANG;

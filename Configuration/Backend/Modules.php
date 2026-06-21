@@ -4,11 +4,11 @@ use Evoweb\EwLlxml2xliff\Controller\FileController;
 
 return [
     'web_EwLlxml2xliff' => [
-        'parent' => 'tools',
-        'access' => 'user,group',
+        'parent' => 'admin',
+        'access' => 'admin',
         'path' => '/module/web/llxmlconverter',
         'iconIdentifier' => 'llxml2xlifficon',
-        'labels' => 'ew_llxml2xliff.mod',
+        'labels' => 'ew_llxml2xliff.module',
         'routes' => [
             '_default' => [
                 'target' => FileController::class . '::selectExtensionAction',

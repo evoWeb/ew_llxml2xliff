@@ -129,7 +129,7 @@ final readonly class CheckIntegrityXliff
     {
         $extensionKey = 'N/A';
         $shortLabelFile = basename($labelFile);
-        if (preg_match('@sysext/(.+)/Resources/Private/Language/(.+)$@imsU', $labelFile, $matches)) {
+        if (preg_match('@evoweb/(.+)/Resources/Private/Language/(.+)$@imsU', $labelFile, $matches)) {
             $extensionKey = $matches[1];
             $shortLabelFile = $matches[2];
         }
