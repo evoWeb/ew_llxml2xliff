@@ -19,29 +19,19 @@ jobs:
           persist-credentials: false
 
       - name: Install
-        run: Build/Scripts/runTests.sh \
-          -p '8.4' \
-          -s composerInstall
+        run: Build/Scripts/runTests.sh -p '8.4' -s composerInstall
+
+      - name: Run the phpstan
+        run: Build/Scripts/runTests.sh -p '8.4' -s phpstan
+
+      - name: Run the cgl lint
+        run: Build/Scripts/runTests.sh -p '8.4' -s cgl
 
       - name: Run the xliff lint
-        run: Build/Scripts/runTests.sh \
-          -p '8.4' \
-          -s phpstan
-
-      - name: Run the xliff lint
-        run: Build/Scripts/runTests.sh \
-          -p '8.4' \
-          -s cgl
-
-      - name: Run the xliff lint
-        run: Build/Scripts/runTests.sh \
-          -p '8.4' \
-          -s checkIntegrityXliff
+        run: Build/Scripts/runTests.sh -p '8.4' -s checkIntegrityXliff
 
       - name: Test documentation build
-        run: Build/Scripts/runTests.sh \
-          -p '8.4' \
-          -s checkRstRenderingSingle
+        run: Build/Scripts/runTests.sh -p '8.4' -s checkRstRenderingSingle
 
       - name: Cleanup
         run: Build/Scripts/runTests.sh -s clean
