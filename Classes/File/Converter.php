@@ -16,7 +16,6 @@ declare(strict_types=1);
 namespace Evoweb\EwLlxml2xliff\File;
 
 use Evoweb\EwLlxml2xliff\Localization\Parser\LocallangXmlParser;
-use RuntimeException;
 use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -119,7 +118,7 @@ class Converter
         }
 
         if (empty($languages)) {
-            throw new RuntimeException('data section not found in "' . $languageFile . '"', 1314187884);
+            throw new \RuntimeException('data section not found in "' . $languageFile . '"', 1314187884);
         }
 
         return array_map('strval', $languages);

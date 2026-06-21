@@ -16,7 +16,6 @@ declare(strict_types=1);
 namespace Evoweb\EwLlxml2xliff\Controller;
 
 use Evoweb\EwLlxml2xliff\Service\ExtensionService;
-use Exception;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use TYPO3\CMS\Backend\Attribute\AsController;
@@ -38,8 +37,7 @@ readonly class FileController
         protected ComponentFactory $componentFactory,
         protected IconFactory $iconFactory,
         protected ExtensionService $extensionService,
-    ) {
-    }
+    ) {}
 
     public function selectExtensionAction(ServerRequestInterface $request): ResponseInterface
     {
@@ -238,7 +236,7 @@ readonly class FileController
                 ->setShowLabelText(true)
                 ->setIcon($this->iconFactory->getIcon('actions-plus', IconSize::SMALL));
             $buttonBar->addButton($newFileConversionButton);
-        } catch (Exception) {
+        } catch (\Exception) {
         }
 
         return $moduleTemplate;

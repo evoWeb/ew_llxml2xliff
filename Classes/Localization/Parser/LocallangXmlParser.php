@@ -15,7 +15,6 @@ declare(strict_types=1);
 
 namespace Evoweb\EwLlxml2xliff\Localization\Parser;
 
-use SimpleXMLElement;
 use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\Localization\Exception\FileNotFoundException;
 use TYPO3\CMS\Core\Localization\Exception\InvalidXmlFileException;
@@ -54,7 +53,7 @@ class LocallangXmlParser
                 1278155987
             );
         }
-        $rootXmlNode = simplexml_load_string($xmlContent, SimpleXMLElement::class, LIBXML_NOWARNING);
+        $rootXmlNode = simplexml_load_string($xmlContent, \SimpleXMLElement::class, LIBXML_NOWARNING);
         if ($rootXmlNode === false) {
             $xmlError = libxml_get_last_error();
             throw new InvalidXmlFileException(
@@ -156,7 +155,7 @@ class LocallangXmlParser
      * Parse the given language key tag
      * @return array<string, array<string, string>>
      */
-    protected function getParsedDataForElement(SimpleXMLElement $bodyOfFileTag, string $element): array
+    protected function getParsedDataForElement(\SimpleXMLElement $bodyOfFileTag, string $element): array
     {
         $parsedData = [];
         $children = $bodyOfFileTag->children();
@@ -183,7 +182,7 @@ class LocallangXmlParser
      * Returns array representation of XLIFF data, starting from a root node.
      * @return array<string, array<string, string>>
      */
-    protected function doParsingFromRoot(SimpleXMLElement $root): array
+    protected function doParsingFromRoot(\SimpleXMLElement $root): array
     {
         return $this->doParsingFromRootForElement($root, 'source');
     }
@@ -192,7 +191,7 @@ class LocallangXmlParser
      * Returns array representation of XLIFF data, starting from a root node.
      * @return array<string, array<string, string>>
      */
-    protected function doParsingTargetFromRoot(SimpleXMLElement $root): array
+    protected function doParsingTargetFromRoot(\SimpleXMLElement $root): array
     {
         return $this->doParsingFromRootForElement($root, 'target');
     }
@@ -201,7 +200,7 @@ class LocallangXmlParser
      * Returns array representation of XLIFF data, starting from a root node.
      * @return array<string, array<string, string>>
      */
-    protected function doParsingFromRootForElement(SimpleXMLElement $root, string $element): array
+    protected function doParsingFromRootForElement(\SimpleXMLElement $root, string $element): array
     {
         // @extensionScannerIgnoreLine
         $bodyOfFileTag = $root->data->languageKey;
@@ -223,7 +222,7 @@ class LocallangXmlParser
             // Check if the source llxml file contains localized records
             // @extensionScannerIgnoreLine
             $localizedBodyOfFileTag = $root->data->xpath('languageKey[@index=\'' . $this->languageKey . '\']');
-            if (isset($localizedBodyOfFileTag[0]) && $localizedBodyOfFileTag[0] instanceof SimpleXMLElement) {
+            if (isset($localizedBodyOfFileTag[0]) && $localizedBodyOfFileTag[0] instanceof \SimpleXMLElement) {
                 $parsedDataTarget = $this->getParsedDataForElement($localizedBodyOfFileTag[0], $element);
                 $mergedData = $parsedDataTarget + $parsedData;
                 if ($this->languageKey === 'default') {
@@ -260,7 +259,7 @@ class LocallangXmlParser
         $rootXmlNode = false;
         if (@file_exists($targetPath)) {
             $xmlContent = (string)file_get_contents($targetPath);
-            $rootXmlNode = simplexml_load_string($xmlContent, SimpleXMLElement::class, LIBXML_NOWARNING);
+            $rootXmlNode = simplexml_load_string($xmlContent, \SimpleXMLElement::class, LIBXML_NOWARNING);
         }
         if ($rootXmlNode === false) {
             $xmlError = libxml_get_last_error();
