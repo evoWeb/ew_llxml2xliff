@@ -55,9 +55,6 @@
 			"rm .gitattributes",
 			"rm .gitignore",
 			"sed -i \"s/version' => '.*'/version' => '$(echo ${GITHUB_REF} | cut -d / -f 3)'/\" ext_emconf.php\n"
-		],
-		"post-install-cmd": [
-			"ln -sf vendor/typo3/testing-framework/Resources/Core/Build/ Build/phpunit;"
 		]
 	},
 	"autoload": {
