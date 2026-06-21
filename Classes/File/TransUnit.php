@@ -22,6 +22,7 @@ readonly class TransUnit
     protected string $target;
 
     /**
+     * @param array<string, string> $data
      * @param array<string, array<string, string>> $LOCAL_LANG
      */
     public function __construct(

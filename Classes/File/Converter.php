@@ -111,8 +111,8 @@ class Converter
     protected function getAvailableTranslations(string $languageFile): array
     {
         if (strpos($languageFile, '.xml')) {
-            $ll = $this->xml2array(file_get_contents($languageFile));
-            $languages = isset($ll['data']) ? array_keys($ll['data']) : [];
+            $ll = $this->xml2array((string)file_get_contents($languageFile));
+            $languages = isset($ll['data']) && is_array($ll['data']) ? array_keys($ll['data']) : [];
         } else {
             require($languageFile);
             $languages = isset($LOCAL_LANG) ? array_keys($LOCAL_LANG) : [];
@@ -122,7 +122,7 @@ class Converter
             throw new RuntimeException('data section not found in "' . $languageFile . '"', 1314187884);
         }
 
-        return $languages;
+        return array_map('strval', $languages);
     }
 
     /**
@@ -206,15 +206,20 @@ class Converter
     {
         $LOCAL_LANG = [];
         if (strpos($languageFile, '.xml')) {
-            $ll = $this->xml2array(file_get_contents($languageFile));
+            $ll = $this->xml2array((string)file_get_contents($languageFile));
+            if (!array_key_exists('data', $ll) || !is_array($ll['data'])) {
+                return $LOCAL_LANG;
+            }
             $includedLanguages = array_keys($ll['data']);
 
             foreach ($includedLanguages as $langKey) {
                 /** @var LocallangXmlParser $parser */
                 $parser = GeneralUtility::makeInstance(LocallangXmlParser::class);
-                $localLangContent = $parser->getParsedData($languageFile, $langKey);
+                $localLangContent = $parser->getParsedData($languageFile, (string)$langKey);
                 unset($parser);
-                $LOCAL_LANG[$langKey] = $localLangContent[$langKey];
+                if ($localLangContent[$langKey] ?? false) {
+                    $LOCAL_LANG[(string)$langKey] = $localLangContent[$langKey];
+                }
             }
         } else {
             require($languageFile);
@@ -237,13 +242,14 @@ class Converter
      * @param string $namespacePrefix The tag-prefix resolve, e.g. a namespace like "T3:"
      * @param bool $reportDocTag If set, the document tag will be set in the key "_DOCUMENT_TAG" of the output array
      *
-     * @return array<string, mixed>|string If the parsing had errors, a string with the error message is returned.
+     * @return array<string, mixed> If the parsing had errors, a string with the error message is returned.
      *         Otherwise, an array with the content.
      *
      * @see GeneralUtility::array2xml(),GeneralUtility::xml2arrayProcess()
      */
-    protected function xml2array(string $string, string $namespacePrefix = '', bool $reportDocTag = false): array|string
+    protected function xml2array(string $string, string $namespacePrefix = '', bool $reportDocTag = false): array
     {
-        return GeneralUtility::xml2array($string, $namespacePrefix, $reportDocTag);
+        $result = GeneralUtility::xml2array($string, $namespacePrefix, $reportDocTag);
+        return is_array($result) ? $result : [];
     }
 }

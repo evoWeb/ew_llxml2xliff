@@ -34,7 +34,7 @@ class LocallangXmlParser
 
     /**
      * Associative array of "filename => parsed data" pairs.
-     * @var array<string, array<string, mixed>> $parsedTargetFiles
+     * @var array<string, array<string, array<string, string>>> $parsedTargetFiles
      */
     protected array $parsedTargetFiles = [];
 
@@ -59,7 +59,7 @@ class LocallangXmlParser
             $xmlError = libxml_get_last_error();
             throw new InvalidXmlFileException(
                 'The path provided does not point to an existing and accessible well-formed XML file. Reason: '
-                . $xmlError->message . ' in ' . $this->sourcePath . ', line ' . $xmlError->line,
+                . ($xmlError !== false ? $xmlError->message . ' in ' . $this->sourcePath . ', line ' . $xmlError->line : 'unknown'),
                 1278155988
             );
         }
@@ -259,14 +259,14 @@ class LocallangXmlParser
     {
         $rootXmlNode = false;
         if (@file_exists($targetPath)) {
-            $xmlContent = file_get_contents($targetPath);
+            $xmlContent = (string)file_get_contents($targetPath);
             $rootXmlNode = simplexml_load_string($xmlContent, SimpleXMLElement::class, LIBXML_NOWARNING);
         }
         if ($rootXmlNode === false) {
             $xmlError = libxml_get_last_error();
             throw new InvalidXmlFileException(
                 'The path provided does not point to existing and accessible well-formed XML file. Reason: '
-                . $xmlError->message . ' in ' . $targetPath . ', line ' . $xmlError->line,
+                . ($xmlError !== false ? $xmlError->message . ' in ' . $targetPath . ', line ' . $xmlError->line : 'unknown'),
                 1278155987
             );
         }

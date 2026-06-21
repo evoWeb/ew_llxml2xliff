@@ -20,6 +20,7 @@ use Exception;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use TYPO3\CMS\Backend\Attribute\AsController;
+use TYPO3\CMS\Backend\Module\ModuleData;
 use TYPO3\CMS\Backend\Routing\UriBuilder;
 use TYPO3\CMS\Backend\Template\Components\ComponentFactory;
 use TYPO3\CMS\Backend\Template\ModuleTemplate;
@@ -121,7 +122,12 @@ readonly class FileController
     }
 
     /**
-     * @return array<ResponseInterface|string|array<array<string, string>>|null>
+     * @return array{
+     *     0: ResponseInterface|null,
+     *     1: array<string, array<string, string>>,
+     *     2: array<string, string>|null,
+     *     3: string
+     * }
      */
     protected function prepareExtensions(ServerRequestInterface $request, bool $selected = true): array
     {
@@ -144,7 +150,12 @@ readonly class FileController
     }
 
     /**
-     * @return array<ResponseInterface|string|array<array<string, string>>|null>
+     * @return array{
+     *     0: ResponseInterface|null,
+     *     1: array<string, array<string, string>>,
+     *     2: array<string, string>|null,
+     *     3: string
+     * }
      */
     protected function prepareFiles(ServerRequestInterface $request, string $extension, bool $selected = true): array
     {
@@ -167,8 +178,8 @@ readonly class FileController
     }
 
     /**
-     * @param array<string, mixed> $extensions
-     * @return array<ResponseInterface|string|null>
+     * @param array<string, array<string, string>> $extensions
+     * @return array{0: ResponseInterface|null, 1: string}
      */
     protected function getSelectedExtension(ServerRequestInterface $request, array $extensions): array
     {
@@ -182,7 +193,7 @@ readonly class FileController
 
     /**
      * @param array<string, mixed> $files
-     * @return array<ResponseInterface|string|null>
+     * @return array{0: ResponseInterface|null, 1: string}
      */
     protected function getSelectedFile(ServerRequestInterface $request, array $files): array
     {
@@ -199,18 +210,20 @@ readonly class FileController
      */
     protected function isArgumentSetAndAvailable(ServerRequestInterface $request, array $values, string $key): string
     {
+        /** @var ModuleData $moduleData */
         $moduleData = $request->getAttribute('moduleData');
         $moduleData->cleanUp(['extension', 'file']);
         $formFieldValue = $moduleData->get($key);
-        return ($formFieldValue !== '' && isset($values[$formFieldValue])) ? $formFieldValue : '';
+        $formFieldValue = is_string($formFieldValue) ? $formFieldValue : null;
+        return (string)(($formFieldValue !== '' && isset($values[$formFieldValue])) ? $formFieldValue : '');
     }
 
     protected function initializeModuleTemplate(ServerRequestInterface $request, string $context): ModuleTemplate
     {
         $moduleTemplate = $this->moduleTemplateFactory->create($request);
         $moduleTemplate->setTitle(
-            $this->getLanguageService()->sL('ew_llxml2xliff.mod:title'),
-            $this->getLanguageService()->sL($context)
+            (string)$this->getLanguageService()?->sL('ew_llxml2xliff.mod:title'),
+            (string)$this->getLanguageService()?->sL($context)
         );
 
         try {
@@ -220,9 +233,7 @@ readonly class FileController
                 ->setDataAttributes(['identifier' => 'newFileConversion'])
                 ->setHref($newFileConversionUrl)
                 ->setTitle(
-                    $this->getLanguageService()->sL(
-                        'ew_llxml2xliff.messages:start_new_conversion'
-                    )
+                    (string)$this->getLanguageService()?->sL('ew_llxml2xliff.messages:start_new_conversion')
                 )
                 ->setShowLabelText(true)
                 ->setIcon($this->iconFactory->getIcon('actions-plus', IconSize::SMALL));
@@ -233,8 +244,9 @@ readonly class FileController
         return $moduleTemplate;
     }
 
-    protected function getLanguageService(): LanguageService
+    protected function getLanguageService(): ?LanguageService
     {
-        return $GLOBALS['LANG'];
+        $languageService = $GLOBALS['LANG'] ?? null;
+        return $languageService instanceof LanguageService ? $languageService : null;
     }
 }

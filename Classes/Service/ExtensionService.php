@@ -28,7 +28,7 @@ readonly class ExtensionService
     ) {}
 
     /**
-     * @return array<array<string, mixed>>
+     * @return array<string, array<string, string>>
      */
     public function getLocalExtensions(): array
     {
@@ -37,17 +37,12 @@ readonly class ExtensionService
 
         $extensions = array_filter(
             $availableExtensions,
-            function (array $extension) {
+            function (array $extension): bool {
                 if ($extension['type'] !== 'Local' || ($extension['key'] ?? '') === '') {
                     return false;
                 }
-                $extensionsWithFileToConvert = [];
-                if (count($this->getFilesOfExtension($extension['key']))) {
-                    $extensionsWithFileToConvert[] = $extension;
-                }
-                return count($extensionsWithFileToConvert);
-            },
-            ARRAY_FILTER_USE_BOTH
+                return count($this->getFilesOfExtension($extension['key'])) > 0;
+            }
         );
         ksort($extensions);
         return $extensions;
@@ -88,7 +83,7 @@ readonly class ExtensionService
 
     /**
      * @param array<string, array<string, string>> $files
-     * @return array<string, string|bool>
+     * @return array<string, array<string, array<string, string>>|bool|string>
      */
     public function convertLanguageFile(string $selectedExtension, string $selectedFile, array $files): array
     {
@@ -123,7 +118,7 @@ readonly class ExtensionService
 
     public function xliffFileAlreadyExists(string $extensionPath, string $filePath): bool
     {
-        $xliffFileName = preg_replace('#\.(xml|php)$#', '.xlf', $extensionPath . $filePath);
+        $xliffFileName = (string)preg_replace('#\.(xml|php)$#', '.xlf', $extensionPath . $filePath);
         return @file_exists($xliffFileName);
     }
 }
