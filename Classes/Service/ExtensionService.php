@@ -17,6 +17,7 @@ namespace Evoweb\EwLlxml2xliff\Service;
 
 use Evoweb\EwLlxml2xliff\File\Converter;
 use TYPO3\CMS\Core\Package\Package;
+use TYPO3\CMS\Core\Package\PackageInterface;
 use TYPO3\CMS\Core\Package\PackageManager;
 use TYPO3\CMS\Core\Package\VirtualAppPackage;
 use TYPO3\CMS\Core\SystemResource\Publishing\SystemResourcePublisherInterface;
@@ -43,32 +44,50 @@ readonly class ExtensionService
         $availablePackages = $this->packageManager->getAvailablePackages();
 
         $localPackages = array_filter(array_map(
-            function (Package $package): ?array {
-                $metaData = $package->getPackageMetaData();
-                if (
-                    $package instanceof VirtualAppPackage
-                    || $package->getPackageKey() === ''
-                    || $metaData->isFrameworkType()
-                    || count($this->getFilesOfExtension($package->getPackageKey())) === 0
-                ) {
-                    return null;
-                }
-                $icon = $package->getResources()->getPackageIcon();
-                return [
-                    'packagePath' => $package->getPackagePath(),
-                    'type' => 'Local',
-                    'key' => $package->getPackageKey(),
-                    'icon' => $icon ? (string)$this->resourcePublisher->generateUri($this->resourceFactory->createPublicResource($icon), null) : '',
-                    'title' => $metaData->getTitle(),
-                    'description' => $metaData->getDescription(),
-                    'files' => count($this->getFilesOfExtension($package->getPackageKey())) > 0,
-                ];
-            },
+            $this->convertPackageToArray(...),
             $availablePackages,
         ));
         ksort($localPackages);
 
         return $this->listUtility->enrichExtensionsWithEmConfInformation($localPackages);
+    }
+
+    /**
+     * @return array{
+     *     packagePath: string,
+     *     type: 'Local',
+     *     key: string,
+     *     icon: string,
+     *     title: string|null,
+     *     description: string|null,
+     *     files: int
+     * }|null
+     */
+    protected function convertPackageToArray(PackageInterface $package): ?array
+    {
+        $metaData = $package->getPackageMetaData();
+        if (
+            $package instanceof VirtualAppPackage
+            || $package->getPackageKey() === ''
+            || $metaData->isFrameworkType()
+            || count($this->getFilesOfExtension($package->getPackageKey())) === 0
+        ) {
+            return null;
+        }
+        /** @var Package $package */
+        $icon = $package->getResources()->getPackageIcon();
+        return [
+            'packagePath' => $package->getPackagePath(),
+            'type' => 'Local',
+            'key' => $package->getPackageKey(),
+            'icon' => $icon ? (string)$this->resourcePublisher->generateUri(
+                $this->resourceFactory->createPublicResource($icon),
+                null,
+            ) : '',
+            'title' => $metaData->getTitle(),
+            'description' => $metaData->getDescription(),
+            'files' => count($this->getFilesOfExtension($package->getPackageKey())),
+        ];
     }
 
     /**
