@@ -26,29 +26,38 @@
         </h5>
 
         <f:if condition="{files -> f:count()} == 0">
-            <div class="card-container">
-                <div class="card card-size-small">
-                    <div class="card-header-body">
-                        <p><f:translate id="noFilesToConvert" domain="ew_llxml2xliff.messages"/></p>
+            <f:then>
+                <div class="card-container">
+                    <div class="card card-size-medium">
+                        <div class="card-header-body">
+                            <p><f:translate id="noFilesToConvert" domain="ew_llxml2xliff.messages"/></p>
+                        </div>
                     </div>
                 </div>
-            </div>
+            </f:then>
+            <f:else>
+                <div class="card-container">
+                    <div class="card card-size-medium">
+                        <div class="card-header-body">
+                            <table class="table mb-0">
+                                <f:for each="{files}" as="file">
+                                    <tr>
+                                        <td class="col-title col-responsive">{file.filename}</td>
+                                        <td class="col-control">
+                                            <a href="{f:be.uri(route: 'web_EwLlxml2xliff.confirmConversion', parameters: {extension: selectedExtension.key, file: file.filename})}">
+                                                <button type="button" class="btn btn-default" data-inline="1" value="blank" data-identifier="convertExtension">
+                                                    <f:translate id="select_file" domain="ew_llxml2xliff.messages"/>
+                                                </button>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                </f:for>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </f:else>
         </f:if>
-
-        <table class="table">
-            <f:for each="{files}" as="file">
-                <tr>
-                    <td class="col-title col-responsive">{file.filename}</td>
-                    <td class="col-control">
-                        <a href="{f:be.uri(route: 'web_EwLlxml2xliff.confirmConversion', parameters: {extension: selectedExtension.key, file: file.filename})}">
-                            <button type="button" class="btn btn-default" data-inline="1" value="blank" data-identifier="convertExtension">
-                                <f:translate id="select_file" domain="ew_llxml2xliff.messages"/>
-                            </button>
-                        </a>
-                    </td>
-                </tr>
-            </f:for>
-        </table>
     </div>
 </f:section>
 

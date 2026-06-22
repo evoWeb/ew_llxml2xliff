@@ -31,8 +31,13 @@
             <span>{selectedFile.filename}</span>
         </h5>
 
+        <f:variable name="success"><f:if condition="{wasConvertedPreviously}">
+                <f:then>card-warning</f:then>
+                <f:else if="{fileConvertedSuccessfully}">card-success</f:else>
+                <f:else>card-danger</f:else>
+            </f:if></f:variable>
         <div class="card-container">
-            <div class="card card-size-small">
+            <div class="card card-size-medium {success}">
                 <div class="card-body">
                     <p class="card-text">
                         <f:translate id="processedFile" domain="ew_llxml2xliff.messages" arguments="{0: selectedFileKey, 1: selectedExtensionKey}"/>

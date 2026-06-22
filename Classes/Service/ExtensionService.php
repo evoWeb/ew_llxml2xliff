@@ -16,6 +16,11 @@ declare(strict_types=1);
 namespace Evoweb\EwLlxml2xliff\Service;
 
 use Evoweb\EwLlxml2xliff\File\Converter;
+use TYPO3\CMS\Core\Package\Package;
+use TYPO3\CMS\Core\Package\PackageManager;
+use TYPO3\CMS\Core\Package\VirtualAppPackage;
+use TYPO3\CMS\Core\SystemResource\Publishing\SystemResourcePublisherInterface;
+use TYPO3\CMS\Core\SystemResource\SystemResourceFactory;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extensionmanager\Utility\ListUtility;
@@ -23,6 +28,9 @@ use TYPO3\CMS\Extensionmanager\Utility\ListUtility;
 readonly class ExtensionService
 {
     public function __construct(
+        protected PackageManager $packageManager,
+        protected SystemResourceFactory $resourceFactory,
+        protected SystemResourcePublisherInterface $resourcePublisher,
         protected ListUtility $listUtility,
         protected Converter $converter,
     ) {}
@@ -32,20 +40,35 @@ readonly class ExtensionService
      */
     public function getLocalExtensions(): array
     {
-        $availableExtensions = $this->listUtility->getAvailableExtensions();
-        $availableExtensions = $this->listUtility->enrichExtensionsWithEmConfInformation($availableExtensions);
+        $availablePackages = $this->packageManager->getAvailablePackages();
 
-        $extensions = array_filter(
-            $availableExtensions,
-            function (array $extension): bool {
-                if ($extension['type'] !== 'Local' || ($extension['key'] ?? '') === '') {
-                    return false;
+        $localPackages = array_filter(array_map(
+            function (Package $package): ?array {
+                $metaData = $package->getPackageMetaData();
+                if (
+                    $package instanceof VirtualAppPackage
+                    || $package->getPackageKey() === ''
+                    || $metaData->isFrameworkType()
+                    || count($this->getFilesOfExtension($package->getPackageKey())) === 0
+                ) {
+                    return null;
                 }
-                return count($this->getFilesOfExtension($extension['key'])) > 0;
-            }
-        );
-        ksort($extensions);
-        return $extensions;
+                $icon = $package->getResources()->getPackageIcon();
+                return [
+                    'packagePath' => $package->getPackagePath(),
+                    'type' => 'Local',
+                    'key' => $package->getPackageKey(),
+                    'icon' => $icon ? (string)$this->resourcePublisher->generateUri($this->resourceFactory->createPublicResource($icon), null) : '',
+                    'title' => $metaData->getTitle(),
+                    'description' => $metaData->getDescription(),
+                    'files' => count($this->getFilesOfExtension($package->getPackageKey())) > 0,
+                ];
+            },
+            $availablePackages,
+        ));
+        ksort($localPackages);
+
+        return $this->listUtility->enrichExtensionsWithEmConfInformation($localPackages);
     }
 
     /**

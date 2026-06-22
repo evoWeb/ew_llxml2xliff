@@ -220,7 +220,7 @@ readonly class FileController
     {
         $moduleTemplate = $this->moduleTemplateFactory->create($request);
         $moduleTemplate->setTitle(
-            (string)$this->getLanguageService()?->sL('ew_llxml2xliff.mod:title'),
+            (string)$this->getLanguageService()?->sL('ew_llxml2xliff.messages:title'),
             (string)$this->getLanguageService()?->sL($context)
         );
 
