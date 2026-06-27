@@ -32,6 +32,13 @@ cleanup: ##@ Cleanup
 	echo "Cleanup finished";
 
 
+.PHONY: cleanTests
+cleanTests: ##@ Clean test files but leave cache files
+	echo "cleanTests started"
+	Build/Scripts/runTests.sh -s cleanTests
+	echo "cleanTests finished";
+
+
 .PHONY: phpstan
 phpstan: ##@ Run functional tests
 	echo "Checking with phpstan started"

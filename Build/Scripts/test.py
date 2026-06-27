@@ -31,7 +31,8 @@ def run(cmd: str) -> None:
 
 
 def cleanup() -> None:
-    run('./runTests.sh -s clean')
+    php = '8.4'
+    run(f'./runTests.sh -p {php} -s cleanTests')
 
 
 def check_resources() -> None:
@@ -54,7 +55,7 @@ def run_functional_tests(php: str, core: str, framework: str, prefer: str = '') 
     if prefer:
         print(f' Additional: {prefer}')
     print('###########################################################################')
-    run(f'./runTests.sh -p {php} -s cleanTests')
+    cleanup()
     run(f'./runTests.sh -p {php} -s lintPhp')
     run(f'./runTests.sh -p {php} -s composer -- require {prefer_arg} "typo3/cms-core:{core}"')
     #run(f'./runTests.sh -p {php} -s composer -- require --dev {prefer_arg} "typo3/testing-framework:{framework}"')
